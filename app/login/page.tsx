@@ -66,18 +66,21 @@ function LoginForm() {
     setError(null)
 
     try {
-      const { createClient } = await import('@/lib/supabase/client')
-      const supabase = createClient()
-
-      const { error } = await supabase.auth.signInWithOtp({
-        email: emailToSend,
-        options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback?next=/app`,
-          shouldCreateUser: true, // Auto-create account if doesn't exist
+      // Use server API route to initiate magic link
+      // This ensures PKCE code verifier is stored in server-side cookies
+      const response = await fetch('/api/auth/send-magic-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({ email: emailToSend }),
       })
 
-      if (error) throw error
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to send magic link')
+      }
 
       setEmailSent(true)
       setResendCooldown(60) // 60 second cooldown

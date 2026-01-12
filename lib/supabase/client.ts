@@ -10,54 +10,7 @@ export function createClient() {
     )
   }
 
-  return createBrowserClient(url, key, {
-    cookies: {
-      getAll() {
-        // Get all cookies from document.cookie
-        const cookies: { name: string; value: string }[] = []
-        if (typeof document !== 'undefined') {
-          document.cookie.split(';').forEach((cookie) => {
-            const [name, ...rest] = cookie.trim().split('=')
-            const value = rest.join('=')
-            if (name && value) {
-              cookies.push({ name, value })
-            }
-          })
-        }
-        return cookies
-      },
-      setAll(cookiesToSet) {
-        // Set cookies using document.cookie
-        if (typeof document !== 'undefined') {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            let cookieString = `${name}=${value}`
-            
-            if (options) {
-              if (options.maxAge) {
-                cookieString += `; Max-Age=${options.maxAge}`
-              }
-              if (options.domain) {
-                cookieString += `; Domain=${options.domain}`
-              }
-              if (options.path) {
-                cookieString += `; Path=${options.path}`
-              }
-              if (options.sameSite) {
-                cookieString += `; SameSite=${options.sameSite}`
-              }
-              if (options.secure) {
-                cookieString += `; Secure`
-              }
-              if (options.httpOnly) {
-                // httpOnly cookies can't be set from client-side JavaScript
-                // This will be handled by the server
-              }
-            }
-            
-            document.cookie = cookieString
-          })
-        }
-      },
-    },
-  })
+  // Use createBrowserClient with default cookie handling for PKCE
+  // This automatically stores the code verifier in cookies
+  return createBrowserClient(url, key)
 }
