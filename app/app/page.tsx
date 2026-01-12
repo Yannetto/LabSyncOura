@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 export default function AppPage() {
   const [user, setUser] = useState<any>(null)
   const [isConnected, setIsConnected] = useState<boolean | null>(null)
