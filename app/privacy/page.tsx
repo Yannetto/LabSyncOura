@@ -76,9 +76,35 @@ export default function PrivacyPage() {
           </section>
 
           <section>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">Oura Usage Data Collection</h2>
+            <p className="text-gray-700">
+              Oura may collect certain use data and information related to your use of the Oura API Materials 
+              and Oura Platform in connection with this application. Oura may use such Usage Data for any business 
+              purpose, internal or external, including providing enhancements to the Oura API Materials or Oura 
+              Platform, providing developer or user support, or otherwise.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">Data Processing Disclosure</h2>
+            <p className="text-gray-700">
+              If our use of the Oura API Materials or Personal Data requires or will likely result in the provision 
+              of Personal Data directly to Oura, we have obtained all necessary consents and authorizations from you 
+              to provide such Personal Data to Oura. Oura will treat Personal Data obtained from us through our use 
+              of the Oura API Materials in accordance with Oura's then-current Privacy Policy.
+            </p>
+          </section>
+
+          <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Contact</h2>
             <p className="text-gray-700">
-              If you have questions about this privacy policy, please contact us through the app.
+              If you have questions about this privacy policy or data handling, please contact us at:
+            </p>
+            <p className="text-gray-700 mt-2">
+              <strong>Email:</strong> <a href="mailto:info@weareablereport.com" className="text-blue-600 hover:text-blue-700">info@weareablereport.com</a>
+            </p>
+            <p className="text-gray-700 mt-2">
+              <strong>Website:</strong> <a href="https://weareablereport.com" className="text-blue-600 hover:text-blue-700">https://weareablereport.com</a>
             </p>
           </section>
         </div>

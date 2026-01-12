@@ -57,6 +57,16 @@ export default function TermsPage() {
           </section>
 
           <section>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">Third-Party Service Providers</h2>
+            <p className="text-gray-700">
+              Your use of this service is subject to third-party service providers, including Oura. We disclaim all 
+              warranties on behalf of third-party service providers, including a disclaimer of implied warranties of 
+              merchantability, fitness for a particular purpose and non-infringement. Third-party service providers 
+              are excluded from all liability for consequential, special, punitive, indirect damages.
+            </p>
+          </section>
+
+          <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">User Responsibilities</h2>
             <p className="text-gray-700">
               You are responsible for:
@@ -81,8 +91,10 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Service Availability</h2>
             <p className="text-gray-700">
-              We reserve the right to modify, suspend, or discontinue the service at any time 
-              without notice. We do not guarantee uninterrupted or error-free service.
+              We reserve the right to modify, suspend, or discontinue the service at any time without notice. 
+              We do not guarantee uninterrupted or error-free service. This service depends on third-party APIs, 
+              including the Oura API. We make no warranty that the service will be uninterrupted, timely, secure, 
+              or error-free. The service is provided "as is" without warranty of any kind.
             </p>
           </section>
 
