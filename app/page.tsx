@@ -160,9 +160,9 @@ export default function Home() {
             {/* Sleep Table */}
             <div className="mb-6 sm:mb-8">
               <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900 px-4 sm:px-0">Sleep Summary</h2>
-              <div className="border border-gray-300 overflow-x-auto -mx-4 sm:mx-0">
-                <div className="inline-block min-w-full">
-                  <table className="w-full text-sm" style={{ tableLayout: 'fixed', minWidth: '600px' }}>
+              {/* Desktop Table */}
+              <div className="hidden md:block border border-gray-300 overflow-hidden">
+                <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
                     <col style={{ width: '30%' }} />
                     <col style={{ width: '25%' }} />
@@ -210,6 +210,58 @@ export default function Home() {
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Time in Bed</div>
+                    <div className="text-sm ml-2"></div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">9h 36m</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">8h 45m – 10h 15m</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Sleep Duration</div>
+                    <div className="text-sm ml-2">🟥</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">6h 45m</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">7h 30m – 9h 0m</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Deep Sleep</div>
+                    <div className="text-sm ml-2">🟥</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">10.5% (52m)</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">12.0–18.0% (1h 0m – 1h 30m)</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Light Sleep</div>
+                    <div className="text-sm ml-2"></div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">62.5% (5h 17m)</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">55.0–70.0% (4h 30m – 6h 0m)</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">REM Sleep</div>
+                    <div className="text-sm ml-2">🟥</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">27.0% (2h 17m)</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">18.0–25.0% (1h 30m – 2h 15m)</span></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -217,9 +269,9 @@ export default function Home() {
             {/* Cardiovascular & Oxygenation Table */}
             <div className="mb-6 sm:mb-8">
               <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900 px-4 sm:px-0">Cardiovascular & Oxygenation</h2>
-              <div className="border border-gray-300 overflow-x-auto -mx-4 sm:mx-0">
-                <div className="inline-block min-w-full">
-                  <table className="w-full text-sm" style={{ tableLayout: 'fixed', minWidth: '600px' }}>
+              {/* Desktop Table */}
+              <div className="hidden md:block border border-gray-300 overflow-hidden">
+                <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
                     <col style={{ width: '30%' }} />
                     <col style={{ width: '25%' }} />
@@ -273,6 +325,68 @@ export default function Home() {
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Resting Heart Rate</div>
+                    <div className="text-sm ml-2">🟥</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">95 bpm</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">55–65 bpm</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Lowest Night-time Heart Rate</div>
+                    <div className="text-sm ml-2"></div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">45 bpm</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">42–50 bpm</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Night-time HRV</div>
+                    <div className="text-sm ml-2">🟥</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">28 ms</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">35–50 ms</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Oxygen Saturation (SpO2)</div>
+                    <div className="text-sm ml-2">🟥</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">94.5%</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">96.0–99.0%</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Breathing Disturbance Index</div>
+                    <div className="text-sm ml-2">🟥</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">8.2</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">5.0–8.0</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Temperature Deviation</div>
+                    <div className="text-sm ml-2"></div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">-0.04°C</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">-0.2–0.2°C</span></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -280,9 +394,9 @@ export default function Home() {
             {/* Activity Table */}
             <div className="mb-6 sm:mb-8">
               <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900 px-4 sm:px-0">Activity</h2>
-              <div className="border border-gray-300 overflow-x-auto -mx-4 sm:mx-0">
-                <div className="inline-block min-w-full">
-                  <table className="w-full text-sm" style={{ tableLayout: 'fixed', minWidth: '600px' }}>
+              {/* Desktop Table */}
+              <div className="hidden md:block border border-gray-300 overflow-hidden">
+                <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
                     <col style={{ width: '30%' }} />
                     <col style={{ width: '25%' }} />
@@ -312,6 +426,28 @@ export default function Home() {
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              {/* Mobile Cards */}
+              <div className="md:hidden space-y-3">
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Steps</div>
+                    <div className="text-sm ml-2">🟥</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">5,200 steps</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">7,000–10,000 steps</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Sedentary Time</div>
+                    <div className="text-sm ml-2">🟥</div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">11h 30m</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">7h 30m – 10h 0m</span></div>
+                  </div>
                 </div>
               </div>
             </div>
