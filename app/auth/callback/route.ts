@@ -15,20 +15,29 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  if (!code) {
-    return NextResponse.redirect(
-      new URL('/login?error=no_code&message=No authentication code provided', request.url)
-    )
-  }
-
   try {
     const supabase = await createClient()
-    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+
+    // For PKCE flow (OAuth), exchange code for session
+    if (code) {
+      const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+      
+      if (exchangeError) {
+        console.error('[AuthCallback] Error exchanging code:', exchangeError)
+        return NextResponse.redirect(
+          new URL(`/login?error=exchange_failed&message=${exchangeError.message}`, request.url)
+        )
+      }
+    }
+
+    // For magic links, session is automatically set by Supabase
+    // Verify the user is authenticated
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
     
-    if (exchangeError) {
-      console.error('[AuthCallback] Error exchanging code:', exchangeError)
+    if (userError || !user) {
+      console.error('[AuthCallback] User not authenticated:', userError)
       return NextResponse.redirect(
-        new URL(`/login?error=exchange_failed&message=${exchangeError.message}`, request.url)
+        new URL('/login?error=not_authenticated&message=Authentication failed. Please try again.', request.url)
       )
     }
 

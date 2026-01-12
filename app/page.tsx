@@ -15,6 +15,11 @@ export default function Home() {
         const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
         setUser(user)
+        
+        // If user is authenticated and landed here from magic link, redirect to app
+        if (user && window.location.search.includes('type=magiclink')) {
+          window.location.href = '/app'
+        }
       } catch (err: any) {
         console.error('Auth initialization error:', err)
         setError(err.message || 'Failed to initialize authentication')
