@@ -29,8 +29,22 @@ export async function exchangeCodeForTokens(
   })
 
   if (!response.ok) {
-    const error = await response.text()
-    throw new Error(`Oura token exchange failed: ${error}`)
+    let errorText = 'Unknown error'
+    try {
+      const errorData = await response.json()
+      errorText = errorData.error_description || errorData.error || JSON.stringify(errorData)
+    } catch {
+      errorText = await response.text()
+    }
+    console.error('[OuraClient] Token exchange failed:', {
+      status: response.status,
+      statusText: response.statusText,
+      error: errorText,
+      redirectUri,
+      hasClientId: !!clientId,
+      hasClientSecret: !!clientSecret
+    })
+    throw new Error(`Oura token exchange failed (${response.status}): ${errorText}`)
   }
 
   return response.json()

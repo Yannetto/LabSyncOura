@@ -81,7 +81,9 @@ export default function AppPage() {
       } else if (error === 'invalid_state') {
         errorText = 'Security validation failed. Please try connecting again.'
       } else if (error === 'token_exchange_failed') {
-        errorText = 'Failed to complete connection. Please try again.'
+        errorText = errorMessage || 'Failed to complete connection. Please try again.'
+      } else if (error === 'configuration_error') {
+        errorText = 'Oura app configuration error. Please contact support.'
       } else if (errorMessage) {
         errorText = errorMessage
       }

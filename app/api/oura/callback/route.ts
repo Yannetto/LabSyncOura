@@ -95,8 +95,21 @@ export async function GET(request: NextRequest) {
       })
 
     return NextResponse.redirect(new URL('/app?connected=1', request.url))
-  } catch (error) {
-    console.error('OAuth callback error:', error)
-    return NextResponse.redirect(new URL('/app?connected=0&error=token_exchange_failed', request.url))
+  } catch (error: any) {
+    console.error('[OuraCallback] OAuth callback error:', error)
+    
+    // Extract more specific error message
+    let errorMessage = 'Failed to complete connection. Please try again.'
+    if (error?.message) {
+      errorMessage = error.message
+      // If it's an Oura API error, try to extract the error details
+      if (error.message.includes('Oura token exchange failed')) {
+        errorMessage = 'Oura authentication failed. Please check your Oura app configuration and try again.'
+      }
+    }
+    
+    return NextResponse.redirect(
+      new URL(`/app?connected=0&error=token_exchange_failed&message=${encodeURIComponent(errorMessage)}`, request.url)
+    )
   }
 }
