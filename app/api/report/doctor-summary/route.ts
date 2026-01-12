@@ -15,14 +15,15 @@ export async function POST(request: NextRequest) {
   try {
     const serviceSupabase = createServiceClient()
     
-    // Calculate date range - we need last 37 days (7 days for report + 30 days for reference)
+    // Calculate date range - fetch last 90 days to ensure we have enough data
+    // (7 days for report + 30 days for reference, plus buffer for gaps)
     const now = new Date()
     now.setHours(0, 0, 0, 0)
-    const thirtySevenDaysAgo = new Date(now)
-    thirtySevenDaysAgo.setDate(thirtySevenDaysAgo.getDate() - 37)
-    const startDateStr = thirtySevenDaysAgo.toISOString().split('T')[0]
+    const ninetyDaysAgo = new Date(now)
+    ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90)
+    const startDateStr = ninetyDaysAgo.toISOString().split('T')[0]
     
-    // Fetch all data for the last 37 days (should be enough for 7-day report + 30-day reference)
+    // Fetch all data for the last 90 days (no limit to get all available data)
     const { data: dailyData, error: fetchError } = await serviceSupabase
       .from('oura_daily')
       .select('day, metric_key, value')
@@ -35,23 +36,85 @@ export async function POST(request: NextRequest) {
       throw fetchError
     }
 
-    // Debug: Check if SpO2 data exists in fetched data
-    const spo2Data = (dailyData || []).filter(d => 
-      d.metric_key === 'spo2_percentage_average' || 
-      d.metric_key === 'breathing_disturbance_index'
-    )
-    if (spo2Data.length > 0) {
-      console.log(`[DoctorSummary] Found ${spo2Data.length} SpO2/Breathing records in database`)
-    } else {
-      console.warn(`[DoctorSummary] NO SpO2/Breathing data found in database. Total records fetched: ${dailyData?.length || 0}`)
-      if (dailyData && dailyData.length > 0) {
-        const uniqueMetrics = [...new Set(dailyData.map(d => d.metric_key))].sort()
-        console.log(`[DoctorSummary] Available metric_keys:`, uniqueMetrics)
+    // Debug: Log comprehensive data summary
+    console.log(`[DoctorSummary] Fetched ${dailyData?.length || 0} total records from database`)
+    console.log(`[DoctorSummary] Date range: ${startDateStr} to ${now.toISOString().split('T')[0]}`)
+    
+    if (dailyData && dailyData.length > 0) {
+      const uniqueDays = [...new Set(dailyData.map(d => d.day))].sort()
+      const uniqueMetrics = [...new Set(dailyData.map(d => d.metric_key))].sort()
+      console.log(`[DoctorSummary] Unique days in data: ${uniqueDays.length} (${uniqueDays[0]} to ${uniqueDays[uniqueDays.length - 1]})`)
+      console.log(`[DoctorSummary] Unique metric_keys: ${uniqueMetrics.length}`)
+      console.log(`[DoctorSummary] All metric_keys:`, uniqueMetrics)
+      
+      // Count records per metric
+      const metricCounts: { [key: string]: number } = {}
+      dailyData.forEach(d => {
+        metricCounts[d.metric_key] = (metricCounts[d.metric_key] || 0) + 1
+      })
+      console.log(`[DoctorSummary] Records per metric:`, metricCounts)
+      
+      // Check for SpO2 data
+      const spo2Data = dailyData.filter(d => 
+        d.metric_key === 'spo2_percentage_average' || 
+        d.metric_key === 'breathing_disturbance_index'
+      )
+      if (spo2Data.length > 0) {
+        console.log(`[DoctorSummary] Found ${spo2Data.length} SpO2/Breathing records`)
+      } else {
+        console.warn(`[DoctorSummary] NO SpO2/Breathing data found`)
       }
+      
+      // Check for common sleep metrics
+      const sleepMetrics = ['sleep_duration', 'sleep_total_sleep_duration_seconds', 'sleep_efficiency', 'rem_sleep_percentage', 'deep_sleep_percentage']
+      const foundSleepMetrics = sleepMetrics.filter(m => metricCounts[m])
+      console.log(`[DoctorSummary] Sleep metrics found: ${foundSleepMetrics.length}/${sleepMetrics.length}`, foundSleepMetrics)
+      
+      // Check for cardiovascular metrics
+      const cvMetrics = ['resting_heart_rate', 'hrv_rmssd', 'sleep_lowest_heart_rate', 'sleep_average_hrv']
+      const foundCvMetrics = cvMetrics.filter(m => metricCounts[m])
+      console.log(`[DoctorSummary] Cardiovascular metrics found: ${foundCvMetrics.length}/${cvMetrics.length}`, foundCvMetrics)
+      
+      // Check for activity metrics
+      const activityMetrics = ['steps', 'sedentary_time', 'sedentary_time_seconds']
+      const foundActivityMetrics = activityMetrics.filter(m => metricCounts[m])
+      console.log(`[DoctorSummary] Activity metrics found: ${foundActivityMetrics.length}/${activityMetrics.length}`, foundActivityMetrics)
+    } else {
+      console.error(`[DoctorSummary] NO DATA FOUND in database for user ${user.id} from ${startDateStr}`)
     }
 
+    // Check if we have any data at all
+    if (!dailyData || dailyData.length === 0) {
+      console.error(`[DoctorSummary] No data found for user ${user.id}. User may need to sync Oura data first.`)
+      return NextResponse.json({
+        error: 'No data available. Please sync your Oura data first.',
+        summary: {
+          sleepTable: [],
+          cardiovascularTable: [],
+          activityTable: []
+        },
+        metadata: {
+          patientEmail: user.email || '',
+          reportDate: now.toISOString().split('T')[0],
+          dataPeriod: { start: '', end: '', days: 0 },
+          referenceRange: { start: '', end: '', days: 0 }
+        }
+      })
+    }
+    
     // Calculate all metrics
     const metrics = calculateReportMetrics(dailyData || [])
+    
+    console.log(`[DoctorSummary] Calculated ${metrics.length} total metrics from ${dailyData.length} data records`)
+    if (metrics.length > 0) {
+      console.log(`[DoctorSummary] Sample calculated metrics:`, metrics.slice(0, 5).map(m => ({
+        metric: m.metric,
+        result: m.result_display,
+        hasReference: m.reference_display !== '—'
+      })))
+    } else {
+      console.error(`[DoctorSummary] WARNING: No metrics calculated from ${dailyData.length} data records!`)
+    }
     
     // Debug: Check if SpO2 metrics were calculated
     const spo2Metrics = metrics.filter(m => {
@@ -66,6 +129,19 @@ export async function POST(request: NextRequest) {
     
     // Format as doctor-friendly summary
     const summary = formatDoctorSummary(metrics)
+    
+    // Debug: Log what was included in the summary
+    console.log(`[DoctorSummary] Summary tables:`, {
+      sleep: summary.sleepTable.length,
+      cardiovascular: summary.cardiovascularTable.length,
+      activity: summary.activityTable.length,
+      total: summary.sleepTable.length + summary.cardiovascularTable.length + summary.activityTable.length
+    })
+    
+    if (summary.sleepTable.length === 0 && summary.cardiovascularTable.length === 0 && summary.activityTable.length === 0) {
+      console.error(`[DoctorSummary] WARNING: All summary tables are empty! This suggests a filtering issue.`)
+      console.log(`[DoctorSummary] All calculated metrics:`, metrics.map(m => m.metric))
+    }
     
     // Calculate date range for the report (reuse 'now' from above)
     const yesterday = new Date(now)

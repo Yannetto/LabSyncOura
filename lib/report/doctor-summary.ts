@@ -152,34 +152,48 @@ const KEEP_METRICS = {
   sleep: [
     'time in bed',
     'sleep duration',
+    'sleep total sleep duration', // From sleep_total_sleep_duration_seconds
     'deep sleep %',
     'deep sleep percentage',
     'deep sleep duration',
+    'deep sleep', // Generic match
     'light sleep %',
     'light sleep percentage',
     'light sleep duration',
+    'light sleep', // Generic match
     'rem sleep %',
     'rem sleep percentage',
     'rem sleep duration',
+    'rem sleep', // Generic match
+    'sleep latency',
+    'sleep efficiency',
   ],
   cardiovascular: [
     'resting heart rate',
     'resting hr',
+    'readiness resting heart rate', // From readiness_resting_heart_rate
     'lowest night-time heart rate',
+    'sleep lowest heart rate', // From sleep_lowest_heart_rate
     'night-time hrv',
+    'hrv', // Generic match for HRV metrics
+    'hrv rmssd', // From hrv_rmssd
     'readiness hrv balance', // This will be renamed to "Night-time HRV"
-    'sleep average hrv',
+    'readiness hrv rmssd', // From readiness_hrv_rmssd
+    'sleep average hrv', // From sleep_average_hrv
     'average nightly spo2',
     'average nightly sp', // Variant without "o2"
+    'average nightly spo2', // From spo2_percentage_average
     'spo2 percentage average',
     'oxygen saturation',
     'spo2',
     'breathing disturbance index',
     'temperature deviation',
+    'readiness temperature deviation', // From readiness_temperature_deviation
   ],
   activity: [
     'steps',
     'sedentary time',
+    'sedentary time seconds', // From sedentary_time_seconds
   ],
 }
 
@@ -311,7 +325,22 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
   }
   
   // Step 1: Filter to keep only specified metrics
-  const filtered = metrics.filter(m => shouldKeepMetric(m.metric).keep)
+  const filtered = metrics.filter(m => {
+    const { keep } = shouldKeepMetric(m.metric)
+    if (!keep) {
+      console.log(`[DoctorSummary] Filtered out metric: "${m.metric}" (normalized: "${normalizeMetricName(m.metric)}")`)
+    }
+    return keep
+  })
+  
+  console.log(`[DoctorSummary] After filtering: ${filtered.length} metrics kept out of ${metrics.length} total`)
+  if (filtered.length === 0 && metrics.length > 0) {
+    console.error(`[DoctorSummary] ERROR: All metrics were filtered out! This suggests a matching issue.`)
+    console.log(`[DoctorSummary] Sample filtered metrics:`, metrics.slice(0, 10).map(m => ({
+      metric: m.metric,
+      normalized: normalizeMetricName(m.metric)
+    })))
+  }
   
   const spo2Filtered = filtered.filter(m => {
     const n = normalizeMetricName(m.metric)

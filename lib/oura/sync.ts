@@ -84,7 +84,7 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
     return Array.from(seen.entries()).map(([metric_key, value]) => ({ metric_key, value }))
   }
 
-  // Helper to store metrics with deduplication
+  // Helper to store metrics with deduplication - BATCHED for performance
   const storeMetrics = async (
     userId: string,
     day: string,
@@ -94,30 +94,30 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
     const dayFormatted = day.includes('T') ? day.split('T')[0] : day
     const deduped = deduplicateMetrics(metrics)
     
-    let stored = 0
-    let failed = 0
-
-    for (const metric of deduped) {
-      const { error: upsertError } = await supabase
-        .from('oura_daily')
-        .upsert({
-          user_id: userId,
-          day: dayFormatted,
-          metric_key: metric.metric_key,
-          value: metric.value,
-        }, {
-          onConflict: 'user_id,day,metric_key',
-        })
-      
-      if (upsertError) {
-        console.error(`[Sync] [${source}] Failed to upsert ${metric.metric_key} for ${dayFormatted}:`, upsertError)
-        failed++
-      } else {
-        stored++
-      }
+    if (deduped.length === 0) {
+      return { stored: 0, failed: 0 }
     }
 
-    return { stored, failed }
+    // Batch all metrics for this day into a single upsert operation
+    const records = deduped.map(metric => ({
+      user_id: userId,
+      day: dayFormatted,
+      metric_key: metric.metric_key,
+      value: metric.value,
+    }))
+
+    const { error: upsertError } = await supabase
+      .from('oura_daily')
+      .upsert(records, {
+        onConflict: 'user_id,day,metric_key',
+      })
+    
+    if (upsertError) {
+      console.error(`[Sync] [${source}] Failed to batch upsert ${deduped.length} metrics for ${dayFormatted}:`, upsertError)
+      return { stored: 0, failed: deduped.length }
+    }
+
+    return { stored: deduped.length, failed: 0 }
   }
 
   // Fetch data from all daily collections
@@ -146,9 +146,9 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
         continue
       }
 
+      // Batch all metrics by day for bulk insert
+      const metricsByDay = new Map<string, Array<{ metric_key: string; value: string }>>()
       let itemsProcessed = 0
-      let metricsStored = 0
-      let metricsFailed = 0
 
       for (const item of data) {
         // Use the mapping layer to extract metrics
@@ -169,10 +169,54 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
           console.warn(`[Sync] ${collection} - No metrics extracted from first record`)
         }
 
-        // Store metrics with deduplication
-        const result = await storeMetrics(userId, day, metrics, collection)
-        metricsStored += result.stored
-        metricsFailed += result.failed
+        // Accumulate metrics by day for batch processing
+        if (!metricsByDay.has(day)) {
+          metricsByDay.set(day, [])
+        }
+        const existingMetrics = metricsByDay.get(day)!
+        metricsByDay.set(day, [...existingMetrics, ...metrics])
+      }
+
+      // Batch store all metrics for all days in this collection
+      let metricsStored = 0
+      let metricsFailed = 0
+
+      // Process in batches of 10 days to avoid overwhelming the database
+      const days = Array.from(metricsByDay.keys())
+      const BATCH_SIZE = 10
+      
+      for (let i = 0; i < days.length; i += BATCH_SIZE) {
+        const dayBatch = days.slice(i, i + BATCH_SIZE)
+        const batchRecords: Array<{ user_id: string; day: string; metric_key: string; value: string }> = []
+        
+        for (const day of dayBatch) {
+          const dayFormatted = day.includes('T') ? day.split('T')[0] : day
+          const dayMetrics = deduplicateMetrics(metricsByDay.get(day)!)
+          
+          for (const metric of dayMetrics) {
+            batchRecords.push({
+              user_id: userId,
+              day: dayFormatted,
+              metric_key: metric.metric_key,
+              value: metric.value,
+            })
+          }
+        }
+
+        if (batchRecords.length > 0) {
+          const { error: upsertError } = await supabase
+            .from('oura_daily')
+            .upsert(batchRecords, {
+              onConflict: 'user_id,day,metric_key',
+            })
+          
+          if (upsertError) {
+            console.error(`[Sync] [${collection}] Failed to batch upsert ${batchRecords.length} metrics:`, upsertError)
+            metricsFailed += batchRecords.length
+          } else {
+            metricsStored += batchRecords.length
+          }
+        }
       }
       
       console.log(`[Sync] ${collection}: ${itemsProcessed} items processed, ${metricsStored} metrics stored, ${metricsFailed} failed`)
@@ -208,8 +252,9 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
       }
 
       let sleepRecordsProcessed = 0
-      let sleepMetricsStored = 0
-      let sleepMetricsFailed = 0
+      
+      // Batch all sleep metrics by day for bulk insert
+      const sleepMetricsByDay = new Map<string, Array<{ metric_key: string; value: string }>>()
 
       // Process one sleep record per day (prefer main sleep or largest duration)
       for (const [day, records] of sleepByDay.entries()) {
@@ -249,10 +294,54 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
           console.log(`[Sync] sleep - Extracted metrics:`, mapped.metrics.map(m => m.metric_key))
         }
 
-        // Store metrics with deduplication
-        const result = await storeMetrics(userId, mapped.day, mapped.metrics, 'sleep')
-        sleepMetricsStored += result.stored
-        sleepMetricsFailed += result.failed
+        // Accumulate metrics by day for batch processing
+        if (!sleepMetricsByDay.has(mapped.day)) {
+          sleepMetricsByDay.set(mapped.day, [])
+        }
+        const existingMetrics = sleepMetricsByDay.get(mapped.day)!
+        sleepMetricsByDay.set(mapped.day, [...existingMetrics, ...mapped.metrics])
+      }
+
+      // Batch store all sleep metrics
+      let sleepMetricsStored = 0
+      let sleepMetricsFailed = 0
+
+      // Process in batches of 10 days
+      const sleepDays = Array.from(sleepMetricsByDay.keys())
+      const BATCH_SIZE = 10
+      
+      for (let i = 0; i < sleepDays.length; i += BATCH_SIZE) {
+        const dayBatch = sleepDays.slice(i, i + BATCH_SIZE)
+        const batchRecords: Array<{ user_id: string; day: string; metric_key: string; value: string }> = []
+        
+        for (const day of dayBatch) {
+          const dayFormatted = day.includes('T') ? day.split('T')[0] : day
+          const dayMetrics = deduplicateMetrics(sleepMetricsByDay.get(day)!)
+          
+          for (const metric of dayMetrics) {
+            batchRecords.push({
+              user_id: userId,
+              day: dayFormatted,
+              metric_key: metric.metric_key,
+              value: metric.value,
+            })
+          }
+        }
+
+        if (batchRecords.length > 0) {
+          const { error: upsertError } = await supabase
+            .from('oura_daily')
+            .upsert(batchRecords, {
+              onConflict: 'user_id,day,metric_key',
+            })
+          
+          if (upsertError) {
+            console.error(`[Sync] [sleep] Failed to batch upsert ${batchRecords.length} metrics:`, upsertError)
+            sleepMetricsFailed += batchRecords.length
+          } else {
+            sleepMetricsStored += batchRecords.length
+          }
+        }
       }
 
       console.log(`[Sync] sleep: ${sleepRecordsProcessed} records processed, ${sleepMetricsStored} metrics stored, ${sleepMetricsFailed} failed`)
