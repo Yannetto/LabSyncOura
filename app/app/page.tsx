@@ -71,11 +71,24 @@ export default function AppPage() {
       // Clean URL
       router.replace('/app')
     } else if (connected === '0') {
+      const errorMessage = params.get('message')
+      let errorText = 'Failed to connect Oura account'
+      
+      if (error === 'access_denied') {
+        errorText = 'Connection was not approved. You can try again at any time.'
+      } else if (error === 'invalid_request') {
+        errorText = errorMessage || 'Invalid OAuth request. Please check your Oura app configuration and ensure the redirect URI matches exactly.'
+      } else if (error === 'invalid_state') {
+        errorText = 'Security validation failed. Please try connecting again.'
+      } else if (error === 'token_exchange_failed') {
+        errorText = 'Failed to complete connection. Please try again.'
+      } else if (errorMessage) {
+        errorText = errorMessage
+      }
+      
       setMessage({ 
         type: 'error', 
-        text: error === 'access_denied' 
-          ? 'Connection was not approved. You can try again at any time.' 
-          : 'Failed to connect Oura account' 
+        text: errorText
       })
     }
   }, [])

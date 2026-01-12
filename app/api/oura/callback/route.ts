@@ -17,14 +17,29 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code')
   const state = searchParams.get('state')
   const errorParam = searchParams.get('error')
+  const errorDescription = searchParams.get('error_description')
 
-  // Handle access denied
-  if (errorParam === 'access_denied') {
-    return NextResponse.redirect(new URL('/app?connected=0&error=access_denied', request.url))
+  // Handle Oura OAuth errors
+  if (errorParam) {
+    console.error('[OuraCallback] Oura OAuth error:', { errorParam, errorDescription })
+    
+    let errorMessage = 'Failed to connect Oura account'
+    if (errorParam === 'access_denied') {
+      errorMessage = 'Connection was not approved. You can try again at any time.'
+    } else if (errorParam === 'invalid_request') {
+      errorMessage = 'Invalid OAuth request. Please check your Oura app configuration.'
+    } else if (errorDescription) {
+      errorMessage = errorDescription
+    }
+    
+    return NextResponse.redirect(
+      new URL(`/app?connected=0&error=${errorParam}&message=${encodeURIComponent(errorMessage)}`, request.url)
+    )
   }
 
   if (!code || !state) {
-    return NextResponse.redirect(new URL('/app?connected=0&error=invalid_request', request.url))
+    console.error('[OuraCallback] Missing code or state:', { hasCode: !!code, hasState: !!state })
+    return NextResponse.redirect(new URL('/app?connected=0&error=invalid_request&message=Missing authorization code or state', request.url))
   }
 
   // Validate state
@@ -46,8 +61,16 @@ export async function GET(request: NextRequest) {
   cookieStore.set('oura_oauth_state', '', { maxAge: 0, path: '/' })
 
   try {
-    const baseUrl = process.env.BASE_URL || 'http://localhost:3000'
+    // Use request origin for redirect URI to match what was sent in the OAuth request
+    const baseUrl = process.env.BASE_URL || request.nextUrl.origin
     const redirectUri = `${baseUrl}/api/oura/callback`
+
+    console.log('[OuraCallback] Exchanging code for tokens:', { 
+      redirectUri, 
+      baseUrl,
+      hasCode: !!code,
+      hasState: !!state 
+    })
 
     // Exchange code for tokens
     const tokens = await exchangeCodeForTokens(code, redirectUri)

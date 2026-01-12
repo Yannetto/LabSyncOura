@@ -27,8 +27,17 @@ export async function GET(request: NextRequest) {
 
   // Build OAuth URL
   const clientId = process.env.OURA_CLIENT_ID!
-  const baseUrl = process.env.BASE_URL || 'http://localhost:3000'
+  
+  // Use request origin for redirect URI to ensure it matches exactly
+  // Fallback to BASE_URL or construct from request
+  const baseUrl = process.env.BASE_URL || request.nextUrl.origin
   const redirectUri = `${baseUrl}/api/oura/callback`
+
+  // Validate client ID
+  if (!clientId) {
+    console.error('[OuraStart] Missing OURA_CLIENT_ID')
+    return NextResponse.redirect(new URL('/app?connected=0&error=configuration_error', request.url))
+  }
 
   const params = new URLSearchParams({
     response_type: 'code',
@@ -39,6 +48,12 @@ export async function GET(request: NextRequest) {
   })
 
   const oauthUrl = `https://cloud.ouraring.com/oauth/authorize?${params.toString()}`
+  
+  console.log('[OuraStart] Redirecting to Oura OAuth:', { 
+    redirectUri, 
+    baseUrl,
+    hasClientId: !!clientId 
+  })
 
   return NextResponse.redirect(oauthUrl)
 }
