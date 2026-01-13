@@ -18,10 +18,11 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Experimental Nature and Risk Disclosure</h2>
             <p className="text-gray-700">
-              <strong>This service is experimental in nature.</strong> The reports generated may contain 
-              inaccuracies, and the system is under active development. You understand that health metrics 
-              may be misrepresented or misinterpreted. We make no guarantees as to the accuracy of the 
-              insights derived from raw Oura data.
+              <strong>This is an experimental service.</strong> Reports are automatically generated and may 
+              contain errors, inaccuracies, or incomplete data. Do not rely on them for health decisions. 
+              The system is under active development and is not a finalized product. You understand that 
+              health metrics may be misrepresented or misinterpreted. We make no guarantees as to the 
+              accuracy of the insights derived from raw Oura data.
             </p>
           </section>
 
@@ -106,6 +107,12 @@ export default function PrivacyPage() {
               <li>Store historical data for report generation</li>
             </ul>
             <p className="text-gray-700 mt-3">
+              <strong>AI and Automated Processing:</strong> Some parts of report generation may involve 
+              automated analysis or AI-assisted summarization. No part of this process involves medical 
+              review or professional oversight. All calculations, formatting, and data presentation are 
+              automated and have not been reviewed or verified by medical professionals.
+            </p>
+            <p className="text-gray-700 mt-3">
               <strong>Storage:</strong> All data is stored securely using Supabase, a SOC 2 Type II 
               certified platform. Data is stored in encrypted databases with the following protections:
             </p>
@@ -165,6 +172,11 @@ export default function PrivacyPage() {
               intended to diagnose, treat, or prevent any medical condition.
             </p>
             <p className="text-gray-700 mt-3">
+              <strong>Health Data Risk Disclaimer:</strong> We disclaim liability for any consequences 
+              resulting from inaccurate or misinterpreted health metrics. The information provided is 
+              informational only and must not be used to make medical or health-related decisions.
+            </p>
+            <p className="text-gray-700 mt-3">
               <strong>Not affiliated with Oura.</strong> This service is not affiliated with, 
               endorsed by, or sponsored by Oura.
             </p>
@@ -196,8 +208,10 @@ export default function PrivacyPage() {
             </ul>
             <p className="text-gray-700 mt-3">
               <strong>Legal Basis for Processing:</strong> We process your health data based on your explicit 
-              consent, which you provide when connecting your Oura account. You can withdraw consent at any 
-              time by disconnecting your Oura account or deleting your data.
+              consent, which you provide when connecting your Oura account. <strong>By connecting your Oura 
+              account, you explicitly consent to the collection, processing, and storage of your health-related 
+              data as described herein, solely for the purpose of generating personal reports.</strong> You can 
+              withdraw consent at any time by disconnecting your Oura account or deleting your data.
             </p>
             <p className="text-gray-700 mt-3">
               <strong>Data Retention:</strong> We retain your data only as long as necessary to provide the 
@@ -220,8 +234,20 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">Data Processing Disclosure</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">Data Sharing with Oura</h2>
             <p className="text-gray-700">
+              <strong>We do not share data with Oura unless required by the functioning of the API.</strong> 
+              You control your data sharing through OAuth, and we do not independently transmit your personal 
+              health data to third parties outside those necessary to deliver the service (Supabase for storage, 
+              Vercel for hosting).
+            </p>
+            <p className="text-gray-700 mt-2">
+              When you connect your Oura account via OAuth, Oura may collect certain usage data and information 
+              related to your use of the Oura API in connection with this application, as described in Oura's 
+              privacy policy. This data sharing is controlled by your OAuth authorization, which you can revoke 
+              at any time through your Oura account settings.
+            </p>
+            <p className="text-gray-700 mt-2">
               If our use of the Oura API Materials or Personal Data requires or will likely result in the provision 
               of Personal Data directly to Oura, we have obtained all necessary consents and authorizations from you 
               to provide such Personal Data to Oura. Oura will treat Personal Data obtained from us through our use 
