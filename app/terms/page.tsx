@@ -26,8 +26,10 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Service Description</h2>
             <p className="text-gray-700">
-              This service provides a formatting utility that generates lab-style reports from 
-              your Oura ring data. It is a data visualization and summarization tool only.
+              This is an <strong>experimental service</strong> that provides a formatting utility 
+              to generate lab-style reports from your Oura ring data. It is a data visualization 
+              and summarization tool only. The service is provided "as is" without warranties 
+              of any kind, and may contain errors, inaccuracies, or incomplete information.
             </p>
           </section>
 
@@ -37,13 +39,20 @@ export default function TermsPage() {
               <strong>IMPORTANT: Informational only. Not medical advice.</strong>
             </p>
             <p className="text-gray-700 mt-2">
-              This service is for informational purposes only. The reports generated are not 
-              medical advice, diagnosis, or treatment recommendations. Always consult with a 
-              qualified healthcare provider for medical concerns.
+              This service is for informational purposes only and does not constitute medical advice. 
+              The reports generated are not medical advice, diagnosis, treatment recommendations, or 
+              a substitute for professional medical care. Always consult with a qualified healthcare 
+              provider for medical concerns, diagnosis, or treatment decisions.
             </p>
             <p className="text-gray-700 mt-2">
-              We make no claims about the accuracy, completeness, or usefulness of the data 
-              or reports. The service is provided "as is" without warranty of any kind.
+              We make no claims about the accuracy, completeness, reliability, or usefulness of the 
+              data, metrics, calculations, or reports. The service is provided "as is" without 
+              warranty of any kind, express or implied.
+            </p>
+            <p className="text-gray-700 mt-2">
+              <strong>You should not rely on this service or its reports for any medical decisions.</strong> 
+              The information presented may be incomplete, inaccurate, or outdated. No representations 
+              are made regarding the accuracy, reliability, or completeness of any data or analysis.
             </p>
           </section>
 
@@ -76,6 +85,9 @@ export default function TermsPage() {
               <li>Authorizing and managing OAuth access to your Oura account</li>
               <li>Using the service in compliance with all applicable laws</li>
               <li>Not using the service for any illegal or unauthorized purpose</li>
+              <li><strong>Independently verifying and validating all information</strong> presented in reports before making any health-related decisions</li>
+              <li><strong>Interpreting and using the output at your own risk</strong> - you acknowledge that you are solely responsible for how you use or interpret any reports or data</li>
+              <li>Seeking professional medical advice for any health concerns or questions</li>
             </ul>
           </section>
 
@@ -86,6 +98,35 @@ export default function TermsPage() {
               incidental, special, consequential, or punitive damages arising from your use of 
               the service.
             </p>
+            <p className="text-gray-700 mt-2">
+              <strong>Health Data Errors:</strong> We specifically disclaim all liability for 
+              any errors, inaccuracies, omissions, or incomplete information in health data, 
+              metrics, calculations, or reports. This includes, but is not limited to, errors 
+              in sleep data, heart rate measurements, HRV values, activity metrics, SpO2 readings, 
+              or any other health-related information. We are not responsible for any consequences 
+              arising from reliance on inaccurate or incomplete data.
+            </p>
+            <p className="text-gray-700 mt-2">
+              By using this service, you acknowledge and accept that the creators disclaim all 
+              liability for any direct or indirect consequences, including but not limited to 
+              health-related decisions, medical outcomes, or financial losses, arising from the 
+              use or misuse of this service or its reports.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">Usage Restrictions</h2>
+            <p className="text-gray-700">
+              This service is provided for <strong>personal, non-commercial use only</strong>. 
+              You may not:
+            </p>
+            <ul className="list-disc pl-6 text-gray-700 space-y-2 mt-2">
+              <li>Use this service or its reports for any commercial purpose</li>
+              <li>Resell, redistribute, or sublicense access to the service</li>
+              <li>Use the service to provide medical or health advice to others</li>
+              <li>Use the service in any way that violates applicable laws or regulations</li>
+              <li>Reverse engineer, decompile, or attempt to extract the source code</li>
+            </ul>
           </section>
 
           <section>
