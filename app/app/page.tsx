@@ -16,6 +16,7 @@ export default function AppPage() {
   const [showConnectExplanation, setShowConnectExplanation] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [lastSynced, setLastSynced] = useState<string | null>(null)
+  const [hasSyncedData, setHasSyncedData] = useState<boolean>(false) // Track if any data exists
   const [tosStatus, setTosStatus] = useState<{ needs_acceptance: boolean; tos_accepted: boolean } | null>(null)
   const [showTosModal, setShowTosModal] = useState(false)
   const [tosAcceptedLocally, setTosAcceptedLocally] = useState(false) // Track local acceptance to prevent reopening
@@ -53,9 +54,13 @@ export default function AppPage() {
           day: 'numeric', 
           year: 'numeric' 
         }))
+        setHasSyncedData(true)
+      } else {
+        setHasSyncedData(false)
       }
     } catch (error) {
-      // Silently fail
+      // Silently fail - assume no data on error
+      setHasSyncedData(false)
     }
   }
 
@@ -153,6 +158,7 @@ export default function AppPage() {
             })
         setMessage({ type: 'success', text: `Synced ${data.days_synced} days of data` })
         setLastSynced(syncDate)
+        setHasSyncedData(true) // Data now exists
       } else {
         // Handle specific error cases
         if (response.status === 404) {
@@ -325,6 +331,7 @@ export default function AppPage() {
       if (response.ok) {
         setIsConnected(false)
         setLastSynced(null)
+        setHasSyncedData(false) // Reset data status
         setReportHistory([])
         setMessage({ type: 'success', text: 'All data deleted successfully' })
       } else {
@@ -483,7 +490,21 @@ export default function AppPage() {
         {/* Actions */}
         {isConnected && (
           <div className="mb-8 pb-6 border-b-2 border-gray-400">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">Actions</h2>
+            <h2 className="text-lg font-bold text-gray-900 mb-2">Actions</h2>
+            {/* Workflow guidance */}
+            <div className="flex items-center gap-2 mb-4 text-xs text-gray-500">
+              <span className={`inline-flex items-center gap-1 ${hasSyncedData ? 'text-green-600' : 'text-gray-700 font-medium'}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-xs ${hasSyncedData ? 'bg-green-500' : 'bg-gray-900'}`}>1</span>
+                Sync
+              </span>
+              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+              <span className={`inline-flex items-center gap-1 ${hasSyncedData ? 'text-gray-700 font-medium' : 'text-gray-400'}`}>
+                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-xs ${hasSyncedData ? 'bg-blue-600' : 'bg-gray-300'}`}>2</span>
+                Generate Report
+              </span>
+            </div>
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => handleSync(false)}
@@ -503,32 +524,45 @@ export default function AppPage() {
                     <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
-                    <span>Sync Data</span>
+                    <span>{hasSyncedData ? 'Refresh Data' : 'Sync Data'}</span>
                   </>
                 )}
               </button>
-              <button
-                onClick={handleGenerate}
-                disabled={generating}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
-              >
-                {generating ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Generating...</span>
-                  </>
-                ) : (
-                  <>
-                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                    <span>Generate Report</span>
-                  </>
+              <div className="relative flex-1 group">
+                <button
+                  onClick={handleGenerate}
+                  disabled={generating || !hasSyncedData}
+                  className={`w-full px-6 py-3 font-medium transition-colors flex items-center justify-center gap-2 ${
+                    hasSyncedData 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50' 
+                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  {generating ? (
+                    <>
+                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      <span>Generating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>Generate Report</span>
+                    </>
+                  )}
+                </button>
+                {/* Tooltip when disabled */}
+                {!hasSyncedData && (
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                    Sync your data first to generate a report
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                  </div>
                 )}
-              </button>
+              </div>
             </div>
           </div>
         )}
