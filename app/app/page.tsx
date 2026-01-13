@@ -479,7 +479,7 @@ export default function AppPage() {
                 href="https://cloud.ouraring.com/account" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-xs text-blue-600 hover:text-blue-700 underline"
+                className="text-xs text-gray-600 hover:text-gray-900 underline"
               >
                 Manage your Oura account settings →
               </a>
@@ -493,15 +493,14 @@ export default function AppPage() {
             <h2 className="text-lg font-bold text-gray-900 mb-2">Actions</h2>
             {/* Workflow guidance */}
             <div className="flex items-center gap-2 mb-4 text-xs text-gray-500">
-              <span className={`inline-flex items-center gap-1 ${hasSyncedData ? 'text-green-600' : 'text-gray-700 font-medium'}`}>
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-xs ${hasSyncedData ? 'bg-green-500' : 'bg-gray-900'}`}>1</span>
+              <span className={`inline-flex items-center gap-1.5 ${hasSyncedData ? 'text-gray-500' : 'text-gray-900 font-medium'}`}>
+                <span className={`w-5 h-5 flex items-center justify-center text-xs border ${hasSyncedData ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-900 border-gray-900'}`}>1</span>
                 Sync
+                {hasSyncedData && <span className="text-gray-400">✓</span>}
               </span>
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-              <span className={`inline-flex items-center gap-1 ${hasSyncedData ? 'text-gray-700 font-medium' : 'text-gray-400'}`}>
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-white text-xs ${hasSyncedData ? 'bg-blue-600' : 'bg-gray-300'}`}>2</span>
+              <span className="text-gray-300">→</span>
+              <span className={`inline-flex items-center gap-1.5 ${hasSyncedData ? 'text-gray-900 font-medium' : 'text-gray-400'}`}>
+                <span className={`w-5 h-5 flex items-center justify-center text-xs border ${hasSyncedData ? 'bg-white text-gray-900 border-gray-900' : 'bg-white text-gray-300 border-gray-300'}`}>2</span>
                 Generate Report
               </span>
             </div>
@@ -534,7 +533,7 @@ export default function AppPage() {
                   disabled={generating || !hasSyncedData}
                   className={`w-full px-6 py-3 font-medium transition-colors flex items-center justify-center gap-2 ${
                     hasSyncedData 
-                      ? 'bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50' 
+                      ? 'bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50' 
                       : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }`}
                 >
@@ -557,7 +556,7 @@ export default function AppPage() {
                 </button>
                 {/* Tooltip when disabled */}
                 {!hasSyncedData && (
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                     Sync your data first to generate a report
                     <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
                   </div>
@@ -649,7 +648,7 @@ export default function AppPage() {
             }}
           >
             <div 
-              className="bg-white rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto"
+              className="bg-white border-2 border-gray-400 max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
@@ -692,7 +691,7 @@ export default function AppPage() {
         {/* Oura Connection Explanation Modal */}
         {showConnectExplanation && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg max-w-md w-full p-6">
+            <div className="bg-white border-2 border-gray-400 max-w-md w-full p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
                 Connect Your Oura Account
               </h3>

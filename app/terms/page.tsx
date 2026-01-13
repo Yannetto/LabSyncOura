@@ -3,9 +3,9 @@ import Link from 'next/link'
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-white">
-      <header className="border-b border-gray-200">
+      <header className="border-b border-gray-300">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <Link href="/" className="text-blue-600 hover:text-blue-700">
+          <Link href="/" className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wide">
             ← Back to home
           </Link>
         </div>

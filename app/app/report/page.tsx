@@ -284,18 +284,16 @@ export default function ReportPage() {
   if (error && !summary && !loading) {
     const isNoDataError = error.toLowerCase().includes('sync') || error.toLowerCase().includes('no data')
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center max-w-md px-6">
-          <div className={`w-16 h-16 mx-auto mb-6 rounded-full flex items-center justify-center ${isNoDataError ? 'bg-yellow-100' : 'bg-red-100'}`}>
-            {isNoDataError ? (
-              <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 mx-auto mb-6 border-2 border-gray-400 flex items-center justify-center">
+            <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isNoDataError ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            ) : (
-              <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              ) : (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            )}
+              )}
+            </svg>
           </div>
           <h2 className="text-xl font-bold text-gray-900 mb-2">
             {isNoDataError ? 'No Data Available' : 'Unable to Load Report'}
@@ -320,10 +318,10 @@ export default function ReportPage() {
   // Show message if no summary and not loading (shouldn't happen, but handle gracefully)
   if (!summary && !loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center max-w-md px-6">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-yellow-100 flex items-center justify-center">
-            <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 mx-auto mb-6 border-2 border-gray-400 flex items-center justify-center">
+            <svg className="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
           </div>
@@ -373,12 +371,12 @@ export default function ReportPage() {
     <div className="min-h-screen bg-white print:bg-white">
       {/* Success/Error Messages */}
       {successMessage && (
-        <div className="sticky top-0 z-50 bg-green-50 border-b border-green-200 print:hidden p-4">
+        <div className="sticky top-0 z-50 bg-gray-100 border-b border-gray-300 print:hidden p-4">
           <div className="max-w-4xl mx-auto flex items-center justify-between">
-            <p className="text-green-800 font-medium">{successMessage}</p>
+            <p className="text-gray-800 font-medium">{successMessage}</p>
             <button
               onClick={() => setSuccessMessage(null)}
-              className="text-green-600 hover:text-green-800 font-bold text-lg leading-none"
+              className="text-gray-600 hover:text-gray-900 font-bold text-lg leading-none"
               aria-label="Dismiss"
             >
               ×
@@ -618,7 +616,7 @@ export default function ReportPage() {
             {/* Save Report Modal */}
             {showSaveModal && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-lg max-w-md w-full p-6">
+                <div className="bg-white border-2 border-gray-400 max-w-md w-full p-6">
                   <h3 className="text-xl font-semibold text-gray-900 mb-4">
                     Save Report
                   </h3>
@@ -631,7 +629,7 @@ export default function ReportPage() {
                       value={reportTitle}
                       onChange={(e) => setReportTitle(e.target.value)}
                       placeholder={`Report ${metadata ? new Date(metadata.reportDate).toLocaleDateString() : ''}`}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-900"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') {

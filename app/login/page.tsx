@@ -120,8 +120,8 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
+      <div className="max-w-md w-full border-2 border-gray-400 p-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
           {emailSent ? 'Check your email' : 'Sign in'}
         </h1>
@@ -134,14 +134,14 @@ function LoginForm() {
         {emailSent ? (
           <div className="space-y-4">
             {/* Success Message */}
-            <div className="text-sm text-green-700 bg-green-50 border border-green-200 p-4 rounded-md">
+            <div className="text-sm text-gray-700 bg-gray-50 border border-gray-300 p-4">
               <div className="flex items-start gap-3">
-                <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 text-gray-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
                 <div>
-                  <p className="font-medium mb-1">Magic link sent!</p>
-                  <p className="text-green-600">Check your email at <strong>{email}</strong> and click the link to sign in.</p>
+                  <p className="font-medium mb-1">Magic link sent</p>
+                  <p className="text-gray-600">Check your email at <strong>{email}</strong> and click the link to sign in.</p>
                 </div>
               </div>
             </div>
@@ -157,11 +157,11 @@ function LoginForm() {
             </div>
 
             {/* Resend Options */}
-            <div className="pt-4 border-t border-gray-200 space-y-3">
+            <div className="pt-4 border-t border-gray-300 space-y-3">
               <button
                 onClick={handleResend}
                 disabled={resendCooldown > 0 || loading}
-                className="w-full text-sm text-blue-600 hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
+                className="w-full text-sm text-gray-700 hover:text-gray-900 disabled:text-gray-400 disabled:cursor-not-allowed font-medium"
               >
                 {resendCooldown > 0 
                   ? `Resend link (${resendCooldown}s)` 
@@ -180,7 +180,7 @@ function LoginForm() {
             </div>
 
             {/* Troubleshooting */}
-            <div className="text-xs text-gray-500 pt-2 border-t border-gray-100">
+            <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">
               <p className="font-medium mb-1">Didn't receive the email?</p>
               <ul className="list-disc list-inside space-y-0.5 ml-2">
                 <li>Check your spam/junk folder</li>
@@ -208,9 +208,9 @@ function LoginForm() {
                 }}
                 onBlur={() => validateEmail(email)}
                 required
-                className={`w-full px-3 py-2.5 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                className={`w-full px-3 py-2.5 border focus:outline-none focus:ring-1 focus:ring-gray-900 transition-colors ${
                   emailError 
-                    ? 'border-red-300 focus:border-red-500 focus:ring-red-500' 
+                    ? 'border-red-400' 
                     : 'border-gray-300'
                 }`}
                 placeholder="you@example.com"
@@ -222,7 +222,7 @@ function LoginForm() {
 
             {/* Error Message */}
             {error && (
-              <div className="text-sm text-red-700 bg-red-50 border border-red-200 p-3 rounded-md">
+              <div className="text-sm text-gray-800 bg-gray-50 border border-gray-300 p-3">
                 {error}
               </div>
             )}
@@ -231,7 +231,7 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading || !!emailError}
-              className="w-full bg-blue-600 text-white py-2.5 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors flex items-center justify-center gap-2"
+              className="w-full bg-gray-900 text-white py-2.5 px-4 hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -272,7 +272,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-gray-600">Loading...</div>
       </div>
     }>

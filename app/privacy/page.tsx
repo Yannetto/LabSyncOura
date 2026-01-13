@@ -3,9 +3,9 @@ import Link from 'next/link'
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white">
-      <header className="border-b border-gray-200">
+      <header className="border-b border-gray-300">
         <div className="max-w-4xl mx-auto px-4 py-4">
-          <Link href="/" className="text-blue-600 hover:text-blue-700">
+          <Link href="/" className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wide">
             ← Back to home
           </Link>
         </div>
@@ -101,10 +101,10 @@ export default function PrivacyPage() {
               If you have questions about this privacy policy or data handling, please contact us at:
             </p>
             <p className="text-gray-700 mt-2">
-              <strong>Email:</strong> <a href="mailto:info@weareablereport.com" className="text-blue-600 hover:text-blue-700">info@weareablereport.com</a>
+              <strong>Email:</strong> <a href="mailto:info@weareablereport.com" className="text-gray-700 hover:text-gray-900 underline">info@weareablereport.com</a>
             </p>
             <p className="text-gray-700 mt-2">
-              <strong>Website:</strong> <a href="https://weareablereport.com" className="text-blue-600 hover:text-blue-700">https://weareablereport.com</a>
+              <strong>Website:</strong> <a href="https://weareablereport.com" className="text-gray-700 hover:text-gray-900 underline">https://weareablereport.com</a>
             </p>
           </section>
         </div>
