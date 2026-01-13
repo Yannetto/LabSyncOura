@@ -54,10 +54,19 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
       console.log(`[Sync] Force re-sync enabled: fetching last ${Math.max(days, 90)} days`)
     }
   } else {
-    // Incremental sync: start from day after last synced date
-    startDate = new Date(latestData.day)
-    startDate.setHours(0, 0, 0, 0)
-    startDate.setDate(startDate.getDate() + 1)
+    // Incremental sync: ALWAYS go back at least 10 days to ensure fresh data for reports
+    // This handles cases where Oura data has a lag or user hasn't synced in a while
+    const minStartDate = new Date()
+    minStartDate.setHours(0, 0, 0, 0)
+    minStartDate.setDate(minStartDate.getDate() - 10) // Always fetch at least last 10 days
+    
+    const incrementalStart = new Date(latestData.day)
+    incrementalStart.setHours(0, 0, 0, 0)
+    incrementalStart.setDate(incrementalStart.getDate() + 1)
+    
+    // Use whichever is earlier: 10 days ago or day after last sync
+    startDate = incrementalStart < minStartDate ? incrementalStart : minStartDate
+    console.log(`[Sync] Incremental sync: fetching from ${startDate.toISOString().split('T')[0]} (ensuring last 10 days)`)
   }
 
   // Ensure we don't go back too far (Oura typically has ~1 year of data)
