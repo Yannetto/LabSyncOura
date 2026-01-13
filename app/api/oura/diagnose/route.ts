@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       .select('day, metric_key, value')
       .eq('user_id', user.id)
       .order('day', { ascending: false })
-      .limit(1000)
+      .limit(5000)
 
     if (fetchError) {
       return NextResponse.json({ error: fetchError.message }, { status: 500 })
@@ -27,61 +27,84 @@ export async function GET(request: NextRequest) {
 
     // Group by metric_key
     const metricKeyCounts: { [key: string]: number } = {}
-    const metricKeySamples: { [key: string]: { day: string; value: string } } = {}
+    const metricKeySamples: { [key: string]: { day: string; value: string }[] } = {}
+    const uniqueDays = new Set<string>()
     
     allData?.forEach((record: any) => {
       const key = record.metric_key
       metricKeyCounts[key] = (metricKeyCounts[key] || 0) + 1
+      uniqueDays.add(record.day)
       if (!metricKeySamples[key]) {
-        metricKeySamples[key] = { day: record.day, value: record.value }
+        metricKeySamples[key] = []
+      }
+      if (metricKeySamples[key].length < 3) {
+        metricKeySamples[key].push({ day: record.day, value: record.value })
       }
     })
 
-    // Check for required keys
-    const requiredKeys = [
-      'sleep_duration', 'sleep_efficiency', 'sleep_latency', 
-      'rem_sleep_percentage', 'deep_sleep_percentage',
-      'resting_heart_rate', 'hrv_rmssd',
-      'steps', 'high_stress', 'active_calories'
-    ]
-    
-    const missingKeys = requiredKeys.filter(key => !metricKeyCounts[key])
-    const foundKeys = requiredKeys.filter(key => metricKeyCounts[key])
+    // Keys needed for the report (matching the expected output format)
+    const reportKeys = {
+      sleep: [
+        'sleep_time_in_bed_seconds',     // Time in Bed
+        'sleep_total_sleep_duration_seconds', // Sleep Duration
+        'sleep_duration',                // Sleep Duration (alias)
+        'sleep_deep_pct',                // Deep Sleep %
+        'deep_sleep_percentage',         // Deep Sleep % (alias)
+        'sleep_deep_sleep_duration_seconds', // Deep Sleep Duration
+        'sleep_light_pct',               // Light Sleep %
+        'light_sleep_percentage',        // Light Sleep % (alias)
+        'sleep_light_sleep_duration_seconds', // Light Sleep Duration
+        'sleep_rem_pct',                 // REM Sleep %
+        'rem_sleep_percentage',          // REM Sleep % (alias)
+        'sleep_rem_sleep_duration_seconds', // REM Sleep Duration
+      ],
+      cardiovascular: [
+        'resting_heart_rate',            // Resting Heart Rate (from sleep.lowest_heart_rate)
+        'sleep_lowest_heart_rate',       // Lowest Night-time Heart Rate
+        'sleep_average_hrv',             // Night-time HRV
+        'hrv_rmssd',                      // HRV (alias)
+        'spo2_percentage_average',       // Oxygen Saturation (SpO2)
+        'breathing_disturbance_index',   // Breathing Disturbance Index
+        'temperature_deviation',         // Temperature Deviation
+        'readiness_temperature_deviation', // Temperature Deviation (alias)
+      ],
+      activity: [
+        'steps',                         // Steps
+        'sedentary_time_seconds',        // Sedentary Time
+        'sedentary_time',                // Sedentary Time (alias)
+      ],
+    }
 
-    // Find similar keys (might be typos or different naming)
+    // Check which keys exist
+    const checkKeys = (keys: string[]) => keys.map(key => ({
+      key,
+      found: !!metricKeyCounts[key],
+      count: metricKeyCounts[key] || 0,
+      samples: metricKeySamples[key] || []
+    }))
+
     const allKeys = Object.keys(metricKeyCounts).sort()
-    const sleepRelated = allKeys.filter(k => k.toLowerCase().includes('sleep'))
-    const hrRelated = allKeys.filter(k => 
-      k.toLowerCase().includes('heart') || 
-      k.toLowerCase().includes('hrv') || 
-      k.toLowerCase().includes('hr') ||
-      k.toLowerCase().includes('resting')
-    )
 
     return NextResponse.json({
       summary: {
         total_records: allData?.length || 0,
+        unique_days: uniqueDays.size,
         unique_metric_keys: allKeys.length,
-        required_keys_found: foundKeys.length,
-        required_keys_missing: missingKeys.length,
+        date_range: {
+          earliest: [...uniqueDays].sort()[0],
+          latest: [...uniqueDays].sort().pop(),
+        }
       },
-      required_keys: {
-        found: foundKeys.map(key => ({
-          key,
-          count: metricKeyCounts[key],
-          sample: metricKeySamples[key]
-        })),
-        missing: missingKeys
+      report_keys: {
+        sleep: checkKeys(reportKeys.sleep),
+        cardiovascular: checkKeys(reportKeys.cardiovascular),
+        activity: checkKeys(reportKeys.activity),
       },
       all_metric_keys: allKeys.map(key => ({
         key,
         count: metricKeyCounts[key],
-        sample: metricKeySamples[key]
+        samples: metricKeySamples[key]
       })),
-      related_keys: {
-        sleep_related: sleepRelated,
-        heart_hrv_related: hrRelated
-      }
     })
   } catch (error: any) {
     console.error('Diagnose error:', error)

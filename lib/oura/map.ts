@@ -248,16 +248,23 @@ export function mapSleepRecord(record: any): MappedData | null {
   }
 
   // Store heart rate and HRV metrics from sleep endpoint
+  // These are ACTUAL values (BPM and ms), not scores
   if (record.average_heart_rate != null) {
     metrics.push({ metric_key: 'sleep_average_heart_rate', value: String(Math.round(record.average_heart_rate)) })
   }
 
   if (record.lowest_heart_rate != null) {
-    metrics.push({ metric_key: 'sleep_lowest_heart_rate', value: String(Math.round(record.lowest_heart_rate)) })
+    const lowestHR = Math.round(record.lowest_heart_rate)
+    metrics.push({ metric_key: 'sleep_lowest_heart_rate', value: String(lowestHR) })
+    // Also store as resting_heart_rate - lowest night-time HR is the best proxy for true resting HR
+    metrics.push({ metric_key: 'resting_heart_rate', value: String(lowestHR) })
   }
 
   if (record.average_hrv != null) {
-    metrics.push({ metric_key: 'sleep_average_hrv', value: String(Math.round(record.average_hrv)) })
+    const avgHRV = Math.round(record.average_hrv)
+    metrics.push({ metric_key: 'sleep_average_hrv', value: String(avgHRV) })
+    // Also store as hrv_rmssd for backward compatibility - this is actual ms value
+    metrics.push({ metric_key: 'hrv_rmssd', value: String(avgHRV) })
   }
 
   if (DEBUG) {
@@ -332,27 +339,25 @@ export function mapDailyReadiness(record: any): MappedData | null {
     }
   }
 
-  // NOTE: resting_heart_rate and hrv_rmssd from contributors are SCORES, not actual values
-  // Real HRV and HR values should come from other endpoints if available
-  // For backward compatibility, we'll try to extract them but they're likely scores
+  // NOTE: resting_heart_rate and hrv_rmssd from contributors are SCORES (0-100), NOT actual values
+  // DO NOT store these as resting_heart_rate or hrv_rmssd - they will be confused with actual BPM/ms values
+  // Real HR and HRV values come from /sleep endpoint (lowest_heart_rate, average_hrv) and /heartrate endpoint
+  // Only store them as clearly labeled contributor scores
   const restingHRScore = contributors.resting_heart_rate
   if (restingHRScore != null) {
     const score = validateScore(restingHRScore, 'readiness_resting_heart_rate_contrib_score')
     if (score != null) {
-      // This is a score, not actual BPM - but store as both for compatibility
+      // Only store as contributor score - NOT as resting_heart_rate (which should be actual BPM)
       metrics.push({ metric_key: 'readiness_resting_heart_rate_contrib_score', value: String(score.toFixed(1)) })
-      // Backward compatibility - but note this might be a score, not actual BPM
-      metrics.push({ metric_key: 'resting_heart_rate', value: String(Math.round(score)) })
     }
   }
 
-  const hrvScore = contributors.hrv_rmssd || contributors.rmssd
+  const hrvScore = contributors.hrv_balance
   if (hrvScore != null) {
-    const score = validateScore(hrvScore, 'readiness_hrv_contrib_score')
+    const score = validateScore(hrvScore, 'readiness_hrv_balance_contrib_score')
     if (score != null) {
-      metrics.push({ metric_key: 'readiness_hrv_contrib_score', value: String(score.toFixed(1)) })
-      // Backward compatibility - but note this might be a score, not actual ms
-      metrics.push({ metric_key: 'hrv_rmssd', value: String(Math.round(score)) })
+      // Only store as contributor score - NOT as hrv_rmssd (which should be actual ms)
+      metrics.push({ metric_key: 'readiness_hrv_balance_contrib_score', value: String(score.toFixed(1)) })
     }
   }
 

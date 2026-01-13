@@ -129,3 +129,8 @@ export async function fetchSleepData(
   const data = await response.json()
   return data.data || []
 }
+
+// Note: /heartrate endpoint is intentionally NOT used because:
+// 1. It returns individual readings every 5 minutes (~26,000+ records for 90 days)
+// 2. This causes slow syncs and timeouts
+// 3. The /sleep endpoint already provides lowest_heart_rate and average_hrv which are better metrics

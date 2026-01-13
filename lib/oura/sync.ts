@@ -1,6 +1,6 @@
 import { createServiceClient } from '@/lib/supabase/service'
 import { getValidAccessToken } from './tokens'
-import { fetchOuraDailyData, fetchSleepData, fetchHeartRateData } from './client'
+import { fetchOuraDailyData, fetchSleepData } from './client'
 import { mapDailySleep, mapSleepRecord, mapDailyReadiness, mapDailyActivity, mapDailyStress, mapDailySpo2 } from './map'
 
 const COLLECTIONS = ['daily_sleep', 'daily_readiness', 'daily_activity', 'daily_stress', 'daily_spo2']
@@ -71,10 +71,10 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
   const startDateStr = startDate.toISOString().split('T')[0]
   const endDateStr = endDate.toISOString().split('T')[0]
 
-  // Validate date range: start must be <= end (compare as strings to avoid timezone issues)
+  // Validate date range: start must be <= end
   if (startDateStr > endDateStr) {
     console.log(`[Sync] Start date (${startDateStr}) is after end date (${endDateStr}). No new data to sync.`)
-    return 0 // No days to sync
+    return 0
   }
 
   console.log(`[Sync] Fetching data from ${startDateStr} to ${endDateStr}`)
@@ -90,8 +90,8 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
     return Array.from(seen.entries()).map(([metric_key, value]) => ({ metric_key, value }))
   }
 
-  // PARALLEL FETCH: Fetch all collections simultaneously for speed
-  console.log(`[Sync] Starting parallel fetch for ${COLLECTIONS.length} collections + sleep + heart_rate`)
+  // PARALLEL FETCH: Fetch all daily collections + sleep endpoint simultaneously
+  console.log(`[Sync] Starting parallel fetch for ${COLLECTIONS.length} daily collections + sleep`)
   const fetchStartTime = Date.now()
 
   const collectionPromises = COLLECTIONS.map(async (collection): Promise<CollectionResult> => {
@@ -104,198 +104,66 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
     }
   })
 
-  // Also fetch sleep and heart_rate data in parallel
+  // Fetch sleep data (provides actual durations, HR, HRV) in parallel
   const sleepPromise = fetchSleepData(accessToken, startDateStr, endDateStr)
     .then(data => ({ collection: 'sleep', data }))
     .catch(error => ({ collection: 'sleep', data: [], error: error.message }))
 
-  const heartRatePromise = fetchHeartRateData(accessToken, startDateStr, endDateStr)
-    .then(data => ({ collection: 'heart_rate', data }))
-    .catch(error => ({ collection: 'heart_rate', data: [], error: error.message }))
-
   // Wait for all fetches to complete in parallel
-  const allResults = await Promise.all([...collectionPromises, sleepPromise, heartRatePromise])
+  const allResults = await Promise.all([...collectionPromises, sleepPromise])
   
   const fetchDuration = Date.now() - fetchStartTime
   console.log(`[Sync] Parallel fetch completed in ${fetchDuration}ms`)
 
-  // Process each collection's results
+  // Collect all metrics to batch insert at the end
+  const allMetricRecords: Array<{ user_id: string; day: string; metric_key: string; value: string }> = []
+
+  // Process each daily collection's results
   for (const result of allResults) {
     const { collection, data, error } = result as CollectionResult
 
-    // Skip sleep and heart_rate - they're processed separately below
-    if (collection === 'sleep' || collection === 'heart_rate') continue
+    // Skip sleep - processed separately below
+    if (collection === 'sleep') continue
 
     if (error) {
       console.error(`[Sync] Skipping ${collection} due to fetch error: ${error}`)
-      if (error.includes('403') || error.includes('401')) {
-        console.error(`[Sync] Possible scope/permission issue for ${collection}. Check OAuth scopes.`)
-      }
       continue
     }
 
-    console.log(`[Sync] Fetched ${data.length} items from ${collection}`)
+    console.log(`[Sync] Processing ${data.length} items from ${collection}`)
     
-    if (data.length === 0) {
-      console.warn(`[Sync] No data returned for ${collection} (${startDateStr} to ${endDateStr})`)
-      continue
-    }
+    if (data.length === 0) continue
 
-    // Log actual API response structure (first record only)
-    if (data.length > 0) {
+    // Log sample for debugging
+    if (DEBUG && data.length > 0) {
       const sample = data[0]
-      console.log(`[Sync] ${collection} - Sample keys:`, Object.keys(sample))
-      if (sample.contributors) {
-        console.log(`[Sync] ${collection} - contributors keys:`, Object.keys(sample.contributors))
-      }
+      console.log(`[Sync] ${collection} sample:`, JSON.stringify(sample, null, 2).substring(0, 500))
     }
 
     const mapper = COLLECTION_MAPPERS[collection]
-    if (!mapper) {
-      console.error(`[Sync] No mapper found for collection: ${collection}`)
-      continue
-    }
-
-    // Batch all metrics by day for bulk insert
-    const metricsByDay = new Map<string, Array<{ metric_key: string; value: string }>>()
-    let itemsProcessed = 0
+    if (!mapper) continue
 
     for (const item of data) {
-      // Use the mapping layer to extract metrics
       const mapped = mapper(item)
-      
-      if (!mapped) {
-        continue
-      }
+      if (!mapped) continue
 
       const { day, metrics } = mapped
       syncedDays.add(day)
-      itemsProcessed++
 
-      // Log what metrics were extracted (first item only)
-      if (itemsProcessed === 1 && metrics.length > 0) {
-        console.log(`[Sync] ${collection} - Extracted metrics:`, metrics.map(m => m.metric_key))
-      } else if (itemsProcessed === 1 && metrics.length === 0) {
-        console.warn(`[Sync] ${collection} - No metrics extracted from first record`)
-      }
-
-      // Accumulate metrics by day for batch processing
-      if (!metricsByDay.has(day)) {
-        metricsByDay.set(day, [])
-      }
-      const existingMetrics = metricsByDay.get(day)!
-      metricsByDay.set(day, [...existingMetrics, ...metrics])
-    }
-
-    // Batch store all metrics for all days in this collection
-    let metricsStored = 0
-    let metricsFailed = 0
-
-    // Process in batches of 10 days to avoid overwhelming the database
-    const days = Array.from(metricsByDay.keys())
-    const BATCH_SIZE = 10
-    
-    for (let i = 0; i < days.length; i += BATCH_SIZE) {
-      const dayBatch = days.slice(i, i + BATCH_SIZE)
-      const batchRecords: Array<{ user_id: string; day: string; metric_key: string; value: string }> = []
-      
-      for (const day of dayBatch) {
-        const dayFormatted = day.includes('T') ? day.split('T')[0] : day
-        const dayMetricsArray = metricsByDay.get(day)
-        
-        if (!dayMetricsArray || dayMetricsArray.length === 0) {
-          console.warn(`[Sync] [${collection}] No metrics found for day ${day}, skipping`)
-          continue
-        }
-        
-        const dayMetrics = deduplicateMetrics(dayMetricsArray)
-        
-        for (const metric of dayMetrics) {
-          batchRecords.push({
-            user_id: userId,
-            day: dayFormatted,
-            metric_key: metric.metric_key,
-            value: metric.value,
-          })
-        }
-      }
-
-      if (batchRecords.length > 0) {
-        console.log(`[Sync] [${collection}] Batch upserting ${batchRecords.length} metrics for ${dayBatch.length} days`)
-        const { error: upsertError, data: upsertData } = await supabase
-          .from('oura_daily')
-          .upsert(batchRecords, {
-            onConflict: 'user_id,day,metric_key',
-          })
-          .select()
-        
-        if (upsertError) {
-          console.error(`[Sync] [${collection}] Failed to batch upsert ${batchRecords.length} metrics:`, upsertError)
-          metricsFailed += batchRecords.length
-        } else {
-          metricsStored += batchRecords.length
-          if (DEBUG) {
-            console.log(`[Sync] [${collection}] Successfully stored batch: ${upsertData?.length || 0} records confirmed`)
-          }
-        }
-      }
-    }
-    
-    console.log(`[Sync] ${collection}: ${itemsProcessed} items processed, ${metricsStored} metrics stored, ${metricsFailed} failed`)
-  }
-
-  // Process heart rate data (fetched in parallel above)
-  const heartRateResult = allResults.find(r => (r as CollectionResult).collection === 'heart_rate') as CollectionResult
-  if (heartRateResult && heartRateResult.data.length > 0) {
-    console.log(`[Sync] Processing ${heartRateResult.data.length} heart rate records`)
-    
-    // Group heart rate data by day and calculate daily resting heart rate
-    const hrByDay = new Map<string, number[]>()
-    for (const record of heartRateResult.data) {
-      const day = normalizeDate(record.day || record.timestamp?.split('T')[0])
-      if (!day) continue
-      
-      // Use lowest heart rate during rest periods as resting heart rate
-      if (record.bpm != null && record.source === 'rest') {
-        if (!hrByDay.has(day)) {
-          hrByDay.set(day, [])
-        }
-        hrByDay.get(day)!.push(record.bpm)
-      }
-    }
-
-    // Store average resting heart rate per day
-    const hrBatchRecords: Array<{ user_id: string; day: string; metric_key: string; value: string }> = []
-    for (const [day, bpmValues] of hrByDay.entries()) {
-      if (bpmValues.length > 0) {
-        // Use the lowest value as resting heart rate (more accurate)
-        const restingHR = Math.min(...bpmValues)
-        hrBatchRecords.push({
+      for (const metric of metrics) {
+        allMetricRecords.push({
           user_id: userId,
           day,
-          metric_key: 'resting_heart_rate',
-          value: String(Math.round(restingHR)),
+          metric_key: metric.metric_key,
+          value: metric.value,
         })
-        syncedDays.add(day)
       }
     }
-
-    if (hrBatchRecords.length > 0) {
-      const { error: hrError } = await supabase
-        .from('oura_daily')
-        .upsert(hrBatchRecords, { onConflict: 'user_id,day,metric_key' })
-      
-      if (hrError) {
-        console.error(`[Sync] Failed to store heart rate data:`, hrError)
-      } else {
-        console.log(`[Sync] Stored ${hrBatchRecords.length} resting heart rate values`)
-      }
-    }
-  } else if (heartRateResult?.error) {
-    console.warn(`[Sync] Heart rate fetch failed: ${heartRateResult.error}`)
+    
+    console.log(`[Sync] ${collection}: processed ${data.length} items`)
   }
 
-  // Process sleep records (already fetched in parallel above)
+  // Process sleep data - this is the key source for actual durations, HR, HRV
   const sleepResult = allResults.find(r => (r as CollectionResult).collection === 'sleep') as CollectionResult
   const sleepData = sleepResult?.data || []
   
@@ -305,133 +173,91 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
   
   console.log(`[Sync] Processing ${sleepData.length} sleep records`)
 
-    if (sleepData.length > 0) {
-      // Group sleep records by day
-      const sleepByDay = new Map<string, any[]>()
-      for (const record of sleepData) {
-        const day = normalizeDate(record.day || record.date || record.timestamp)
-        if (!day) continue
-        
-        if (!sleepByDay.has(day)) {
-          sleepByDay.set(day, [])
-        }
-        sleepByDay.get(day)!.push(record)
-      }
-
-      let sleepRecordsProcessed = 0
+  if (sleepData.length > 0) {
+    // Group sleep records by day
+    const sleepByDay = new Map<string, any[]>()
+    for (const record of sleepData) {
+      const day = normalizeDate(record.day || record.date || record.timestamp)
+      if (!day) continue
       
-      // Batch all sleep metrics by day for bulk insert
-      const sleepMetricsByDay = new Map<string, Array<{ metric_key: string; value: string }>>()
-
-      // Process one sleep record per day (prefer main sleep or largest duration)
-      for (const [day, records] of sleepByDay.entries()) {
-        syncedDays.add(day)
-        
-        // If multiple records, prefer:
-        // 1. Record with main: true
-        // 2. Record with largest total_sleep_duration
-        let selectedRecord = records[0]
-        if (records.length > 1) {
-          const mainSleep = records.find((r: any) => r.main === true)
-          if (mainSleep) {
-            selectedRecord = mainSleep
-          } else {
-            // Find record with largest total_sleep_duration
-            selectedRecord = records.reduce((max: any, r: any) => {
-              const maxDuration = max.total_sleep_duration || 0
-              const rDuration = r.total_sleep_duration || 0
-              return rDuration > maxDuration ? r : max
-            }, records[0])
-          }
-          
-          if (DEBUG && records.length > 1) {
-            console.log(`[Sync] [sleep] Multiple records for ${day}, selected one with duration ${selectedRecord.total_sleep_duration}s`)
-          }
-        }
-
-        const mapped = mapSleepRecord(selectedRecord)
-        if (!mapped) {
-          continue
-        }
-
-        sleepRecordsProcessed++
-
-        // Log what metrics were extracted (first item only)
-        if (sleepRecordsProcessed === 1 && mapped.metrics.length > 0) {
-          console.log(`[Sync] sleep - Extracted metrics:`, mapped.metrics.map(m => m.metric_key))
-        }
-
-        // Accumulate metrics by day for batch processing
-        if (!sleepMetricsByDay.has(mapped.day)) {
-          sleepMetricsByDay.set(mapped.day, [])
-        }
-        const existingMetrics = sleepMetricsByDay.get(mapped.day)!
-        sleepMetricsByDay.set(mapped.day, [...existingMetrics, ...mapped.metrics])
+      if (!sleepByDay.has(day)) {
+        sleepByDay.set(day, [])
       }
-
-      // Batch store all sleep metrics
-      let sleepMetricsStored = 0
-      let sleepMetricsFailed = 0
-
-      // Process in batches of 10 days
-      const sleepDays = Array.from(sleepMetricsByDay.keys())
-      const BATCH_SIZE = 10
-      
-      for (let i = 0; i < sleepDays.length; i += BATCH_SIZE) {
-        const dayBatch = sleepDays.slice(i, i + BATCH_SIZE)
-        const batchRecords: Array<{ user_id: string; day: string; metric_key: string; value: string }> = []
-        
-        for (const day of dayBatch) {
-          const dayFormatted = day.includes('T') ? day.split('T')[0] : day
-          const dayMetricsArray = sleepMetricsByDay.get(day)
-          
-          if (!dayMetricsArray || dayMetricsArray.length === 0) {
-            console.warn(`[Sync] [sleep] No metrics found for day ${day}, skipping`)
-            continue
-          }
-          
-          const dayMetrics = deduplicateMetrics(dayMetricsArray)
-          
-          for (const metric of dayMetrics) {
-            batchRecords.push({
-              user_id: userId,
-              day: dayFormatted,
-              metric_key: metric.metric_key,
-              value: metric.value,
-            })
-          }
-        }
-
-        if (batchRecords.length > 0) {
-          console.log(`[Sync] [sleep] Batch upserting ${batchRecords.length} metrics for ${dayBatch.length} days`)
-          const { error: upsertError, data: upsertData } = await supabase
-            .from('oura_daily')
-            .upsert(batchRecords, {
-              onConflict: 'user_id,day,metric_key',
-            })
-            .select()
-          
-          if (upsertError) {
-            console.error(`[Sync] [sleep] Failed to batch upsert ${batchRecords.length} metrics:`, upsertError)
-            sleepMetricsFailed += batchRecords.length
-          } else {
-            sleepMetricsStored += batchRecords.length
-            if (DEBUG) {
-              console.log(`[Sync] [sleep] Successfully stored batch: ${upsertData?.length || 0} records confirmed`)
-            }
-          }
-        }
-      }
-
-      console.log(`[Sync] sleep: ${sleepRecordsProcessed} records processed, ${sleepMetricsStored} metrics stored, ${sleepMetricsFailed} failed`)
-    } else {
-      console.warn(`[Sync] No sleep records returned (${startDateStr} to ${endDateStr})`)
+      sleepByDay.get(day)!.push(record)
     }
 
+    // Process one sleep record per day (prefer main sleep or largest duration)
+    for (const [day, records] of sleepByDay.entries()) {
+      syncedDays.add(day)
+      
+      // Select best record: main sleep first, then largest duration
+      let selectedRecord = records[0]
+      if (records.length > 1) {
+        const mainSleep = records.find((r: any) => r.main === true)
+        if (mainSleep) {
+          selectedRecord = mainSleep
+        } else {
+          selectedRecord = records.reduce((max: any, r: any) => {
+            return (r.total_sleep_duration || 0) > (max.total_sleep_duration || 0) ? r : max
+          }, records[0])
+        }
+      }
+
+      const mapped = mapSleepRecord(selectedRecord)
+      if (!mapped) continue
+
+      for (const metric of mapped.metrics) {
+        allMetricRecords.push({
+          user_id: userId,
+          day: mapped.day,
+          metric_key: metric.metric_key,
+          value: metric.value,
+        })
+      }
+    }
+    
+    console.log(`[Sync] Sleep: processed ${sleepByDay.size} days`)
+  }
+
+  // Deduplicate all records (in case of duplicates across endpoints)
+  const dedupedByDayMetric = new Map<string, { user_id: string; day: string; metric_key: string; value: string }>()
+  for (const record of allMetricRecords) {
+    const key = `${record.day}:${record.metric_key}`
+    dedupedByDayMetric.set(key, record) // Last write wins
+  }
+  const finalRecords = Array.from(dedupedByDayMetric.values())
+
+  console.log(`[Sync] Total metrics to store: ${finalRecords.length} (deduplicated from ${allMetricRecords.length})`)
+
+  // Batch upsert all records efficiently (no .select() needed)
+  if (finalRecords.length > 0) {
+    const BATCH_SIZE = 500 // Larger batches for efficiency
+    let totalStored = 0
+    let totalFailed = 0
+    
+    for (let i = 0; i < finalRecords.length; i += BATCH_SIZE) {
+      const batch = finalRecords.slice(i, i + BATCH_SIZE)
+      
+      const { error: upsertError } = await supabase
+        .from('oura_daily')
+        .upsert(batch, { onConflict: 'user_id,day,metric_key' })
+      
+      if (upsertError) {
+        console.error(`[Sync] Batch upsert failed:`, upsertError.message)
+        totalFailed += batch.length
+      } else {
+        totalStored += batch.length
+      }
+    }
+    
+    console.log(`[Sync] Database: ${totalStored} stored, ${totalFailed} failed`)
+  }
+
+  console.log(`[Sync] Complete: ${syncedDays.size} days synced`)
   return syncedDays.size
 }
 
-// Helper function to normalize date (same as in map.ts)
+// Helper function to normalize date
 function normalizeDate(dateStr: string | undefined): string | null {
   if (!dateStr) return null
   return dateStr.split('T')[0]
