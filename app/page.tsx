@@ -479,9 +479,10 @@ export default function Home() {
 
         {/* Footer */}
         <div className="border-t border-gray-300 pt-8 text-xs text-gray-600 leading-relaxed">
-          <p className="font-semibold text-gray-800 mb-2">Information only – not for diagnosis or treatment.</p>
-          <p>This service generates formatted reports from personal health tracking data and is not a substitute for professional medical advice, diagnosis, or treatment.</p>
-          <p className="mt-2 text-gray-500">Not affiliated with Oura Health.</p>
+          <p className="font-semibold text-gray-800 mb-2">Experimental Service – Use at Your Own Risk</p>
+          <p className="mb-2">This is an experimental service that generates formatted reports from personal health tracking data. The data and calculations may contain errors, inaccuracies, or omissions. Users are strongly advised to independently verify all information and should not rely solely on this service for any health-related decisions.</p>
+          <p className="mb-2">This service is for informational purposes only and is not intended to diagnose, treat, cure, or prevent any disease or medical condition. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of qualified healthcare providers with any questions regarding a medical condition.</p>
+          <p className="mt-2 text-gray-500">Not affiliated with, endorsed by, or sponsored by Oura Health.</p>
         </div>
       </main>
     </div>
