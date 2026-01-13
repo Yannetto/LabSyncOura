@@ -101,10 +101,10 @@ export default function PrivacyPage() {
               If you have questions about this privacy policy or data handling, please contact us at:
             </p>
             <p className="text-gray-700 mt-2">
-              <strong>Email:</strong> <a href="mailto:info@weareablereport.com" className="text-gray-700 hover:text-gray-900 underline">info@weareablereport.com</a>
+              <strong>Email:</strong> <a href="mailto:info@simplewearablereport.com" className="text-gray-700 hover:text-gray-900 underline">info@simplewearablereport.com</a>
             </p>
             <p className="text-gray-700 mt-2">
-              <strong>Website:</strong> <a href="https://weareablereport.com" className="text-gray-700 hover:text-gray-900 underline">https://weareablereport.com</a>
+              <strong>Website:</strong> <a href="https://simplewearablereport.com" className="text-gray-700 hover:text-gray-900 underline">https://simplewearablereport.com</a>
             </p>
           </section>
         </div>

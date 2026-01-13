@@ -1,6 +1,8 @@
-# Simple Lab-Style Results
+# Simple Wearable Report
 
-A Next.js web application that generates clinical lab-style reports from Oura ring data.
+A Next.js web application that generates clinical lab-style health reports from Oura ring data.
+
+**Production URL:** https://simplewearablereport.com
 
 ## Features
 
@@ -49,9 +51,9 @@ A Next.js web application that generates clinical lab-style reports from Oura ri
 
 1. Go to [Oura Cloud Developer Portal](https://cloud.ouraring.com/oauth/applications)
 2. Create a new OAuth application
-3. Set the redirect URI:
+3. Set the redirect URIs:
    - For local development: `http://localhost:3000/api/oura/callback`
-   - For production: `https://your-domain.vercel.app/api/oura/callback`
+   - For production: `https://simplewearablereport.com/api/oura/callback`
 4. Note your **Client ID** and **Client Secret**
 
 ### 5. Install Dependencies
@@ -111,12 +113,12 @@ git push -u origin main
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `OURA_CLIENT_ID`
    - `OURA_CLIENT_SECRET`
-   - `BASE_URL` (set to your Vercel domain, e.g., `https://your-app.vercel.app`)
+   - `BASE_URL` → `https://simplewearablereport.com`
 
 ### 3. Update Oura Redirect URI
 
 1. Go back to your Oura OAuth application settings
-2. Add the production redirect URI: `https://your-domain.vercel.app/api/oura/callback`
+2. Add the production redirect URI: `https://simplewearablereport.com/api/oura/callback`
 3. Save the changes
 
 ### 4. Deploy
