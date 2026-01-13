@@ -64,6 +64,45 @@ export default function PrivacyPage() {
           </section>
 
           <section>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">Cookies and Similar Technologies</h2>
+            <p className="text-gray-700">
+              We use cookies and similar technologies to provide and secure our service. Cookies are small text files 
+              stored on your device that help us authenticate you and maintain your session.
+            </p>
+            <p className="text-gray-700 mt-3">
+              <strong>Types of Cookies We Use:</strong>
+            </p>
+            <ul className="list-disc pl-6 text-gray-700 space-y-2 mt-2">
+              <li><strong>Essential Authentication Cookies:</strong> These cookies are necessary for the service to 
+                function and enable you to log in and maintain your session. They are set by our authentication provider 
+                (Supabase) and are required for the service to work. These cookies are typically httpOnly and secure, 
+                meaning they cannot be accessed by JavaScript and are only sent over HTTPS in production.</li>
+              <li><strong>OAuth Security Cookies:</strong> We use a temporary cookie to store OAuth state information 
+                during the Oura account connection process. This cookie is used for security purposes to prevent 
+                cross-site request forgery (CSRF) attacks. It is httpOnly, secure, and expires after 10 minutes.</li>
+              <li><strong>PKCE Code Verifier Cookies:</strong> During the authentication process, we store a code 
+                verifier in cookies as part of the OAuth PKCE (Proof Key for Code Exchange) flow for enhanced security. 
+                This is automatically managed by our authentication provider.</li>
+            </ul>
+            <p className="text-gray-700 mt-3">
+              <strong>Cookie Settings:</strong> All cookies we use are essential for the service to function. 
+              You cannot disable these cookies without breaking the service functionality. If you do not wish to 
+              accept cookies, you should not use this service.
+            </p>
+            <p className="text-gray-700 mt-3">
+              <strong>Third-Party Cookies:</strong> Our authentication provider (Supabase) may set additional 
+              cookies as part of their authentication service. These are governed by Supabase's privacy policy. 
+              We do not use third-party advertising or tracking cookies.
+            </p>
+            <p className="text-gray-700 mt-3">
+              <strong>Cookie Duration:</strong> Authentication cookies persist for the duration of your session 
+              and may be stored for longer periods to maintain your login state. OAuth state cookies expire after 
+              10 minutes or when the OAuth flow completes. You can clear all cookies by logging out or clearing 
+              your browser cookies.
+            </p>
+          </section>
+
+          <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Data Usage</h2>
             <p className="text-gray-700">
               Your data is used solely to generate lab-style reports. We do not sell, share, or use 
