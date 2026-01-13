@@ -16,6 +16,16 @@ export default function PrivacyPage() {
 
         <div className="prose prose-gray max-w-none space-y-6">
           <section>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">Experimental Nature and Risk Disclosure</h2>
+            <p className="text-gray-700">
+              <strong>This service is experimental in nature.</strong> The reports generated may contain 
+              inaccuracies, and the system is under active development. You understand that health metrics 
+              may be misrepresented or misinterpreted. We make no guarantees as to the accuracy of the 
+              insights derived from raw Oura data.
+            </p>
+          </section>
+
+          <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Data Collection</h2>
             <p className="text-gray-700">
               We collect and store the following data:
@@ -74,6 +84,14 @@ export default function PrivacyPage() {
               <strong>No Analytics or Tracking:</strong> We do not use analytics services, tracking 
               pixels, or third-party advertising services. We do not share your data with data brokers 
               or analytics companies.
+            </p>
+            <p className="text-gray-700 mt-3">
+              <strong>Sensitive Data Handling:</strong> We do not infer, store, or process any diagnoses 
+              or mental health conditions. Data processed is limited to raw metrics from the Oura API 
+              (sleep duration, heart rate, activity levels, etc.). We do not analyze, interpret, or 
+              draw conclusions about your health status beyond presenting the raw metrics in a formatted 
+              report. Stress indicators and sleep-related data are processed as numerical metrics only, 
+              without any diagnostic or clinical interpretation.
             </p>
           </section>
 

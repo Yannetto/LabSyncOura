@@ -26,10 +26,17 @@ export default function TermsPage() {
           <section>
             <h2 className="text-xl font-semibold text-gray-900 mb-3">Service Description</h2>
             <p className="text-gray-700">
-              This is an <strong>experimental service</strong> that provides a formatting utility 
-              to generate lab-style reports from your Oura ring data. It is a data visualization 
-              and summarization tool only. The service is provided "as is" without warranties 
-              of any kind, and may contain errors, inaccuracies, or incomplete information.
+              <strong>This is an early-stage experimental product.</strong> The accuracy and completeness 
+              of data processing are not guaranteed. Errors may occur. This service provides a formatting 
+              utility to generate lab-style reports from your Oura ring data. It is a data visualization 
+              and summarization tool only. The service is provided "as is" without warranties of any kind, 
+              and may contain errors, inaccuracies, or incomplete information.
+            </p>
+            <p className="text-gray-700 mt-2">
+              <strong>AI and Automated Processing:</strong> Parts of this service may use automated or 
+              AI-assisted methods for formatting and presentation. These systems do not provide verified 
+              medical analysis. All calculations, formatting, and data presentation are automated and 
+              have not been reviewed or verified by medical professionals.
             </p>
           </section>
 
@@ -88,6 +95,7 @@ export default function TermsPage() {
               <li><strong>Independently verifying and validating all information</strong> presented in reports before making any health-related decisions</li>
               <li><strong>Interpreting and using the output at your own risk</strong> - you acknowledge that you are solely responsible for how you use or interpret any reports or data</li>
               <li>Seeking professional medical advice for any health concerns or questions</li>
+              <li><strong>You understand and agree that the reports provided by this service are not intended for clinical or diagnostic use.</strong> You agree not to present or use these reports as medical documentation in any healthcare or insurance setting.</li>
             </ul>
           </section>
 
