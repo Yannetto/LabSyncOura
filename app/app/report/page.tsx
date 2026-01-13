@@ -442,7 +442,7 @@ export default function ReportPage() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">{row.metric}</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">{row.value}</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">{row.referenceRange}</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">{row.flag}</td>
+                      <td className={`px-4 py-2 text-center text-sm whitespace-nowrap ${row.flag ? 'text-red-600 font-medium' : ''}`}>{row.flag}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -454,7 +454,7 @@ export default function ReportPage() {
                 <div key={idx} className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">{row.metric}</div>
-                    {row.flag && <div className="text-sm ml-2">{row.flag}</div>}
+                    {row.flag && <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>}
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">{row.value}</span></div>
@@ -493,7 +493,7 @@ export default function ReportPage() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">{row.metric}</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">{row.value}</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">{row.referenceRange}</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">{row.flag}</td>
+                      <td className={`px-4 py-2 text-center text-sm whitespace-nowrap ${row.flag ? 'text-red-600 font-medium' : ''}`}>{row.flag}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -505,7 +505,7 @@ export default function ReportPage() {
                 <div key={idx} className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">{row.metric}</div>
-                    {row.flag && <div className="text-sm ml-2">{row.flag}</div>}
+                    {row.flag && <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>}
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">{row.value}</span></div>
@@ -544,7 +544,7 @@ export default function ReportPage() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">{row.metric}</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">{row.value}</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">{row.referenceRange}</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">{row.flag}</td>
+                      <td className={`px-4 py-2 text-center text-sm whitespace-nowrap ${row.flag ? 'text-red-600 font-medium' : ''}`}>{row.flag}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -556,7 +556,7 @@ export default function ReportPage() {
                 <div key={idx} className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">{row.metric}</div>
-                    {row.flag && <div className="text-sm ml-2">{row.flag}</div>}
+                    {row.flag && <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>}
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">{row.value}</span></div>
@@ -572,8 +572,9 @@ export default function ReportPage() {
         <div className="mt-12 mb-8 p-4 bg-gray-50 border border-gray-300">
           <h3 className="text-sm font-bold text-gray-900 mb-2">Legend</h3>
           <div className="text-xs text-gray-700 space-y-1">
-            <p><span className="font-semibold">🟥</span> Indicates that the 7-day average value is outside the 30-day reference range (25th–75th percentile).</p>
-            <p><span className="font-semibold">Blank</span> Indicates that the value is within the normal reference range.</p>
+            <p><span className="font-semibold text-red-600">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
+            <p><span className="font-semibold text-red-600">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
+            <p><span className="font-semibold">Blank</span> — The value is within your normal reference range.</p>
             <p className="text-gray-600 mt-2">Reference ranges are calculated from your personal historical data (30-day period) using the interquartile range method.</p>
           </div>
         </div>

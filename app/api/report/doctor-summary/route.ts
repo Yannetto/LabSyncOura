@@ -131,16 +131,29 @@ export async function POST(request: NextRequest) {
     const summary = formatDoctorSummary(metrics)
     
     // Debug: Log what was included in the summary
+    const totalRows = summary.sleepTable.length + summary.cardiovascularTable.length + summary.activityTable.length
+    const rowsWithFlags = summary.sleepTable.filter(r => r.flag).length +
+      summary.cardiovascularTable.filter(r => r.flag).length +
+      summary.activityTable.filter(r => r.flag).length
+    
     console.log(`[DoctorSummary] Summary tables:`, {
       sleep: summary.sleepTable.length,
       cardiovascular: summary.cardiovascularTable.length,
       activity: summary.activityTable.length,
-      total: summary.sleepTable.length + summary.cardiovascularTable.length + summary.activityTable.length
+      total: totalRows,
+      withFlags: rowsWithFlags
     })
     
-    if (summary.sleepTable.length === 0 && summary.cardiovascularTable.length === 0 && summary.activityTable.length === 0) {
+    if (totalRows === 0) {
       console.error(`[DoctorSummary] WARNING: All summary tables are empty! This suggests a filtering issue.`)
       console.log(`[DoctorSummary] All calculated metrics:`, metrics.map(m => m.metric))
+    } else if (rowsWithFlags === 0 && totalRows > 0) {
+      console.warn(`[DoctorSummary] WARNING: No flags computed for ${totalRows} metrics. This might indicate missing reference range data.`)
+      console.log(`[DoctorSummary] Sample metrics without flags:`, [
+        ...summary.sleepTable.slice(0, 3),
+        ...summary.cardiovascularTable.slice(0, 3),
+        ...summary.activityTable.slice(0, 3)
+      ].map(r => ({ metric: r.metric, value: r.value, referenceRange: r.referenceRange })))
     }
     
     // Calculate date range for the report (reuse 'now' from above)

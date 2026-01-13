@@ -102,6 +102,7 @@ function parseResultValue(result: string): number | null {
 /**
  * Compute flag based on result vs reference range
  * Only computes flags for metrics that are allowed to have flags
+ * Returns "Above Range" or "Below Range" for out-of-range values
  */
 function computeFlag(metricName: string, result: string, referenceRange: string): string {
   const normalizedName = normalizeMetricName(metricName)
@@ -126,9 +127,12 @@ function computeFlag(metricName: string, result: string, referenceRange: string)
     return '' // Can't compute flag
   }
   
-  // Use single flag text for both high and low
-  if (resultNum > refRange.upper || resultNum < refRange.lower) {
-    return '🟥'
+  // Return specific text for above or below range
+  if (resultNum > refRange.upper) {
+    return 'Above Range'
+  }
+  if (resultNum < refRange.lower) {
+    return 'Below Range'
   }
   
   return '' // Within range
@@ -422,8 +426,9 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       if (deepPct && refRange !== '—') {
         const pctNum = parseResultValue(deepPct.result_display)
         const ref = parseReferenceRange(refRange)
-        if (pctNum !== null && ref !== null && (pctNum < ref.lower || pctNum > ref.upper)) {
-          flag = '🟥'
+        if (pctNum !== null && ref !== null) {
+          if (pctNum > ref.upper) flag = 'Above Range'
+          else if (pctNum < ref.lower) flag = 'Below Range'
         }
       }
       result.push({
@@ -456,8 +461,9 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       if (lightPct && refRange !== '—') {
         const pctNum = parseResultValue(lightPct.result_display)
         const ref = parseReferenceRange(refRange)
-        if (pctNum !== null && ref !== null && (pctNum < ref.lower || pctNum > ref.upper)) {
-          flag = '🟥'
+        if (pctNum !== null && ref !== null) {
+          if (pctNum > ref.upper) flag = 'Above Range'
+          else if (pctNum < ref.lower) flag = 'Below Range'
         }
       }
       result.push({
@@ -489,8 +495,9 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       if (remPct && refRange !== '—') {
         const pctNum = parseResultValue(remPct.result_display)
         const ref = parseReferenceRange(refRange)
-        if (pctNum !== null && ref !== null && (pctNum < ref.lower || pctNum > ref.upper)) {
-          flag = '🟥'
+        if (pctNum !== null && ref !== null) {
+          if (pctNum > ref.upper) flag = 'Above Range'
+          else if (pctNum < ref.lower) flag = 'Below Range'
         }
       }
       result.push({

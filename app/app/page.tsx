@@ -484,23 +484,51 @@ export default function AppPage() {
         {isConnected && (
           <div className="mb-8 pb-6 border-b-2 border-gray-400">
             <h2 className="text-lg font-bold text-gray-900 mb-4">Actions</h2>
-            <div className="space-y-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => handleSync(false)}
                 disabled={syncing}
-                className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1 disabled:opacity-50"
+                className="flex-1 px-6 py-3 bg-gray-900 text-white font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
-                {syncing ? 'Syncing...' : 'Sync last 30 days'}
+                {syncing ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Syncing...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Sync Data</span>
+                  </>
+                )}
               </button>
-              <div className="pt-2">
-                <button
-                  onClick={handleGenerate}
-                  disabled={generating}
-                  className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1 disabled:opacity-50"
-                >
-                  {generating ? 'Generating...' : 'Generate report'}
-                </button>
-              </div>
+              <button
+                onClick={handleGenerate}
+                disabled={generating}
+                className="flex-1 px-6 py-3 bg-blue-600 text-white font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              >
+                {generating ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Generating...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Generate Report</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         )}

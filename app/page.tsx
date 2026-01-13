@@ -121,7 +121,7 @@ export default function Home() {
                   <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Resting Heart Rate</td>
                   <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">95 bpm</td>
                   <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">55–65 bpm</td>
-                  <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                  <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Steps</td>
@@ -188,13 +188,13 @@ export default function Home() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Sleep Duration</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">6h 45m</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7h 30m – 9h 0m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
                     </tr>
                     <tr>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Deep Sleep</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">10.5% (52m)</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">12.0–18.0% (1h 0m – 1h 30m)</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Light Sleep</td>
@@ -206,7 +206,7 @@ export default function Home() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">REM Sleep</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">27.0% (2h 17m)</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">18.0–25.0% (1h 30m – 2h 15m)</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
                     </tr>
                   </tbody>
                 </table>
@@ -226,7 +226,7 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Sleep Duration</div>
-                    <div className="text-sm ml-2">🟥</div>
+                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">6h 45m</span></div>
@@ -236,7 +236,7 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Deep Sleep</div>
-                    <div className="text-sm ml-2">🟥</div>
+                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">10.5% (52m)</span></div>
@@ -256,7 +256,7 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">REM Sleep</div>
-                    <div className="text-sm ml-2">🟥</div>
+                    <div className="text-sm ml-2 text-red-600 font-medium">Above Range</div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">27.0% (2h 17m)</span></div>
@@ -291,7 +291,7 @@ export default function Home() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Resting Heart Rate</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">95 bpm</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">55–65 bpm</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Lowest Night-time Heart Rate</td>
@@ -303,19 +303,19 @@ export default function Home() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Night-time HRV</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">28 ms</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">35–50 ms</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Oxygen Saturation (SpO2)</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">94.5%</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">96.0–99.0%</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
                     </tr>
                     <tr>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Breathing Disturbance Index</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">8.2</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">5.0–8.0</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Temperature Deviation</td>
@@ -331,7 +331,7 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Resting Heart Rate</div>
-                    <div className="text-sm ml-2">🟥</div>
+                    <div className="text-sm ml-2 text-red-600 font-medium">Above Range</div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">95 bpm</span></div>
@@ -351,7 +351,7 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Night-time HRV</div>
-                    <div className="text-sm ml-2">🟥</div>
+                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">28 ms</span></div>
@@ -361,7 +361,7 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Oxygen Saturation (SpO2)</div>
-                    <div className="text-sm ml-2">🟥</div>
+                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">94.5%</span></div>
@@ -371,7 +371,7 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Breathing Disturbance Index</div>
-                    <div className="text-sm ml-2">🟥</div>
+                    <div className="text-sm ml-2 text-red-600 font-medium">Above Range</div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">8.2</span></div>
@@ -416,13 +416,13 @@ export default function Home() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Steps</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">5,200 steps</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7,000–10,000 steps</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Sedentary Time</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">11h 30m</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7h 30m – 10h 0m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">🟥</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
                     </tr>
                   </tbody>
                 </table>
@@ -432,7 +432,7 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Steps</div>
-                    <div className="text-sm ml-2">🟥</div>
+                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">5,200 steps</span></div>
@@ -442,7 +442,7 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Sedentary Time</div>
-                    <div className="text-sm ml-2">🟥</div>
+                    <div className="text-sm ml-2 text-red-600 font-medium">Above Range</div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">11h 30m</span></div>
@@ -456,8 +456,9 @@ export default function Home() {
             <div className="mt-8 p-4 bg-gray-50 border border-gray-300">
               <h3 className="text-sm font-bold text-gray-900 mb-2">Legend</h3>
               <div className="text-xs text-gray-700 space-y-1">
-                <p><span className="font-semibold">🟥</span> Indicates that the 7-day average value is outside the 30-day reference range (25th–75th percentile).</p>
-                <p><span className="font-semibold">Blank</span> Indicates that the value is within the normal reference range.</p>
+                <p><span className="font-semibold text-red-600">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
+                <p><span className="font-semibold text-red-600">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
+                <p><span className="font-semibold">Blank</span> — The value is within your normal reference range.</p>
                 <p className="text-gray-600 mt-2">Reference ranges are calculated from your personal historical data (30-day period) using the interquartile range method.</p>
               </div>
             </div>

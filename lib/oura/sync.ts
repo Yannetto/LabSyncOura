@@ -1,6 +1,6 @@
 import { createServiceClient } from '@/lib/supabase/service'
 import { getValidAccessToken } from './tokens'
-import { fetchOuraDailyData, fetchSleepData } from './client'
+import { fetchOuraDailyData, fetchSleepData, fetchHeartRateData } from './client'
 import { mapDailySleep, mapSleepRecord, mapDailyReadiness, mapDailyActivity, mapDailyStress, mapDailySpo2 } from './map'
 
 const COLLECTIONS = ['daily_sleep', 'daily_readiness', 'daily_activity', 'daily_stress', 'daily_spo2']
@@ -14,6 +14,12 @@ const COLLECTION_MAPPERS: { [key: string]: (record: any) => { day: string; metri
   'daily_activity': mapDailyActivity,
   'daily_stress': mapDailyStress,
   'daily_spo2': mapDailySpo2,
+}
+
+interface CollectionResult {
+  collection: string
+  data: any[]
+  error?: string
 }
 
 export async function syncOuraData(userId: string, days: number = 30, forceResync: boolean = false): Promise<number> {
@@ -84,159 +90,220 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
     return Array.from(seen.entries()).map(([metric_key, value]) => ({ metric_key, value }))
   }
 
-  // Helper to store metrics with deduplication - BATCHED for performance
-  const storeMetrics = async (
-    userId: string,
-    day: string,
-    metrics: Array<{ metric_key: string; value: string }>,
-    source: string
-  ): Promise<{ stored: number; failed: number }> => {
-    const dayFormatted = day.includes('T') ? day.split('T')[0] : day
-    const deduped = deduplicateMetrics(metrics)
-    
-    if (deduped.length === 0) {
-      return { stored: 0, failed: 0 }
-    }
+  // PARALLEL FETCH: Fetch all collections simultaneously for speed
+  console.log(`[Sync] Starting parallel fetch for ${COLLECTIONS.length} collections + sleep + heart_rate`)
+  const fetchStartTime = Date.now()
 
-    // Batch all metrics for this day into a single upsert operation
-    const records = deduped.map(metric => ({
-      user_id: userId,
-      day: dayFormatted,
-      metric_key: metric.metric_key,
-      value: metric.value,
-    }))
-
-    const { error: upsertError } = await supabase
-      .from('oura_daily')
-      .upsert(records, {
-        onConflict: 'user_id,day,metric_key',
-      })
-    
-    if (upsertError) {
-      console.error(`[Sync] [${source}] Failed to batch upsert ${deduped.length} metrics for ${dayFormatted}:`, upsertError)
-      return { stored: 0, failed: deduped.length }
-    }
-
-    return { stored: deduped.length, failed: 0 }
-  }
-
-  // Fetch data from all daily collections
-  for (const collection of COLLECTIONS) {
+  const collectionPromises = COLLECTIONS.map(async (collection): Promise<CollectionResult> => {
     try {
       const data = await fetchOuraDailyData(accessToken, collection, startDateStr, endDateStr)
-      console.log(`[Sync] Fetched ${data.length} items from ${collection}`)
-      
-      if (data.length === 0) {
-        console.warn(`[Sync] No data returned for ${collection} (${startDateStr} to ${endDateStr})`)
-        continue
-      }
-
-      // Log actual API response structure (first record only)
-      if (data.length > 0) {
-        const sample = data[0]
-        console.log(`[Sync] ${collection} - Sample keys:`, Object.keys(sample))
-        if (sample.contributors) {
-          console.log(`[Sync] ${collection} - contributors keys:`, Object.keys(sample.contributors))
-        }
-      }
-
-      const mapper = COLLECTION_MAPPERS[collection]
-      if (!mapper) {
-        console.error(`[Sync] No mapper found for collection: ${collection}`)
-        continue
-      }
-
-      // Batch all metrics by day for bulk insert
-      const metricsByDay = new Map<string, Array<{ metric_key: string; value: string }>>()
-      let itemsProcessed = 0
-
-      for (const item of data) {
-        // Use the mapping layer to extract metrics
-        const mapped = mapper(item)
-        
-        if (!mapped) {
-          continue
-        }
-
-        const { day, metrics } = mapped
-        syncedDays.add(day)
-        itemsProcessed++
-
-        // Log what metrics were extracted (first item only)
-        if (itemsProcessed === 1 && metrics.length > 0) {
-          console.log(`[Sync] ${collection} - Extracted metrics:`, metrics.map(m => m.metric_key))
-        } else if (itemsProcessed === 1 && metrics.length === 0) {
-          console.warn(`[Sync] ${collection} - No metrics extracted from first record`)
-        }
-
-        // Accumulate metrics by day for batch processing
-        if (!metricsByDay.has(day)) {
-          metricsByDay.set(day, [])
-        }
-        const existingMetrics = metricsByDay.get(day)!
-        metricsByDay.set(day, [...existingMetrics, ...metrics])
-      }
-
-      // Batch store all metrics for all days in this collection
-      let metricsStored = 0
-      let metricsFailed = 0
-
-      // Process in batches of 10 days to avoid overwhelming the database
-      const days = Array.from(metricsByDay.keys())
-      const BATCH_SIZE = 10
-      
-      for (let i = 0; i < days.length; i += BATCH_SIZE) {
-        const dayBatch = days.slice(i, i + BATCH_SIZE)
-        const batchRecords: Array<{ user_id: string; day: string; metric_key: string; value: string }> = []
-        
-        for (const day of dayBatch) {
-          const dayFormatted = day.includes('T') ? day.split('T')[0] : day
-          const dayMetrics = deduplicateMetrics(metricsByDay.get(day)!)
-          
-          for (const metric of dayMetrics) {
-            batchRecords.push({
-              user_id: userId,
-              day: dayFormatted,
-              metric_key: metric.metric_key,
-              value: metric.value,
-            })
-          }
-        }
-
-        if (batchRecords.length > 0) {
-          const { error: upsertError } = await supabase
-            .from('oura_daily')
-            .upsert(batchRecords, {
-              onConflict: 'user_id,day,metric_key',
-            })
-          
-          if (upsertError) {
-            console.error(`[Sync] [${collection}] Failed to batch upsert ${batchRecords.length} metrics:`, upsertError)
-            metricsFailed += batchRecords.length
-          } else {
-            metricsStored += batchRecords.length
-          }
-        }
-      }
-      
-      console.log(`[Sync] ${collection}: ${itemsProcessed} items processed, ${metricsStored} metrics stored, ${metricsFailed} failed`)
+      return { collection, data }
     } catch (error: any) {
-      console.error(`[Sync] Error syncing ${collection}:`, error)
-      
-      // Check for scope/permission errors
-      if (error.message?.includes('403') || error.message?.includes('401')) {
+      console.error(`[Sync] Error fetching ${collection}:`, error.message)
+      return { collection, data: [], error: error.message }
+    }
+  })
+
+  // Also fetch sleep and heart_rate data in parallel
+  const sleepPromise = fetchSleepData(accessToken, startDateStr, endDateStr)
+    .then(data => ({ collection: 'sleep', data }))
+    .catch(error => ({ collection: 'sleep', data: [], error: error.message }))
+
+  const heartRatePromise = fetchHeartRateData(accessToken, startDateStr, endDateStr)
+    .then(data => ({ collection: 'heart_rate', data }))
+    .catch(error => ({ collection: 'heart_rate', data: [], error: error.message }))
+
+  // Wait for all fetches to complete in parallel
+  const allResults = await Promise.all([...collectionPromises, sleepPromise, heartRatePromise])
+  
+  const fetchDuration = Date.now() - fetchStartTime
+  console.log(`[Sync] Parallel fetch completed in ${fetchDuration}ms`)
+
+  // Process each collection's results
+  for (const result of allResults) {
+    const { collection, data, error } = result as CollectionResult
+
+    // Skip sleep and heart_rate - they're processed separately below
+    if (collection === 'sleep' || collection === 'heart_rate') continue
+
+    if (error) {
+      console.error(`[Sync] Skipping ${collection} due to fetch error: ${error}`)
+      if (error.includes('403') || error.includes('401')) {
         console.error(`[Sync] Possible scope/permission issue for ${collection}. Check OAuth scopes.`)
       }
-      
-      // Continue with other collections
+      continue
     }
+
+    console.log(`[Sync] Fetched ${data.length} items from ${collection}`)
+    
+    if (data.length === 0) {
+      console.warn(`[Sync] No data returned for ${collection} (${startDateStr} to ${endDateStr})`)
+      continue
+    }
+
+    // Log actual API response structure (first record only)
+    if (data.length > 0) {
+      const sample = data[0]
+      console.log(`[Sync] ${collection} - Sample keys:`, Object.keys(sample))
+      if (sample.contributors) {
+        console.log(`[Sync] ${collection} - contributors keys:`, Object.keys(sample.contributors))
+      }
+    }
+
+    const mapper = COLLECTION_MAPPERS[collection]
+    if (!mapper) {
+      console.error(`[Sync] No mapper found for collection: ${collection}`)
+      continue
+    }
+
+    // Batch all metrics by day for bulk insert
+    const metricsByDay = new Map<string, Array<{ metric_key: string; value: string }>>()
+    let itemsProcessed = 0
+
+    for (const item of data) {
+      // Use the mapping layer to extract metrics
+      const mapped = mapper(item)
+      
+      if (!mapped) {
+        continue
+      }
+
+      const { day, metrics } = mapped
+      syncedDays.add(day)
+      itemsProcessed++
+
+      // Log what metrics were extracted (first item only)
+      if (itemsProcessed === 1 && metrics.length > 0) {
+        console.log(`[Sync] ${collection} - Extracted metrics:`, metrics.map(m => m.metric_key))
+      } else if (itemsProcessed === 1 && metrics.length === 0) {
+        console.warn(`[Sync] ${collection} - No metrics extracted from first record`)
+      }
+
+      // Accumulate metrics by day for batch processing
+      if (!metricsByDay.has(day)) {
+        metricsByDay.set(day, [])
+      }
+      const existingMetrics = metricsByDay.get(day)!
+      metricsByDay.set(day, [...existingMetrics, ...metrics])
+    }
+
+    // Batch store all metrics for all days in this collection
+    let metricsStored = 0
+    let metricsFailed = 0
+
+    // Process in batches of 10 days to avoid overwhelming the database
+    const days = Array.from(metricsByDay.keys())
+    const BATCH_SIZE = 10
+    
+    for (let i = 0; i < days.length; i += BATCH_SIZE) {
+      const dayBatch = days.slice(i, i + BATCH_SIZE)
+      const batchRecords: Array<{ user_id: string; day: string; metric_key: string; value: string }> = []
+      
+      for (const day of dayBatch) {
+        const dayFormatted = day.includes('T') ? day.split('T')[0] : day
+        const dayMetricsArray = metricsByDay.get(day)
+        
+        if (!dayMetricsArray || dayMetricsArray.length === 0) {
+          console.warn(`[Sync] [${collection}] No metrics found for day ${day}, skipping`)
+          continue
+        }
+        
+        const dayMetrics = deduplicateMetrics(dayMetricsArray)
+        
+        for (const metric of dayMetrics) {
+          batchRecords.push({
+            user_id: userId,
+            day: dayFormatted,
+            metric_key: metric.metric_key,
+            value: metric.value,
+          })
+        }
+      }
+
+      if (batchRecords.length > 0) {
+        console.log(`[Sync] [${collection}] Batch upserting ${batchRecords.length} metrics for ${dayBatch.length} days`)
+        const { error: upsertError, data: upsertData } = await supabase
+          .from('oura_daily')
+          .upsert(batchRecords, {
+            onConflict: 'user_id,day,metric_key',
+          })
+          .select()
+        
+        if (upsertError) {
+          console.error(`[Sync] [${collection}] Failed to batch upsert ${batchRecords.length} metrics:`, upsertError)
+          metricsFailed += batchRecords.length
+        } else {
+          metricsStored += batchRecords.length
+          if (DEBUG) {
+            console.log(`[Sync] [${collection}] Successfully stored batch: ${upsertData?.length || 0} records confirmed`)
+          }
+        }
+      }
+    }
+    
+    console.log(`[Sync] ${collection}: ${itemsProcessed} items processed, ${metricsStored} metrics stored, ${metricsFailed} failed`)
   }
 
-  // Fetch sleep records (non-daily endpoint) for actual durations
-  try {
-    console.log(`[Sync] Fetching sleep records from ${startDateStr} to ${endDateStr}`)
-    const sleepData = await fetchSleepData(accessToken, startDateStr, endDateStr)
-    console.log(`[Sync] Fetched ${sleepData.length} sleep records`)
+  // Process heart rate data (fetched in parallel above)
+  const heartRateResult = allResults.find(r => (r as CollectionResult).collection === 'heart_rate') as CollectionResult
+  if (heartRateResult && heartRateResult.data.length > 0) {
+    console.log(`[Sync] Processing ${heartRateResult.data.length} heart rate records`)
+    
+    // Group heart rate data by day and calculate daily resting heart rate
+    const hrByDay = new Map<string, number[]>()
+    for (const record of heartRateResult.data) {
+      const day = normalizeDate(record.day || record.timestamp?.split('T')[0])
+      if (!day) continue
+      
+      // Use lowest heart rate during rest periods as resting heart rate
+      if (record.bpm != null && record.source === 'rest') {
+        if (!hrByDay.has(day)) {
+          hrByDay.set(day, [])
+        }
+        hrByDay.get(day)!.push(record.bpm)
+      }
+    }
+
+    // Store average resting heart rate per day
+    const hrBatchRecords: Array<{ user_id: string; day: string; metric_key: string; value: string }> = []
+    for (const [day, bpmValues] of hrByDay.entries()) {
+      if (bpmValues.length > 0) {
+        // Use the lowest value as resting heart rate (more accurate)
+        const restingHR = Math.min(...bpmValues)
+        hrBatchRecords.push({
+          user_id: userId,
+          day,
+          metric_key: 'resting_heart_rate',
+          value: String(Math.round(restingHR)),
+        })
+        syncedDays.add(day)
+      }
+    }
+
+    if (hrBatchRecords.length > 0) {
+      const { error: hrError } = await supabase
+        .from('oura_daily')
+        .upsert(hrBatchRecords, { onConflict: 'user_id,day,metric_key' })
+      
+      if (hrError) {
+        console.error(`[Sync] Failed to store heart rate data:`, hrError)
+      } else {
+        console.log(`[Sync] Stored ${hrBatchRecords.length} resting heart rate values`)
+      }
+    }
+  } else if (heartRateResult?.error) {
+    console.warn(`[Sync] Heart rate fetch failed: ${heartRateResult.error}`)
+  }
+
+  // Process sleep records (already fetched in parallel above)
+  const sleepResult = allResults.find(r => (r as CollectionResult).collection === 'sleep') as CollectionResult
+  const sleepData = sleepResult?.data || []
+  
+  if (sleepResult?.error) {
+    console.error(`[Sync] Sleep fetch error: ${sleepResult.error}`)
+  }
+  
+  console.log(`[Sync] Processing ${sleepData.length} sleep records`)
 
     if (sleepData.length > 0) {
       // Group sleep records by day
@@ -316,7 +383,14 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
         
         for (const day of dayBatch) {
           const dayFormatted = day.includes('T') ? day.split('T')[0] : day
-          const dayMetrics = deduplicateMetrics(sleepMetricsByDay.get(day)!)
+          const dayMetricsArray = sleepMetricsByDay.get(day)
+          
+          if (!dayMetricsArray || dayMetricsArray.length === 0) {
+            console.warn(`[Sync] [sleep] No metrics found for day ${day}, skipping`)
+            continue
+          }
+          
+          const dayMetrics = deduplicateMetrics(dayMetricsArray)
           
           for (const metric of dayMetrics) {
             batchRecords.push({
@@ -329,17 +403,22 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
         }
 
         if (batchRecords.length > 0) {
-          const { error: upsertError } = await supabase
+          console.log(`[Sync] [sleep] Batch upserting ${batchRecords.length} metrics for ${dayBatch.length} days`)
+          const { error: upsertError, data: upsertData } = await supabase
             .from('oura_daily')
             .upsert(batchRecords, {
               onConflict: 'user_id,day,metric_key',
             })
+            .select()
           
           if (upsertError) {
             console.error(`[Sync] [sleep] Failed to batch upsert ${batchRecords.length} metrics:`, upsertError)
             sleepMetricsFailed += batchRecords.length
           } else {
             sleepMetricsStored += batchRecords.length
+            if (DEBUG) {
+              console.log(`[Sync] [sleep] Successfully stored batch: ${upsertData?.length || 0} records confirmed`)
+            }
           }
         }
       }
@@ -348,16 +427,6 @@ export async function syncOuraData(userId: string, days: number = 30, forceResyn
     } else {
       console.warn(`[Sync] No sleep records returned (${startDateStr} to ${endDateStr})`)
     }
-  } catch (error: any) {
-    console.error(`[Sync] Error syncing sleep records:`, error)
-    
-    // Check for scope/permission errors
-    if (error.message?.includes('403') || error.message?.includes('401')) {
-      console.error(`[Sync] Possible scope/permission issue for sleep endpoint. Check OAuth scopes.`)
-    }
-    
-    // Continue - sleep endpoint might not be available or have different scopes
-  }
 
   return syncedDays.size
 }
