@@ -187,7 +187,7 @@ After setup, test the following:
 │   ├── report/                      # Report calculations
 │   └── pdf/                         # PDF generation
 ├── supabase-schema.sql              # Database schema
-└── middleware.ts                    # Auth middleware
+└── proxy.ts                         # Auth proxy (formerly middleware)
 ```
 
 ## Troubleshooting

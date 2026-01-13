@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -57,7 +57,7 @@ export async function middleware(request: NextRequest) {
     await supabase.auth.getUser()
   } catch (error) {
     // If auth fails, continue anyway
-    console.error('Middleware auth error:', error)
+    console.error('Proxy auth error:', error)
   }
 
   return response
