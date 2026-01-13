@@ -400,28 +400,48 @@ export default function ReportPage() {
       )}
       
       {/* Print/Back Buttons - Hidden when printing */}
-            <div className={`sticky ${successMessage || (error && !loading) ? 'top-16' : 'top-0'} z-40 bg-white border-b-2 border-gray-400 print:hidden p-4 flex gap-4 justify-end flex-wrap`}>
-              {!reportId && (
+            <div className={`sticky ${successMessage || (error && !loading) ? 'top-16' : 'top-0'} z-40 bg-white border-b-2 border-gray-400 print:hidden p-4`}>
+              <div className="max-w-5xl mx-auto flex gap-3 justify-end flex-wrap">
+                {!reportId && (
+                  <button
+                    onClick={handleSaveReport}
+                    disabled={saving || !summary || !metadata}
+                    className="px-6 py-2.5 bg-gray-900 text-white font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                  >
+                    {saving ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                        </svg>
+                        Save Report
+                      </>
+                    )}
+                  </button>
+                )}
                 <button
-                  onClick={handleSaveReport}
-                  disabled={saving || !summary || !metadata}
-                  className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1 disabled:opacity-50"
+                  onClick={handlePrint}
+                  className="px-6 py-2.5 bg-gray-900 text-white font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
                 >
-                  {saving ? 'Saving...' : 'Save Report'}
+                  <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                  </svg>
+                  Print / Save as PDF
                 </button>
-              )}
-              <button
-                onClick={handlePrint}
-                className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1"
-              >
-                Print / Save as PDF
-              </button>
-              <button
-                onClick={() => router.push('/app')}
-                className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1"
-              >
-                Back
-              </button>
+                <button
+                  onClick={() => router.push('/app')}
+                  className="px-4 py-2.5 text-sm text-gray-700 hover:text-gray-900 border border-gray-300 hover:border-gray-400 transition-colors"
+                >
+                  Back
+                </button>
+              </div>
             </div>
 
       {/* Report Content */}

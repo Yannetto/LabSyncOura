@@ -567,42 +567,47 @@ export default function AppPage() {
         )}
 
         {/* Report History */}
-        {reportHistory.length > 0 && (
-          <div className="mb-8 pb-6 border-b-2 border-gray-400">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-gray-900">Report History</h2>
+        <div className="mb-8 pb-6 border-b-2 border-gray-400">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold text-gray-900">Report History</h2>
+            {reportHistory.length > 0 && (
               <button
                 onClick={() => setShowReportHistory(!showReportHistory)}
                 className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wide"
               >
                 {showReportHistory ? 'Hide' : 'Show'}
               </button>
-            </div>
-            {showReportHistory && (
-              <div className="space-y-2">
-                {reportHistory.map((report) => (
-                  <div key={report.id} className="flex justify-between items-center py-2 border-b border-gray-200">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{report.title || `Report ${new Date(report.period_end).toLocaleDateString()}`}</p>
-                      <p className="text-xs text-gray-600">
-                        {new Date(report.period_start).toLocaleDateString()} – {new Date(report.period_end).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => {
-                        // Navigate directly to report page with ID - let the report page handle loading
-                        router.push(`/app/report?id=${report.id}`)
-                      }}
-                      className="text-xs text-gray-600 hover:text-gray-900 underline cursor-pointer"
-                    >
-                      View
-                    </button>
-                  </div>
-                ))}
-              </div>
             )}
           </div>
-        )}
+          {reportHistory.length === 0 ? (
+            <div className="text-center py-8 border border-gray-300">
+              <p className="text-sm text-gray-600">No saved reports yet.</p>
+              <p className="text-xs text-gray-500 mt-1">Generate a report to save it here.</p>
+            </div>
+          ) : showReportHistory ? (
+            <div className="space-y-2">
+              {reportHistory.map((report) => (
+                <div key={report.id} className="flex justify-between items-center py-2 border-b border-gray-200">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{report.title || `Report ${new Date(report.period_end).toLocaleDateString()}`}</p>
+                    <p className="text-xs text-gray-600">
+                      {new Date(report.period_start).toLocaleDateString()} – {new Date(report.period_end).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      // Navigate directly to report page with ID - let the report page handle loading
+                      router.push(`/app/report?id=${report.id}`)
+                    }}
+                    className="text-xs text-gray-600 hover:text-gray-900 underline cursor-pointer"
+                  >
+                    View
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </div>
 
         {/* Data Management */}
         <div className="mb-8 pb-6 border-b-2 border-gray-400">
