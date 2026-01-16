@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { ArrowRight, Shield, FileText, CheckCircle2 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
 
 export default function Home() {
   const [user, setUser] = useState<any>(null)
@@ -77,96 +76,125 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-8 py-12 sm:py-16">
-        {/* Value Proposition */}
-        <div className="mb-12 sm:mb-16 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 sm:mb-5">
-            Wearable Health Summary Report
+      <main className="max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-16">
+        {/* Hero - Minimal with immediate value */}
+        <div className="mb-12 text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
+            Clinical Lab-Style Health Reports
           </h1>
-          <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed px-4 mb-6">
-            Transform your Oura ring data into clinical lab-style reports. 
-            View your health metrics in a format familiar to healthcare professionals.
+          <p className="text-base sm:text-lg text-gray-600 max-w-xl mx-auto">
+            Transform your Oura ring data into professional health reports
           </p>
-          
-          {/* Feature Highlights - Minimal */}
-          <div className="flex flex-wrap justify-center gap-6 sm:gap-8 mb-8 text-xs sm:text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              <span>Secure OAuth connection</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4" />
-              <span>Clinical lab-style format</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4" />
-              <span>No password required</span>
-            </div>
-          </div>
         </div>
 
-        {/* How it works - Simplified */}
-        <div className="mb-8 sm:mb-12 text-center text-xs sm:text-sm text-gray-600 px-4">
-          <p>Connect your Oura account → Sync your data → Generate your report</p>
-        </div>
+        {/* Example Report - The Hero */}
+        <div className="mb-10">
+          <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+            {/* Report Header */}
+            <div className="bg-gray-50 border-b border-gray-200 px-6 py-4">
+              <h2 className="text-lg font-bold text-gray-900 mb-2">Wearable Health Summary Report</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
+                <p><span className="font-medium text-gray-700">Patient email:</span> example@email.com</p>
+                <p><span className="font-medium text-gray-700">Report date:</span> {new Date().toLocaleDateString()}</p>
+              </div>
+            </div>
 
-        {/* Small Table Preview */}
-        <div className="mb-8">
-          <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-gray-900 px-4 sm:px-0">Example Report</h2>
-          <div className="border border-gray-300 overflow-x-auto -mx-4 sm:mx-0">
-            <div className="inline-block min-w-full">
-              <table className="w-full text-sm" style={{ tableLayout: 'fixed', minWidth: '600px' }}>
-              <colgroup>
-                <col style={{ width: '30%' }} />
-                <col style={{ width: '25%' }} />
-                <col style={{ width: '30%' }} />
-                <col style={{ width: '15%' }} />
-              </colgroup>
-              <thead className="bg-gray-900 text-white">
-                <tr>
-                  <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
-                  <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
-                  <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Sleep Duration</td>
-                  <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">8h 26m</td>
-                  <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7h 30m – 9h 0m</td>
-                  <td className="px-4 py-2 text-center text-sm whitespace-nowrap"></td>
-                </tr>
-                <tr className="bg-gray-50">
-                  <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Resting Heart Rate</td>
-                  <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">95 bpm</td>
-                  <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">55–65 bpm</td>
-                  <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Steps</td>
-                  <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">8,500 steps</td>
-                  <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7,000–10,000 steps</td>
-                  <td className="px-4 py-2 text-center text-sm whitespace-nowrap"></td>
-                </tr>
-              </tbody>
-            </table>
+            {/* Report Table - Immediately Visible */}
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm" style={{ tableLayout: 'fixed', minWidth: '700px' }}>
+                <colgroup>
+                  <col style={{ width: '28%' }} />
+                  <col style={{ width: '24%' }} />
+                  <col style={{ width: '32%' }} />
+                  <col style={{ width: '16%' }} />
+                </colgroup>
+                <thead className="bg-gray-900 text-white">
+                  <tr>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">Metric</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">7 Days values</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">30 Days Reference Range</th>
+                    <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide">Flag</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-b border-gray-100">
+                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Sleep Duration</td>
+                    <td className="px-5 py-3.5 border-r border-gray-100">8h 26m</td>
+                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">7h 30m – 9h 0m</td>
+                    <td className="px-5 py-3.5 text-center"></td>
+                  </tr>
+                  <tr className="bg-red-50 border-b border-gray-100">
+                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Resting Heart Rate</td>
+                    <td className="px-5 py-3.5 border-r border-gray-100 font-semibold text-red-600">95 bpm</td>
+                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">55–65 bpm</td>
+                    <td className="px-5 py-3.5 text-center text-red-600 font-medium">Above Range</td>
+                  </tr>
+                  <tr className="border-b border-gray-100">
+                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Steps</td>
+                    <td className="px-5 py-3.5 border-r border-gray-100">8,500 steps</td>
+                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">7,000–10,000 steps</td>
+                    <td className="px-5 py-3.5 text-center"></td>
+                  </tr>
+                  <tr className="bg-gray-50 border-b border-gray-100">
+                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Deep Sleep</td>
+                    <td className="px-5 py-3.5 border-r border-gray-100 font-semibold text-red-600">10.5% (52m)</td>
+                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">12.0–18.0% (1h 0m – 1h 30m)</td>
+                    <td className="px-5 py-3.5 text-center text-red-600 font-medium">Below Range</td>
+                  </tr>
+                  <tr>
+                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Oxygen Saturation (SpO2)</td>
+                    <td className="px-5 py-3.5 border-r border-gray-100 font-semibold text-red-600">94.5%</td>
+                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">96.0–99.0%</td>
+                    <td className="px-5 py-3.5 text-center text-red-600 font-medium">Below Range</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
+
+          {/* Expand for more */}
           <div className="mt-4 text-center">
             <button
               onClick={() => setShowFullExample(!showFullExample)}
-              className="text-sm text-gray-700 hover:text-gray-900 flex items-center gap-1 mx-auto"
+              className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1.5 mx-auto transition-colors"
             >
-              {showFullExample ? 'Hide' : 'See'} full example report
-              <ArrowRight className="w-3 h-3" />
+              {showFullExample ? 'Hide' : 'View'} complete example report
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
+          </div>
+        </div>
+
+        {/* CTA - Immediately after example */}
+        <div className="text-center mb-12">
+          {!user && (
+            <Link href="/login" className="inline-block">
+              <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
+                Generate your report
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </Link>
+          )}
+        </div>
+
+        {/* Minimal features */}
+        <div className="flex flex-wrap justify-center gap-8 mb-12 text-sm text-gray-500">
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4 text-gray-400" />
+            <span>Secure OAuth</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-gray-400" />
+            <span>Lab-style format</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-gray-400" />
+            <span>No password</span>
           </div>
         </div>
 
         {/* Full Example Report - Expandable */}
         {showFullExample && (
-          <div className="mb-12 pb-8 border-b border-gray-300">
+          <div className="mb-12 pb-8 border-t border-gray-200 pt-8">
             {/* Report Header */}
             <div className="mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-gray-300">
               <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Wearable Health Summary Report</h1>
@@ -486,21 +514,10 @@ export default function Home() {
           </div>
         )}
 
-        {/* CTA Section */}
-        <div className="text-center mb-12">
-          {!user && (
-            <Link href="/login">
-              <Button variant="primary" className="inline-flex items-center gap-2">
-                Connect Oura to generate your report
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-          )}
-        </div>
 
         {/* Footer */}
-        <div className="border-t border-gray-300 pt-8 text-xs text-gray-600 leading-relaxed">
-          <p className="font-semibold text-gray-800 mb-2">Experimental Report – Disclaimer and Limitation of Liability</p>
+        <div className="border-t border-gray-200 pt-10 text-xs text-gray-600 leading-relaxed">
+          <p className="font-semibold text-gray-800 mb-3">Experimental Report – Disclaimer and Limitation of Liability</p>
           <p className="mb-2">This report is generated by an experimental tool based on personal health tracking data. It is provided "as is" without any warranties, express or implied. The information herein may be incomplete, inaccurate, or outdated. No representations are made regarding the accuracy, reliability, or completeness of the data, metrics, or analysis presented.</p>
           <p className="mb-2">This report is for informational purposes only and does not constitute medical advice. It is not intended to diagnose, treat, cure, or prevent any disease or health condition. You should not rely on this report for any medical decisions. Always seek the advice of a qualified healthcare professional with any questions regarding your health or medical condition.</p>
           <p className="mb-2">By using this report, you acknowledge and accept that the creators disclaim all liability for any direct or indirect consequences arising from its use.</p>
