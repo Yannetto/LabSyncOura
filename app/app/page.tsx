@@ -46,11 +46,20 @@ export default function AppPage() {
   const supabase = createClient()
 
   useEffect(() => {
-    checkAuth()
-    checkConnection()
-    fetchLastSync()
-    checkTosStatus()
-    fetchReportHistory()
+    // Run auth check first, then load other data in parallel
+    const initialize = async () => {
+      await checkAuth()
+      // Set loading to false immediately after auth check so page can render
+      setLoading(false)
+      // Load other data in parallel (non-blocking)
+      Promise.all([
+        checkConnection(),
+        fetchLastSync(),
+        checkTosStatus(),
+        fetchReportHistory()
+      ]).catch(console.error)
+    }
+    initialize()
   }, [])
 
   // Prevent checkTosStatus from running again if TOS was just accepted
@@ -116,30 +125,32 @@ export default function AppPage() {
   }, [])
 
   const checkAuth = async () => {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        router.push('/login')
+        return
+      }
+      setUser(user)
+    } catch (error) {
+      console.error('Auth check failed:', error)
       router.push('/login')
-      return
     }
-    setUser(user)
   }
 
   const checkConnection = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        setLoading(false)
         return
       }
 
-      // Check connection status
+      // Check connection status (non-blocking)
       const response = await fetch('/api/oura/status')
       const data = await response.json()
       setIsConnected(data.connected || false)
     } catch (error) {
       setIsConnected(false)
-    } finally {
-      setLoading(false)
     }
   }
 

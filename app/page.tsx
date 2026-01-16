@@ -1,13 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { ArrowRight, ShieldCheck, FileCheck, CheckCircle2, FileDown, Stethoscope, Sparkles } from 'lucide-react'
+import { ArrowRight, ShieldCheck, FileCheck, CheckCircle2, FileDown, Sparkles } from 'lucide-react'
 
 export default function Home() {
   const [user, setUser] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
-  const [showFullExample, setShowFullExample] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     const initAuth = async () => {
@@ -19,7 +20,7 @@ export default function Home() {
         
         // If user is authenticated and landed here from magic link, redirect to app
         if (user && window.location.search.includes('type=magiclink')) {
-          window.location.href = '/app'
+          router.push('/app')
         }
       } catch (err: any) {
         console.error('Auth initialization error:', err)
@@ -28,7 +29,7 @@ export default function Home() {
     }
     
     initAuth()
-  }, [])
+  }, [router])
 
   if (error) {
     return (
@@ -80,14 +81,8 @@ export default function Home() {
         {/* Hero */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
-            Generate a lab-style report from your wearable data
+            Turn your wearable data into a doctor-ready report — in seconds.
           </h1>
-          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto mb-3">
-            Turn sleep, heart rate, activity, and SpO₂ into a clean, doctor-ready report — in seconds.
-          </p>
-          <p className="text-sm text-gray-500 mb-6">
-            Share it with your doctor or AI
-          </p>
         </div>
 
         {/* Primary CTA with 100% free */}
@@ -130,7 +125,7 @@ export default function Home() {
             <ArrowRight className="w-4 h-4 text-gray-400 hidden sm:block" />
             <div className="flex items-center gap-2">
               <span className="font-semibold text-gray-900">3.</span>
-              <span>Share (Doctor / AI / PDF)</span>
+              <span>Share (AI / PDF)</span>
             </div>
           </div>
         </div>
@@ -138,10 +133,6 @@ export default function Home() {
         {/* Share options - Secondary */}
         <div className="mb-12 text-center">
           <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-            <div className="bg-white border border-blue-200 rounded-md px-5 py-4 hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer">
-              <Stethoscope className="w-5 h-5 text-blue-600 mx-auto mb-2" />
-              <div className="text-sm font-medium text-gray-900">Email to doctor</div>
-            </div>
             <div className="bg-white border border-gray-200 rounded-md px-5 py-4 hover:border-gray-400 hover:shadow-sm transition-all cursor-pointer">
               <Sparkles className="w-5 h-5 text-gray-700 mx-auto mb-2" />
               <div className="text-sm font-medium text-gray-900">Copy for AI analysis</div>
@@ -150,169 +141,6 @@ export default function Home() {
               <FileDown className="w-5 h-5 text-gray-700 mx-auto mb-2" />
               <div className="text-sm font-medium text-gray-900">Download PDF</div>
             </div>
-          </div>
-        </div>
-
-        {/* Example Report - Fully Visible */}
-        <div className="mb-10">
-          <div className="mb-3 text-center">
-            <p className="text-sm text-gray-600">
-              Example report (sample data) — your report will use your wearable data.
-            </p>
-          </div>
-          <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-            {/* Report Header */}
-            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-4">
-              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2">Wearable Health Summary Report</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
-                <p><span className="font-medium text-gray-700">Patient email:</span> example@email.com</p>
-                <p><span className="font-medium text-gray-700">Report date:</span> {new Date().toLocaleDateString()}</p>
-              </div>
-            </div>
-
-            {/* Flag Summary */}
-            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-2">
-              <div className="flex flex-wrap items-center gap-3 text-xs text-gray-700">
-                <span className="font-semibold text-gray-900">Flag summary:</span>
-                <span className="flex items-center gap-1">
-                  <span className="inline-block w-2 h-2 rounded-full bg-yellow-400"></span>
-                  <span>1 Above Range</span>
-                </span>
-                <span className="text-gray-400">•</span>
-                <span className="flex items-center gap-1">
-                  <span className="inline-block w-2 h-2 rounded-full bg-orange-400"></span>
-                  <span>2 Below Range</span>
-                </span>
-              </div>
-            </div>
-
-            {/* Desktop Table */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
-                <colgroup>
-                  <col style={{ width: '28%' }} />
-                  <col style={{ width: '24%' }} />
-                  <col style={{ width: '32%' }} />
-                  <col style={{ width: '16%' }} />
-                </colgroup>
-                <thead className="bg-gray-900 text-white">
-                  <tr>
-                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">Metric</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">7 Days values</th>
-                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">30 Days Reference Range</th>
-                    <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide">Flag</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-b border-gray-100">
-                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Sleep Duration</td>
-                    <td className="px-5 py-3.5 border-r border-gray-100">8h 26m</td>
-                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">7h 30m – 9h 0m</td>
-                    <td className="px-5 py-3.5 text-center text-gray-400">—</td>
-                  </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Resting Heart Rate</td>
-                    <td className="px-5 py-3.5 border-r border-gray-100">95 bpm</td>
-                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">55–65 bpm</td>
-                    <td className="px-5 py-3.5 text-center">
-                      <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
-                    </td>
-                  </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Steps</td>
-                    <td className="px-5 py-3.5 border-r border-gray-100">8,500 steps</td>
-                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">7,000–10,000 steps</td>
-                    <td className="px-5 py-3.5 text-center text-gray-400">—</td>
-                  </tr>
-                  <tr className="border-b border-gray-100">
-                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Deep Sleep</td>
-                    <td className="px-5 py-3.5 border-r border-gray-100">10.5% (52m)</td>
-                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">12.0–18.0% (1h 0m – 1h 30m)</td>
-                    <td className="px-5 py-3.5 text-center">
-                      <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-5 py-3.5 font-medium border-r border-gray-100">Oxygen Saturation (SpO2)</td>
-                    <td className="px-5 py-3.5 border-r border-gray-100">94.5%</td>
-                    <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">96.0–99.0%</td>
-                    <td className="px-5 py-3.5 text-center">
-                      <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            {/* Mobile Cards */}
-            <div className="md:hidden space-y-3 p-4">
-              <div className="border border-gray-200 p-4 bg-white rounded">
-                <div className="flex justify-between items-start mb-2">
-                  <div className="font-semibold text-sm text-gray-900 flex-1">Sleep Duration</div>
-                  <div className="text-sm ml-2"></div>
-                </div>
-                <div className="space-y-1 text-sm">
-                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">8h 26m</span></div>
-                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">7h 30m – 9h 0m</span></div>
-                </div>
-              </div>
-              <div className="border border-gray-200 p-4 bg-white rounded">
-                <div className="flex justify-between items-start mb-2">
-                  <div className="font-semibold text-sm text-gray-900 flex-1">Resting Heart Rate</div>
-                  <div className="text-sm ml-2">
-                    <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
-                  </div>
-                </div>
-                <div className="space-y-1 text-sm">
-                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">95 bpm</span></div>
-                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">55–65 bpm</span></div>
-                </div>
-              </div>
-              <div className="border border-gray-200 p-4 bg-white rounded">
-                <div className="flex justify-between items-start mb-2">
-                  <div className="font-semibold text-sm text-gray-900 flex-1">Steps</div>
-                  <div className="text-sm ml-2"></div>
-                </div>
-                <div className="space-y-1 text-sm">
-                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">8,500 steps</span></div>
-                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">7,000–10,000 steps</span></div>
-                </div>
-              </div>
-              <div className="border border-gray-200 p-4 bg-white rounded">
-                <div className="flex justify-between items-start mb-2">
-                  <div className="font-semibold text-sm text-gray-900 flex-1">Deep Sleep</div>
-                  <div className="text-sm ml-2">
-                    <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
-                  </div>
-                </div>
-                <div className="space-y-1 text-sm">
-                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">10.5% (52m)</span></div>
-                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">12.0–18.0% (1h 0m – 1h 30m)</span></div>
-                </div>
-              </div>
-              <div className="border border-gray-200 p-4 bg-white rounded">
-                <div className="flex justify-between items-start mb-2">
-                  <div className="font-semibold text-sm text-gray-900 flex-1">Oxygen Saturation (SpO2)</div>
-                  <div className="text-sm ml-2">
-                    <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
-                  </div>
-                </div>
-                <div className="space-y-1 text-sm">
-                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">94.5%</span></div>
-                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">96.0–99.0%</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Optional Hide toggle */}
-          <div className="mt-4 text-center">
-            <button
-              onClick={() => setShowFullExample(!showFullExample)}
-              className="px-4 py-2 text-xs text-gray-500 hover:text-gray-700 transition-colors"
-            >
-              {showFullExample ? 'Hide example' : 'Show full example'}
-            </button>
           </div>
         </div>
 
@@ -332,17 +160,39 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Full Example Report - Expandable */}
-        {showFullExample && (
-          <div className="mb-12 pb-8 border-t border-gray-200 pt-8">
+        {/* Example Report - Always Visible */}
+        <div className="mb-12">
+          <div className="mb-3 text-center">
+            <p className="text-sm text-gray-600">
+              Example report (sample data) — your report will use your wearable data.
+            </p>
+          </div>
+          
+          <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
             {/* Report Header */}
-            <div className="mb-6 sm:mb-8 pb-4 sm:pb-6 border-b border-gray-300">
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">Wearable Health Summary Report</h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-700">
-                <p><strong className="text-gray-900">Patient email:</strong> example@email.com</p>
-                <p><strong className="text-gray-900">Report date:</strong> {new Date().toLocaleDateString()}</p>
-                <p><strong className="text-gray-900">7 Days values:</strong> Jan 1, 2026 – Jan 7, 2026 (7 days)</p>
-                <p><strong className="text-gray-900">30 Days Reference Range:</strong> Dec 2, 2025 – Jan 1, 2026 (30 days)</p>
+            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-4">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2">Wearable Health Summary Report</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
+                <p><span className="font-medium text-gray-700">Patient email:</span> example@email.com</p>
+                <p><span className="font-medium text-gray-700">Report date:</span> {new Date().toLocaleDateString()}</p>
+                <p><span className="font-medium text-gray-700">7 Days values:</span> Jan 1, 2026 – Jan 7, 2026 (7 days)</p>
+                <p><span className="font-medium text-gray-700">30 Days Reference Range:</span> Dec 2, 2025 – Jan 1, 2026 (30 days)</p>
+              </div>
+            </div>
+
+            {/* Flag Summary */}
+            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-2">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-gray-700">
+                <span className="font-semibold text-gray-900">Flag summary:</span>
+                <span className="flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-yellow-400"></span>
+                  <span>1 Above Range</span>
+                </span>
+                <span className="text-gray-400">•</span>
+                <span className="flex items-center gap-1">
+                  <span className="inline-block w-2 h-2 rounded-full bg-orange-400"></span>
+                  <span>2 Below Range</span>
+                </span>
               </div>
             </div>
 
@@ -688,8 +538,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        )}
-
+        </div>
 
         {/* Footer */}
         <div className="border-t border-gray-200 pt-10 text-xs text-gray-600 leading-relaxed">
