@@ -104,7 +104,7 @@ export default function Home() {
           </div>
 
           {/* Microcopy */}
-          <p className="text-sm text-gray-600 mb-2.5">
+          <p className="text-base text-gray-700 font-medium mb-2.5">
             Connect your wearable → get a lab-style report → share with your doctor or AI
           </p>
 
