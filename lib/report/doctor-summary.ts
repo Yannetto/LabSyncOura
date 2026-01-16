@@ -387,9 +387,13 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
     const n = normalizeMetricName(m.metric)
     return n.includes('spo2') || n.includes('breathing') || n.includes('disturbance')
   })
+  const spo2InNewMetrics = newMetrics.filter(m => {
+    const n = normalizeMetricName(m.metric)
+    return n.includes('spo2') || n.includes('breathing') || n.includes('disturbance')
+  })
   if (spo2Filtered.length > 0) {
     console.log(`[DoctorSummary] SpO2/Breathing metrics after filtering:`, spo2Filtered.map(m => m.metric))
-  } else if (spo2Metrics.length > 0) {
+  } else if (spo2InNewMetrics.length > 0) {
     console.log(`[DoctorSummary] WARNING: SpO2/Breathing metrics were FILTERED OUT!`)
   }
   
