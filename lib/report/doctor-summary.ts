@@ -276,6 +276,13 @@ function shouldKeepMetric(metricName: string): { keep: boolean; category?: 'slee
     if (normalized === metric || normalized.includes(metric) || metric.includes(normalized)) {
       return { keep: true, category: 'cardiovascular' }
     }
+    // Special handling for SpO2: match "average nightly spo2" variations
+    if ((normalized.includes('average nightly') && normalized.includes('spo2')) ||
+        (metric.includes('average nightly') && metric.includes('spo2'))) {
+      if (normalized.includes('spo2') && metric.includes('spo2')) {
+        return { keep: true, category: 'cardiovascular' }
+      }
+    }
   }
   
   for (const metric of KEEP_METRICS.activity) {
@@ -620,19 +627,25 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
           const normalizedKey = key.toLowerCase().trim()
           // Try exact match first
           if (normalized === normalizedKey) return true
+          
+          // Special handling for SpO2: match "average nightly spo2" variations more flexibly
+          if ((normalized.includes('average nightly') && normalized.includes('spo2')) &&
+              (normalizedKey.includes('average nightly') && normalizedKey.includes('spo2'))) {
+            return true
+          }
+          
+          // Special handling for SpO2 variations (must contain "spo2" or "oxygen saturation")
+          if ((normalizedKey.includes('spo2') || normalizedKey.includes('oxygen saturation')) &&
+              (normalized.includes('spo2') || normalized.includes('oxygen saturation'))) {
+            return true
+          }
+          
           // Try substring match in both directions (but be careful with "sp" to avoid matching "respiratory")
           // Only do substring match if it's not a generic "sp" that could match "respiratory"
           if (normalizedKey.length > 2 && normalizedKey !== 'sp') {
             if (normalized.includes(normalizedKey) || normalizedKey.includes(normalized)) return true
           }
-          // Special handling for SpO2 variations (must contain "spo2" or "oxygen saturation")
-          if (normalizedKey.includes('spo2') || normalizedKey.includes('oxygen saturation')) {
-            const normalizedWithoutSpaces = normalized.replace(/\s+/g, ' ')
-            const keyWithoutSpaces = normalizedKey.replace(/\s+/g, ' ')
-            if (normalizedWithoutSpaces.includes(keyWithoutSpaces) || keyWithoutSpaces.includes(normalizedWithoutSpaces)) {
-              return true
-            }
-          }
+          
           // Allow "sp" to match only if normalized contains "spo2" (not "respiratory")
           if (normalizedKey === 'sp' && normalized.includes('spo2')) {
             return true
