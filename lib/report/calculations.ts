@@ -377,7 +377,6 @@ export function calculateReportMetrics(
     
     // Stress metrics
     'high_stress': { name: 'High Stress Days', formatResult: (v) => formatCount(v, '7 days'), formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} / week`, isCount: true },
-    'stress_stress_high': { name: 'Stress High', formatResult: (v) => formatDuration(v), formatReference: (q25, q75) => formatReferenceDuration(q25, q75) },
   }
 
   // Process each metric key dynamically
