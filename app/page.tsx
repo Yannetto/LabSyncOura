@@ -133,34 +133,43 @@ export default function Home() {
           
           <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
             {/* Report Header */}
-            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-5">
-              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3">Wearable Health Summary Report</h2>
-              <div className="text-xs text-gray-600 space-y-2">
-                <p><span className="font-medium text-gray-700">Patient email:</span> example@email.com • <span className="font-medium text-gray-700">Report date:</span> {new Date().toLocaleDateString()}</p>
-                <p><span className="font-medium text-gray-700">7 Days values:</span> Jan 1, 2026 – Jan 7, 2026 (7 days)</p>
-                <p><span className="font-medium text-gray-700">30 Days Reference Range:</span> Dec 2, 2025 – Jan 1, 2026 (30 days)</p>
+            <div className="px-4 sm:px-8 py-8 sm:py-12 border-b border-gray-200">
+              <h1 className="text-2xl font-bold text-gray-900 mb-4">Wearable Health Summary Report</h1>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs text-gray-700">
+                <p><strong className="text-gray-900">Patient email:</strong> example@email.com</p>
+                <p><strong className="text-gray-900">Report date:</strong> {new Date().toLocaleDateString()}</p>
+                <p><strong className="text-gray-900">7 Days values:</strong> Jan 1, 2026 – Jan 7, 2026 (7 days)</p>
+                <p><strong className="text-gray-900">30 Days Reference Range:</strong> Dec 2, 2025 – Jan 1, 2026 (30 days)</p>
               </div>
             </div>
 
             {/* Flag Summary */}
-            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-2">
-              <div className="flex flex-wrap items-center gap-2.5 text-xs text-gray-600">
-                <span className="font-medium text-gray-700">Flag summary:</span>
-                <span className="flex items-center gap-1">
-                  <span className="inline-block w-2 h-2 rounded-full bg-yellow-400"></span>
-                  <span>6 Above Range</span>
+            <div className="mb-8 border-b border-gray-200 pb-6 px-4 sm:px-8">
+              <div className="flex flex-wrap items-center gap-4 mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-bold text-gray-900">11</span>
+                  <span className="text-sm font-medium text-gray-700">Flagged Metrics</span>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+                <span className="flex items-center gap-1.5">
+                  <span>😴</span>
+                  <span>2 Sleep</span>
                 </span>
-                <span className="text-gray-400">•</span>
-                <span className="flex items-center gap-1">
-                  <span className="inline-block w-2 h-2 rounded-full bg-orange-400"></span>
-                  <span>5 Below Range</span>
+                <span className="flex items-center gap-1.5">
+                  <span>❤️</span>
+                  <span>2 Cardiovascular</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span>🏃</span>
+                  <span>5 Activity</span>
                 </span>
               </div>
             </div>
 
             {/* Sleep Table */}
-            <div className="mb-10 sm:mb-12 px-4 sm:px-6">
-              <h2 className="text-base sm:text-lg font-bold mb-2.5 text-gray-900">Sleep Summary</h2>
+            <div className="mb-10 px-4 sm:px-8">
+              <h2 className="text-xl font-bold mb-4 text-gray-900">Sleep Summary</h2>
               {/* Desktop Table */}
               <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
                 <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
@@ -312,8 +321,8 @@ export default function Home() {
             </div>
 
             {/* Cardiovascular & Oxygenation Table */}
-            <div className="mb-6 sm:mb-8 px-4 sm:px-6">
-              <h2 className="text-base sm:text-lg font-bold mb-2.5 text-gray-900">Cardiovascular & Oxygenation</h2>
+            <div className="mb-10 px-4 sm:px-8">
+              <h2 className="text-xl font-bold mb-4 text-gray-900">Cardiovascular & Oxygenation</h2>
               {/* Desktop Table */}
               <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
                 <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
@@ -455,8 +464,8 @@ export default function Home() {
             </div>
 
             {/* Activity Table */}
-            <div className="mb-10 sm:mb-12 px-4 sm:px-6">
-              <h2 className="text-base sm:text-lg font-bold mb-2.5 text-gray-900">Activity</h2>
+            <div className="mb-10 px-4 sm:px-8">
+              <h2 className="text-xl font-bold mb-4 text-gray-900">Activity</h2>
               {/* Desktop Table */}
               <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
                 <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
