@@ -620,15 +620,22 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
           const normalizedKey = key.toLowerCase().trim()
           // Try exact match first
           if (normalized === normalizedKey) return true
-          // Try substring match in both directions
-          if (normalized.includes(normalizedKey) || normalizedKey.includes(normalized)) return true
-          // Special handling for SpO2 variations (must contain "spo2" or "oxygen saturation", not just "sp")
+          // Try substring match in both directions (but be careful with "sp" to avoid matching "respiratory")
+          // Only do substring match if it's not a generic "sp" that could match "respiratory"
+          if (normalizedKey.length > 2 && normalizedKey !== 'sp') {
+            if (normalized.includes(normalizedKey) || normalizedKey.includes(normalized)) return true
+          }
+          // Special handling for SpO2 variations (must contain "spo2" or "oxygen saturation")
           if (normalizedKey.includes('spo2') || normalizedKey.includes('oxygen saturation')) {
             const normalizedWithoutSpaces = normalized.replace(/\s+/g, ' ')
             const keyWithoutSpaces = normalizedKey.replace(/\s+/g, ' ')
             if (normalizedWithoutSpaces.includes(keyWithoutSpaces) || keyWithoutSpaces.includes(normalizedWithoutSpaces)) {
               return true
             }
+          }
+          // Allow "sp" to match only if normalized contains "spo2" (not "respiratory")
+          if (normalizedKey === 'sp' && normalized.includes('spo2')) {
+            return true
           }
           return false
         })
@@ -659,7 +666,20 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
             return n.includes('spo2') || n.includes('oxygen saturation')
           })
           if (spo2Candidates.length > 0) {
-            console.log(`[DoctorSummary] Found potential SpO2 candidates:`, spo2Candidates.map(m => `${m.metric} (normalized: "${normalizeMetricName(m.metric)}")`))
+            console.log(`[DoctorSummary] Found potential SpO2 candidates:`, spo2Candidates.map(m => `${m.metric} (normalized: "${normalizeMetricName(m.metric)}", value: ${m.result_display})`))
+            // Try to match each candidate
+            for (const candidate of spo2Candidates) {
+              const n = normalizeMetricName(candidate.metric)
+              console.log(`[DoctorSummary] Testing candidate "${candidate.metric}" (normalized: "${n}") against keys:`, metricDef.keys)
+              for (const key of metricDef.keys) {
+                const normalizedKey = key.toLowerCase().trim()
+                const exactMatch = n === normalizedKey
+                const substringMatch = normalizedKey.length > 2 && normalizedKey !== 'sp' && (n.includes(normalizedKey) || normalizedKey.includes(n))
+                const spo2Match = (normalizedKey.includes('spo2') || normalizedKey.includes('oxygen saturation')) && 
+                                  (n.includes('spo2') || n.includes('oxygen saturation'))
+                console.log(`[DoctorSummary]   Key "${key}" (normalized: "${normalizedKey}"): exact=${exactMatch}, substring=${substringMatch}, spo2=${spo2Match}`)
+              }
+            }
           } else {
             console.log(`[DoctorSummary] No SpO2 candidates found in cardiovascular metrics`)
           }
