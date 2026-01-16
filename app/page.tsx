@@ -79,13 +79,13 @@ export default function Home() {
 
       <main className="max-w-6xl mx-auto px-4 sm:px-8 py-10 sm:py-12">
         {/* Hero */}
-        <div className="mb-12 text-center">
+        <div className="mb-16 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-5 tracking-tight">
             Turn your wearable data into a doctor-ready report — in seconds.
           </h1>
           
           {/* Primary CTA */}
-          <div className="mb-4">
+          <div className="mb-2">
             {!user ? (
               <Link href="/login" className="inline-block">
                 <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
@@ -104,7 +104,7 @@ export default function Home() {
           </div>
 
           {/* Microcopy */}
-          <p className="text-sm text-gray-600 mb-3">
+          <p className="text-sm text-gray-600 mb-1.5">
             Connect your wearable → get a lab-style report → share with your doctor or AI
           </p>
 
@@ -124,27 +124,25 @@ export default function Home() {
           
           <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
             {/* Report Header */}
-            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-4">
-              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2">Wearable Health Summary Report</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
-                <p><span className="font-medium text-gray-700">Patient email:</span> example@email.com</p>
-                <p><span className="font-medium text-gray-700">Report date:</span> {new Date().toLocaleDateString()}</p>
-                <p><span className="font-medium text-gray-700">7 Days values:</span> Jan 1, 2026 – Jan 7, 2026 (7 days)</p>
-                <p><span className="font-medium text-gray-700">30 Days Reference Range:</span> Dec 2, 2025 – Jan 1, 2026 (30 days)</p>
+            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-3">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-1.5">Wearable Health Summary Report</h2>
+              <div className="text-xs text-gray-600 space-y-1">
+                <p><span className="font-medium text-gray-700">Patient email:</span> example@email.com • <span className="font-medium text-gray-700">Report date:</span> {new Date().toLocaleDateString()}</p>
+                <p><span className="font-medium text-gray-700">7 Days values:</span> Jan 1, 2026 – Jan 7, 2026 (7 days) • <span className="font-medium text-gray-700">30 Days Reference Range:</span> Dec 2, 2025 – Jan 1, 2026 (30 days)</p>
               </div>
             </div>
 
             {/* Flag Summary */}
-            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-2">
-              <div className="flex flex-wrap items-center gap-3 text-xs text-gray-700">
-                <span className="font-semibold text-gray-900">Flag summary:</span>
+            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-1.5">
+              <div className="flex flex-wrap items-center gap-2.5 text-[11px] text-gray-600">
+                <span className="font-medium text-gray-700">Flag summary:</span>
                 <span className="flex items-center gap-1">
-                  <span className="inline-block w-2 h-2 rounded-full bg-yellow-400"></span>
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
                   <span>6 Above Range</span>
                 </span>
                 <span className="text-gray-400">•</span>
                 <span className="flex items-center gap-1">
-                  <span className="inline-block w-2 h-2 rounded-full bg-orange-400"></span>
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-orange-400"></span>
                   <span>5 Below Range</span>
                 </span>
               </div>
@@ -152,7 +150,7 @@ export default function Home() {
 
             {/* Sleep Table */}
             <div className="mb-6 sm:mb-8 px-4 sm:px-6">
-              <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900 px-4 sm:px-0">Sleep Summary</h2>
+              <h2 className="text-base sm:text-lg font-bold mb-1.5 text-gray-900">Sleep Summary</h2>
               {/* Desktop Table */}
               <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
                 <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
@@ -305,7 +303,7 @@ export default function Home() {
 
             {/* Cardiovascular & Oxygenation Table */}
             <div className="mb-6 sm:mb-8 px-4 sm:px-6">
-              <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900">Cardiovascular & Oxygenation</h2>
+              <h2 className="text-base sm:text-lg font-bold mb-1.5 text-gray-900">Cardiovascular & Oxygenation</h2>
               {/* Desktop Table */}
               <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
                 <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
@@ -462,7 +460,7 @@ export default function Home() {
 
             {/* Activity Table */}
             <div className="mb-6 sm:mb-8 px-4 sm:px-6">
-              <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900">Activity</h2>
+              <h2 className="text-base sm:text-lg font-bold mb-1.5 text-gray-900">Activity</h2>
               {/* Desktop Table */}
               <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
                 <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
