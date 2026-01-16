@@ -479,10 +479,6 @@ export default function ReportPage() {
             <Clipboard className="h-4 w-4" />
             Copy for AI
           </Button>
-          <Button variant="secondary" onClick={handleEmailShare}>
-            <Mail className="h-4 w-4" />
-            Share
-          </Button>
           <Button variant="ghost" onClick={() => router.push('/app')}>
             <ArrowLeft className="h-4 w-4" />
             Back
@@ -510,34 +506,50 @@ export default function ReportPage() {
           </div>
         </div>
 
-        {/* Executive Summary */}
+        {/* Flag Summary */}
         {summary && (() => {
           const allRows = [...summary.sleepTable, ...summary.cardiovascularTable, ...summary.activityTable]
-          const flaggedCount = allRows.filter(r => r.flag).length
+          const flaggedRows = allRows.filter(r => r.flag)
+          const aboveRangeCount = flaggedRows.filter(r => r.flag === 'Above Range').length
+          const belowRangeCount = flaggedRows.filter(r => r.flag === 'Below Range').length
           const sleepFlagged = summary.sleepTable.filter(r => r.flag).length
           const cardioFlagged = summary.cardiovascularTable.filter(r => r.flag).length
           const activityFlagged = summary.activityTable.filter(r => r.flag).length
           
+          if (flaggedRows.length === 0) {
+            return null
+          }
+          
           return (
-            <div className="mb-8 print:mb-6 border border-gray-200 rounded-sm bg-gray-50 p-6">
-              <h2 className="text-base font-semibold mb-4 text-gray-900">Executive Summary</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{flaggedCount}</div>
-                  <div className="text-xs text-gray-600 mt-1">Flagged Metrics</div>
+            <div className="mb-8 print:mb-6 border-b border-gray-200 pb-6">
+              <div className="flex flex-wrap items-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-bold text-gray-900">{flaggedRows.length}</span>
+                  <span className="text-sm font-medium text-gray-700">Flagged Metrics</span>
                 </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{sleepFlagged}</div>
-                  <div className="text-xs text-gray-600 mt-1">Sleep</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{cardioFlagged}</div>
-                  <div className="text-xs text-gray-600 mt-1">Cardiovascular</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{activityFlagged}</div>
-                  <div className="text-xs text-gray-600 mt-1">Activity</div>
-                </div>
+                {aboveRangeCount > 0 && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="inline-block w-3 h-3 rounded-full bg-yellow-400"></span>
+                    <span className="text-sm text-gray-600">{aboveRangeCount} Above Range</span>
+                  </div>
+                )}
+                {belowRangeCount > 0 && (
+                  <div className="flex items-center gap-1.5">
+                    <span className="inline-block w-3 h-3 rounded-full bg-orange-400"></span>
+                    <span className="text-sm text-gray-600">{belowRangeCount} Below Range</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                {sleepFlagged > 0 && (
+                  <span>{sleepFlagged} Sleep</span>
+                )}
+                {cardioFlagged > 0 && (
+                  <span>{cardioFlagged} Cardiovascular</span>
+                )}
+                {activityFlagged > 0 && (
+                  <span>{activityFlagged} Activity</span>
+                )}
               </div>
             </div>
           )
