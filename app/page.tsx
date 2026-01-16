@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { ArrowRight, ShieldCheck, FileCheck, CheckCircle2, FileDown, Sparkles } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 export default function Home() {
   const [user, setUser] = useState<any>(null)
@@ -77,87 +77,41 @@ export default function Home() {
         </div>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-8 py-12 sm:py-16">
+      <main className="max-w-6xl mx-auto px-4 sm:px-8 py-8 sm:py-10">
         {/* Hero */}
-        <div className="mb-8 text-center">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 tracking-tight">
+        <div className="mb-10 text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 tracking-tight">
             Turn your wearable data into a doctor-ready report — in seconds.
           </h1>
-        </div>
-
-        {/* Primary CTA with 100% free */}
-        <div className="text-center mb-8">
-          {!user ? (
-            <div className="space-y-3">
+          
+          {/* Primary CTA */}
+          <div className="mb-2">
+            {!user ? (
               <Link href="/login" className="inline-block">
                 <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
                   Generate free report
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </Link>
-              <div className="space-y-1">
-                <p className="text-sm font-semibold text-gray-900">100% free</p>
-                <p className="text-xs text-gray-500">No account. No password.</p>
-              </div>
-            </div>
-          ) : (
-            <Link href="/app" className="inline-block">
-              <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
-                Generate free report
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </Link>
-          )}
-        </div>
+            ) : (
+              <Link href="/app" className="inline-block">
+                <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
+                  Generate free report
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </Link>
+            )}
+          </div>
 
-        {/* How it works */}
-        <div className="mb-12">
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-6 sm:gap-8 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900">1.</span>
-              <span>Connect wearable</span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-gray-400 hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900">2.</span>
-              <span>Generate report</span>
-            </div>
-            <ArrowRight className="w-4 h-4 text-gray-400 hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900">3.</span>
-              <span>Share (AI / PDF)</span>
-            </div>
-          </div>
-        </div>
+          {/* Microcopy */}
+          <p className="text-sm text-gray-600 mb-1.5">
+            Connect your wearable → get a lab-style report → share with your doctor or AI
+          </p>
 
-        {/* Share options - Secondary */}
-        <div className="mb-12 text-center">
-          <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-            <div className="bg-white border border-gray-200 rounded-md px-5 py-4 hover:border-gray-400 hover:shadow-sm transition-all cursor-pointer">
-              <Sparkles className="w-5 h-5 text-gray-700 mx-auto mb-2" />
-              <div className="text-sm font-medium text-gray-900">Copy for AI analysis</div>
-            </div>
-            <div className="bg-white border border-gray-200 rounded-md px-5 py-4 hover:border-gray-400 hover:shadow-sm transition-all cursor-pointer">
-              <FileDown className="w-5 h-5 text-gray-700 mx-auto mb-2" />
-              <div className="text-sm font-medium text-gray-900">Download PDF</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Minimal features */}
-        <div className="flex flex-wrap justify-center gap-8 mb-12 text-sm text-gray-500">
-          <div className="flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-gray-400" />
-            <span>Secure OAuth</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <FileCheck className="w-4 h-4 text-gray-400" />
-            <span>Lab-style format</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-gray-400" />
-            <span>No password</span>
-          </div>
+          {/* Trust line */}
+          <p className="text-xs text-gray-500">
+            100% free • Secure OAuth • No password
+          </p>
         </div>
 
         {/* Example Report - Always Visible */}
