@@ -47,8 +47,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       <header className="border-b border-gray-300">
-        <div className="max-w-5xl mx-auto px-8 py-6 flex justify-between items-center">
-          <div className="flex gap-8">
+        <div className="max-w-5xl mx-auto px-4 sm:px-8 py-4 sm:py-6 flex justify-between items-center">
+          <div className="flex gap-4 sm:gap-8">
             <Link href="/privacy" className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wide">
               Privacy
             </Link>
@@ -88,18 +88,18 @@ export default function Home() {
         </div>
 
         {/* Sharing options - Compact, before example */}
-        <div className="mb-10 text-center bg-gray-50 border border-gray-200 rounded-lg p-5">
+        <div className="mb-10 text-center bg-gray-50 border border-gray-200 rounded-lg p-4 sm:p-5">
           <h3 className="text-sm font-semibold text-gray-900 mb-2">Share & Analyze</h3>
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             <div className="bg-white border border-blue-200 rounded-md px-4 py-3 hover:border-blue-400 hover:shadow-sm transition-all cursor-pointer">
               <Mail className="w-4 h-4 text-blue-600 mx-auto mb-1.5" />
               <div className="text-xs font-medium text-gray-900">Email Doctor</div>
             </div>
-            <div className="bg-white border border-green-200 rounded-md px-4 py-3 hover:border-green-400 hover:shadow-sm transition-all cursor-pointer">
+            <div className="bg-white border border-gray-200 rounded-md px-4 py-3 hover:border-gray-400 hover:shadow-sm transition-all cursor-pointer">
               <div className="flex items-center justify-center mb-1.5">
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 2H4C2.9 2 2 2.9 2 4V16C2 17.1 2.9 18 4 18H8L12 22L16 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z" fill="#10A37F"/>
-                  <path d="M7 9H17M7 13H15" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                  <path d="M22.2819 9.8211C22.2819 9.8211 20.2171 4.6781 15.3719 2.1781C10.5267 -0.3219 4.28193 0.6781 1.78193 5.5231C-0.71807 10.3681 0.28193 16.6231 5.12693 19.1231C9.97193 21.6231 15.1269 19.5581 17.6269 14.7131C20.1269 9.8681 22.2819 9.8211 22.2819 9.8211Z" fill="#10A37F"/>
+                  <path d="M12.7819 9.8211C12.7819 9.8211 11.2171 7.1781 8.37193 6.1781C5.52693 5.1781 2.78193 6.3231 1.78193 9.1681C0.78193 12.0131 1.92693 14.7581 4.77193 15.7581C7.61693 16.7581 10.1269 15.1931 11.1269 12.3481C12.1269 9.5031 12.7819 9.8211 12.7819 9.8211Z" fill="white"/>
                 </svg>
               </div>
               <div className="text-xs font-medium text-gray-900">Copy for AI</div>
@@ -115,17 +115,17 @@ export default function Home() {
         <div className="mb-10">
           <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
             {/* Report Header */}
-            <div className="bg-gray-50 border-b border-gray-200 px-6 py-4">
-              <h2 className="text-lg font-bold text-gray-900 mb-2">Wearable Health Summary Report</h2>
+            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-4">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2">Wearable Health Summary Report</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600">
                 <p><span className="font-medium text-gray-700">Patient email:</span> example@email.com</p>
                 <p><span className="font-medium text-gray-700">Report date:</span> {new Date().toLocaleDateString()}</p>
               </div>
             </div>
 
-            {/* Report Table - Immediately Visible */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm" style={{ tableLayout: 'fixed', minWidth: '700px' }}>
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                 <colgroup>
                   <col style={{ width: '28%' }} />
                   <col style={{ width: '24%' }} />
@@ -180,24 +180,97 @@ export default function Home() {
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-3 p-4">
+              <div className="border border-gray-200 p-4 bg-white rounded">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="font-semibold text-sm text-gray-900 flex-1">Sleep Duration</div>
+                  <div className="text-sm ml-2"></div>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">8h 26m</span></div>
+                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">7h 30m – 9h 0m</span></div>
+                </div>
+              </div>
+              <div className="border border-gray-200 p-4 bg-white rounded">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="font-semibold text-sm text-gray-900 flex-1">Resting Heart Rate</div>
+                  <div className="text-sm ml-2">
+                    <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
+                  </div>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">95 bpm</span></div>
+                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">55–65 bpm</span></div>
+                </div>
+              </div>
+              <div className="border border-gray-200 p-4 bg-white rounded">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="font-semibold text-sm text-gray-900 flex-1">Steps</div>
+                  <div className="text-sm ml-2"></div>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">8,500 steps</span></div>
+                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">7,000–10,000 steps</span></div>
+                </div>
+              </div>
+              <div className="border border-gray-200 p-4 bg-white rounded">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="font-semibold text-sm text-gray-900 flex-1">Deep Sleep</div>
+                  <div className="text-sm ml-2">
+                    <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
+                  </div>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">10.5% (52m)</span></div>
+                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">12.0–18.0% (1h 0m – 1h 30m)</span></div>
+                </div>
+              </div>
+              <div className="border border-gray-200 p-4 bg-white rounded">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="font-semibold text-sm text-gray-900 flex-1">Oxygen Saturation (SpO2)</div>
+                  <div className="text-sm ml-2">
+                    <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
+                  </div>
+                </div>
+                <div className="space-y-1 text-sm">
+                  <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">94.5%</span></div>
+                  <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">96.0–99.0%</span></div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Expand for more */}
           <div className="mt-6 text-center">
             <button
               onClick={() => setShowFullExample(!showFullExample)}
-              className="px-6 py-2.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-sm shadow-sm"
+              className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 rounded-md transition-colors inline-flex items-center gap-2 text-sm shadow-sm"
             >
-              {showFullExample ? 'Hide' : 'Get your complete report'}
-              <ArrowRight className="w-4 h-4" />
+              {showFullExample ? 'Hide example' : 'View full example'}
             </button>
           </div>
         </div>
 
         {/* CTA - Immediately after example */}
         <div className="text-center mb-12">
-          {!user && (
-            <Link href="/login" className="inline-block">
+          {!user ? (
+            <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
+              <Link href="/login" className="inline-block">
+                <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
+                  Get your complete report
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </Link>
+              <Link href="/app" className="inline-block">
+                <button className="px-8 py-3.5 bg-white border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-sm">
+                  Sign in to dashboard
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <Link href="/app" className="inline-block">
               <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
                 Generate your report
                 <ArrowRight className="w-4 h-4" />
