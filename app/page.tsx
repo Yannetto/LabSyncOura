@@ -81,7 +81,7 @@ export default function Home() {
         {/* Hero */}
         <div className="mb-16 text-center max-w-4xl mx-auto">
           {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-10 tracking-tight leading-tight">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-10 tracking-tight leading-tight whitespace-nowrap">
             Doctor-ready wearable reports in seconds.
           </h1>
           
