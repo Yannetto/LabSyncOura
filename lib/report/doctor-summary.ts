@@ -69,15 +69,26 @@ function parseReferenceRange(refRange: string): { lower: number; upper: number }
     return { lower, upper }
   }
   
-  // Try to parse duration strings like "7h 30m" to minutes
+  // Try to parse duration strings like "7h 30m" or "3 min" to minutes
   const parseDuration = (str: string): number | null => {
+    // Handle "3 min" format (standalone minutes)
+    const minMatch = str.match(/(\d+)\s*min(?!\w)/) // Match "min" but not "minutes" or "minute"
+    if (minMatch) {
+      return parseInt(minMatch[1])
+    }
+    
+    // Handle "7h 30m" format (hours and minutes)
     const hMatch = str.match(/(\d+)\s*h/)
-    // Try "min" first, then "m" (but not "ms" to avoid matching milliseconds)
-    const minMatch = str.match(/(\d+)\s*min/)
     const mMatch = str.match(/(\d+)\s*m(?!s)/) // Match "m" but not "ms"
     const hours = hMatch ? parseInt(hMatch[1]) : 0
-    const minutes = minMatch ? parseInt(minMatch[1]) : (mMatch ? parseInt(mMatch[1]) : 0)
-    return hours * 60 + minutes
+    const minutes = mMatch ? parseInt(mMatch[1]) : 0
+    
+    // Only return if we found at least one component
+    if (hours > 0 || minutes > 0) {
+      return hours * 60 + minutes
+    }
+    
+    return null
   }
   
   const lowerMinutes = parseDuration(lowerStr)
@@ -100,15 +111,23 @@ function parseResultValue(result: string): number | null {
   const num = parseFloat(result)
   if (!isNaN(num)) return num
   
-  // Try duration parsing (e.g., "7h 30m" -> minutes)
+  // Try duration parsing (e.g., "7h 30m" or "3 min" -> minutes)
+  // Handle "3 min" format first (standalone minutes)
+  const minMatch = result.match(/(\d+)\s*min(?!\w)/) // Match "min" but not "minutes" or "minute"
+  if (minMatch) {
+    return parseInt(minMatch[1])
+  }
+  
+  // Handle "7h 30m" format (hours and minutes)
   const hMatch = result.match(/(\d+)\s*h/)
-  // Try "min" first, then "m" (but not "ms" to avoid matching milliseconds)
-  const minMatch = result.match(/(\d+)\s*min/)
   const mMatch = result.match(/(\d+)\s*m(?!s)/) // Match "m" but not "ms"
-  if (hMatch || minMatch || mMatch) {
+  if (hMatch || mMatch) {
     const hours = hMatch ? parseInt(hMatch[1]) : 0
-    const minutes = minMatch ? parseInt(minMatch[1]) : (mMatch ? parseInt(mMatch[1]) : 0)
-    return hours * 60 + minutes
+    const minutes = mMatch ? parseInt(mMatch[1]) : 0
+    // Only return if we found at least one component
+    if (hours > 0 || minutes > 0) {
+      return hours * 60 + minutes
+    }
   }
   
   // Try percentage (e.g., "85.5%")
@@ -154,11 +173,33 @@ function computeFlag(metricName: string, result: string, referenceRange: string)
     return '' // Can't compute flag
   }
   
+  // Handle zero ranges (e.g., "0 min – 0 min")
+  if (refRange.lower === 0 && refRange.upper === 0) {
+    if (resultNum > 0) {
+      return 'Above Range'
+    }
+    return '' // Zero result with zero range = no flag
+  }
+  
+  // Validate range is sensible
+  if (refRange.lower > refRange.upper) {
+    console.warn(`[DoctorSummary] Invalid reference range for ${metricName}: ${refRange.lower} > ${refRange.upper}`)
+    return ''
+  }
+  
   // Return specific text for above or below range
   if (resultNum > refRange.upper) {
+    // Log suspicious flagging for debugging
+    if (resultNum > refRange.upper * 2) {
+      console.warn(`[DoctorSummary] Large deviation for ${metricName}: ${resultNum} vs range ${refRange.lower}–${refRange.upper}`)
+    }
     return 'Above Range'
   }
   if (resultNum < refRange.lower) {
+    // Log suspicious flagging for debugging
+    if (resultNum < refRange.lower / 2) {
+      console.warn(`[DoctorSummary] Large deviation for ${metricName}: ${resultNum} vs range ${refRange.lower}–${refRange.upper}`)
+    }
     return 'Below Range'
   }
   
@@ -641,10 +682,6 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
         name: 'Breathing Disturbance Index'
       },
       { 
-        keys: ['temperature deviation', 'readiness temperature deviation'],
-        name: 'Temperature Deviation'
-      },
-      { 
         keys: ['temperature trend deviation', 'readiness temperature trend deviation'],
         name: 'Temperature Trend Deviation'
       },
@@ -693,6 +730,16 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       })
       
       if (found) {
+        // Skip metrics with zero ranges (e.g., "0 min – 0 min")
+        const refRange = parseReferenceRange(found.reference_display)
+        if (refRange && refRange.lower === 0 && refRange.upper === 0) {
+          const resultNum = parseResultValue(found.result_display)
+          // Only skip if result is also zero
+          if (resultNum === 0 || resultNum === null) {
+            continue // Skip this metric
+          }
+        }
+        
         // Use the result_display as-is (it already includes units)
         // Compute flag only for metrics that are allowed to have flags
         const flag = computeFlag(found.metric, found.result_display, found.reference_display)
@@ -807,6 +854,32 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       })
       
       if (found) {
+        // Skip metrics with zero ranges (e.g., "0 min – 0 min")
+        const refRange = parseReferenceRange(found.reference_display)
+        if (refRange && refRange.lower === 0 && refRange.upper === 0) {
+          const resultNum = parseResultValue(found.result_display)
+          // Only skip if result is also zero
+          if (resultNum === 0 || resultNum === null) {
+            continue // Skip this metric
+          }
+        }
+        
+        // Validate total calories >= active calories
+        if (metricDef.name === 'Total Calories') {
+          const totalCal = parseResultValue(found.result_display)
+          // Find active calories for comparison
+          const activeCalMetric = metrics.find(m => {
+            const normalized = normalizeMetricName(m.metric)
+            return normalized.includes('active calories')
+          })
+          if (activeCalMetric && totalCal !== null) {
+            const activeCal = parseResultValue(activeCalMetric.result_display)
+            if (activeCal !== null && totalCal < activeCal) {
+              console.warn(`[DoctorSummary] Total calories (${totalCal}) is less than active calories (${activeCal}) - data quality issue`)
+            }
+          }
+        }
+        
         const flag = computeFlag(found.metric, found.result_display, found.reference_display)
         result.push({
           metric: metricDef.name,

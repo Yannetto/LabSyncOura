@@ -322,6 +322,27 @@ export function calculateReportMetrics(
   
   console.log(`[Report] Final reference data: ${finalReferenceData.length} records`)
   
+  // Helper to clean respiratory rate values (fix incorrectly stored data)
+  // If value is > 60, it's likely incorrectly stored (e.g., breaths/sec * 60 or some other error)
+  // Divide by 60 to get back to breaths/minute
+  // Returns null if value is implausible even after correction
+  const cleanRespiratoryRate = (value: number): number | null => {
+    let correctedValue = value
+    
+    if (value > 60) {
+      correctedValue = value / 60
+      console.warn(`[Report] Respiratory rate ${value} seems too high, dividing by 60 to get ${correctedValue} breaths/min`)
+    }
+    
+    // Validate reasonable range (8-30 breaths/min)
+    if (correctedValue >= 8 && correctedValue <= 30) {
+      return correctedValue
+    } else {
+      console.warn(`[Report] Respiratory rate ${correctedValue} is implausible (expected 8-30 breaths/min), filtering out`)
+      return null
+    }
+  }
+
   // Helper to get one value per day for a metric (average if multiple values per day)
   const getMetricValuesByDay = (data: DailyMetric[], metricKey: string): number[] => {
     // Group by day and get one value per day
@@ -335,7 +356,15 @@ export function calculateReportMetrics(
           if (!byDay[dayStr]) {
             byDay[dayStr] = []
           }
-          byDay[dayStr].push(value)
+          // Clean respiratory rate values if this is a respiratory rate metric
+          if (metricKey === 'sleep_respiratory_rate') {
+            const cleanedValue = cleanRespiratoryRate(value)
+            if (cleanedValue !== null) {
+              byDay[dayStr].push(cleanedValue)
+            }
+          } else {
+            byDay[dayStr].push(value)
+          }
         }
       })
     
