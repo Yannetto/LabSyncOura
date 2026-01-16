@@ -458,7 +458,7 @@ export default function ReportPage() {
           </Button>
           <Button variant="secondary" onClick={handleCopyToClipboard}>
             <Clipboard className="h-4 w-4" />
-            Copy for ChatGPT
+            Copy for AI
           </Button>
           <Button variant="secondary" onClick={handleEmailShare}>
             <Mail className="h-4 w-4" />
@@ -504,7 +504,7 @@ export default function ReportPage() {
               <h2 className="text-base font-semibold mb-4 text-gray-900">Executive Summary</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
-                  <div className="text-2xl font-bold text-red-600">{flaggedCount}</div>
+                  <div className="text-2xl font-bold text-amber-600">{flaggedCount}</div>
                   <div className="text-xs text-gray-600 mt-1">Flagged Metrics</div>
                 </div>
                 <div>
@@ -549,13 +549,19 @@ export default function ReportPage() {
                   {[...summary.sleepTable]
                     .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                     .map((row, idx) => (
-                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : 'border-b border-gray-100'}`} style={{ pageBreakInside: 'avoid' }}>
+                    <tr key={idx} className="border-b border-gray-100" style={{ pageBreakInside: 'avoid' }}>
                       <td className="px-5 py-3 text-sm font-medium border-r border-gray-200">{row.metric}</td>
-                      <td className={`px-5 py-3 text-sm border-r border-gray-200 ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
+                      <td className="px-5 py-3 text-sm border-r border-gray-200">
                         {row.value}
                       </td>
                       <td className="px-5 py-3 text-sm text-gray-600 border-r border-gray-200">{row.referenceRange}</td>
-                      <td className={`px-5 py-3 text-center text-sm ${row.flag ? 'text-red-600 font-medium' : 'text-gray-400'}`}>{row.flag || '—'}</td>
+                      <td className="px-5 py-3 text-center text-sm">
+                        {row.flag ? (
+                          <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">{row.flag}</span>
+                        ) : (
+                          <span className="text-gray-400">—</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -566,15 +572,15 @@ export default function ReportPage() {
               {[...summary.sleepTable]
                 .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                 .map((row, idx) => (
-                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-red-500 bg-red-50' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
+                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-amber-400' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
                     {row.flag && (
-                      <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded ml-2">{row.flag}</span>
                     )}
                   </div>
                   <div className="space-y-1.5 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : 'text-gray-900'}`}>{row.value}</span></div>
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium text-gray-900">{row.value}</span></div>
                     <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">{row.referenceRange}</span></div>
                   </div>
                 </div>
@@ -608,13 +614,19 @@ export default function ReportPage() {
                   {[...summary.cardiovascularTable]
                     .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                     .map((row, idx) => (
-                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : 'border-b border-gray-100'}`} style={{ pageBreakInside: 'avoid' }}>
+                    <tr key={idx} className="border-b border-gray-100" style={{ pageBreakInside: 'avoid' }}>
                       <td className="px-5 py-3 text-sm font-medium border-r border-gray-200">{row.metric}</td>
-                      <td className={`px-5 py-3 text-sm border-r border-gray-200 ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
+                      <td className="px-5 py-3 text-sm border-r border-gray-200">
                         {row.value}
                       </td>
                       <td className="px-5 py-3 text-sm text-gray-600 border-r border-gray-200">{row.referenceRange}</td>
-                      <td className={`px-5 py-3 text-center text-sm ${row.flag ? 'text-red-600 font-medium' : 'text-gray-400'}`}>{row.flag || '—'}</td>
+                      <td className="px-5 py-3 text-center text-sm">
+                        {row.flag ? (
+                          <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">{row.flag}</span>
+                        ) : (
+                          <span className="text-gray-400">—</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -625,15 +637,15 @@ export default function ReportPage() {
               {[...summary.cardiovascularTable]
                 .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                 .map((row, idx) => (
-                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-red-500 bg-red-50' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
+                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-amber-400' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
                     {row.flag && (
-                      <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded ml-2">{row.flag}</span>
                     )}
                   </div>
                   <div className="space-y-1.5 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : 'text-gray-900'}`}>{row.value}</span></div>
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium text-gray-900">{row.value}</span></div>
                     <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">{row.referenceRange}</span></div>
                   </div>
                 </div>
@@ -667,13 +679,19 @@ export default function ReportPage() {
                   {[...summary.activityTable]
                     .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                     .map((row, idx) => (
-                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : 'border-b border-gray-100'}`} style={{ pageBreakInside: 'avoid' }}>
+                    <tr key={idx} className="border-b border-gray-100" style={{ pageBreakInside: 'avoid' }}>
                       <td className="px-5 py-3 text-sm font-medium border-r border-gray-200">{row.metric}</td>
-                      <td className={`px-5 py-3 text-sm border-r border-gray-200 ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
+                      <td className="px-5 py-3 text-sm border-r border-gray-200">
                         {row.value}
                       </td>
                       <td className="px-5 py-3 text-sm text-gray-600 border-r border-gray-200">{row.referenceRange}</td>
-                      <td className={`px-5 py-3 text-center text-sm ${row.flag ? 'text-red-600 font-medium' : 'text-gray-400'}`}>{row.flag || '—'}</td>
+                      <td className="px-5 py-3 text-center text-sm">
+                        {row.flag ? (
+                          <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">{row.flag}</span>
+                        ) : (
+                          <span className="text-gray-400">—</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -684,15 +702,15 @@ export default function ReportPage() {
               {[...summary.activityTable]
                 .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                 .map((row, idx) => (
-                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-red-500 bg-red-50' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
+                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-amber-400' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
                     {row.flag && (
-                      <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded ml-2">{row.flag}</span>
                     )}
                   </div>
                   <div className="space-y-1.5 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : 'text-gray-900'}`}>{row.value}</span></div>
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium text-gray-900">{row.value}</span></div>
                     <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">{row.referenceRange}</span></div>
                   </div>
                 </div>
@@ -705,8 +723,8 @@ export default function ReportPage() {
         <div className="mt-12 mb-8 p-5 bg-gray-50 border border-gray-200 rounded-sm">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">Legend</h3>
           <div className="text-xs text-gray-700 space-y-1.5">
-            <p><span className="font-medium text-red-600">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
-            <p><span className="font-medium text-red-600">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
+            <p><span className="font-medium text-amber-700">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
+            <p><span className="font-medium text-amber-700">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
             <p><span className="font-medium text-gray-900">—</span> — The value is within your normal reference range.</p>
             <p className="text-gray-600 mt-3 pt-3 border-t border-gray-200">Reference ranges are calculated from your personal historical data (30-day period) using the interquartile range method.</p>
           </div>
@@ -811,14 +829,20 @@ export default function ReportPage() {
           }
           
           /* Ensure colors print */
-          .bg-red-50 {
-            background-color: #fef2f2 !important;
+          .bg-amber-100 {
+            background-color: #fef3c7 !important;
             print-color-adjust: exact;
             -webkit-print-color-adjust: exact;
           }
           
-          .text-red-600 {
-            color: #dc2626 !important;
+          .text-amber-700 {
+            color: #b45309 !important;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          
+          .text-amber-600 {
+            color: #d97706 !important;
             print-color-adjust: exact;
             -webkit-print-color-adjust: exact;
           }

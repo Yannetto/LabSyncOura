@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { ArrowRight, Shield, FileText, CheckCircle2, Printer, Mail, Clipboard } from 'lucide-react'
+import { ArrowRight, Shield, FileText, CheckCircle2, Printer, Mail, Clipboard, Bot } from 'lucide-react'
 
 export default function Home() {
   const [user, setUser] = useState<any>(null)
@@ -87,6 +87,31 @@ export default function Home() {
           </p>
         </div>
 
+        {/* Sharing options - Prominent, before example */}
+        <div className="mb-12 text-center bg-gradient-to-br from-gray-50 to-white border-2 border-gray-200 rounded-xl p-8 shadow-sm">
+          <h3 className="text-xl font-bold text-gray-900 mb-3">Share & Analyze Your Report</h3>
+          <p className="text-sm text-gray-600 mb-6">Export to share with your doctor or analyze with AI</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="bg-white border-2 border-blue-200 rounded-lg px-6 py-5 hover:border-blue-400 hover:shadow-md transition-all cursor-pointer">
+              <Mail className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+              <div className="text-sm font-semibold text-gray-900">Email Doctor</div>
+              <div className="text-xs text-gray-500 mt-1">Share via email</div>
+            </div>
+            <div className="bg-white border-2 border-green-200 rounded-lg px-6 py-5 hover:border-green-400 hover:shadow-md transition-all cursor-pointer">
+              <div className="flex items-center justify-center mb-2">
+                <Bot className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="text-sm font-semibold text-gray-900">Copy for AI</div>
+              <div className="text-xs text-gray-500 mt-1">ChatGPT ready</div>
+            </div>
+            <div className="bg-white border-2 border-gray-200 rounded-lg px-6 py-5 hover:border-gray-400 hover:shadow-md transition-all cursor-pointer">
+              <Printer className="w-6 h-6 text-gray-700 mx-auto mb-2" />
+              <div className="text-sm font-semibold text-gray-900">Print to PDF</div>
+              <div className="text-xs text-gray-500 mt-1">Save as document</div>
+            </div>
+          </div>
+        </div>
+
         {/* Example Report - The Hero */}
         <div className="mb-10">
           <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
@@ -121,31 +146,37 @@ export default function Home() {
                     <td className="px-5 py-3.5 font-medium border-r border-gray-100">Sleep Duration</td>
                     <td className="px-5 py-3.5 border-r border-gray-100">8h 26m</td>
                     <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">7h 30m – 9h 0m</td>
-                    <td className="px-5 py-3.5 text-center"></td>
+                    <td className="px-5 py-3.5 text-center text-gray-400">—</td>
                   </tr>
-                  <tr className="bg-red-50 border-b border-gray-100">
+                  <tr className="border-b border-gray-100">
                     <td className="px-5 py-3.5 font-medium border-r border-gray-100">Resting Heart Rate</td>
-                    <td className="px-5 py-3.5 border-r border-gray-100 font-semibold text-red-600">95 bpm</td>
+                    <td className="px-5 py-3.5 border-r border-gray-100">95 bpm</td>
                     <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">55–65 bpm</td>
-                    <td className="px-5 py-3.5 text-center text-red-600 font-medium">Above Range</td>
+                    <td className="px-5 py-3.5 text-center">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Above Range</span>
+                    </td>
                   </tr>
                   <tr className="border-b border-gray-100">
                     <td className="px-5 py-3.5 font-medium border-r border-gray-100">Steps</td>
                     <td className="px-5 py-3.5 border-r border-gray-100">8,500 steps</td>
                     <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">7,000–10,000 steps</td>
-                    <td className="px-5 py-3.5 text-center"></td>
+                    <td className="px-5 py-3.5 text-center text-gray-400">—</td>
                   </tr>
-                  <tr className="bg-gray-50 border-b border-gray-100">
+                  <tr className="border-b border-gray-100">
                     <td className="px-5 py-3.5 font-medium border-r border-gray-100">Deep Sleep</td>
-                    <td className="px-5 py-3.5 border-r border-gray-100 font-semibold text-red-600">10.5% (52m)</td>
+                    <td className="px-5 py-3.5 border-r border-gray-100">10.5% (52m)</td>
                     <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">12.0–18.0% (1h 0m – 1h 30m)</td>
-                    <td className="px-5 py-3.5 text-center text-red-600 font-medium">Below Range</td>
+                    <td className="px-5 py-3.5 text-center">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                    </td>
                   </tr>
                   <tr>
                     <td className="px-5 py-3.5 font-medium border-r border-gray-100">Oxygen Saturation (SpO2)</td>
-                    <td className="px-5 py-3.5 border-r border-gray-100 font-semibold text-red-600">94.5%</td>
+                    <td className="px-5 py-3.5 border-r border-gray-100">94.5%</td>
                     <td className="px-5 py-3.5 text-gray-600 border-r border-gray-100">96.0–99.0%</td>
-                    <td className="px-5 py-3.5 text-center text-red-600 font-medium">Below Range</td>
+                    <td className="px-5 py-3.5 text-center">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -153,13 +184,13 @@ export default function Home() {
           </div>
 
           {/* Expand for more */}
-          <div className="mt-4 text-center">
+          <div className="mt-6 text-center">
             <button
               onClick={() => setShowFullExample(!showFullExample)}
-              className="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1.5 mx-auto transition-colors"
+              className="px-6 py-2.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-sm shadow-sm"
             >
-              {showFullExample ? 'Hide' : 'View'} complete example report
-              <ArrowRight className="w-3.5 h-3.5" />
+              {showFullExample ? 'Hide' : 'Get your complete report'}
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -174,29 +205,6 @@ export default function Home() {
               </button>
             </Link>
           )}
-        </div>
-
-        {/* Sharing options - Prominent */}
-        <div className="mb-16 text-center bg-gray-50 border border-gray-200 rounded-lg p-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Share Your Report</h3>
-          <p className="text-sm text-gray-600 mb-6">Export and share with your healthcare provider or analyze with AI</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <div className="bg-white border border-gray-300 rounded-md px-6 py-4 hover:border-gray-400 transition-colors">
-              <Mail className="w-5 h-5 text-gray-700 mx-auto mb-2" />
-              <div className="text-sm font-medium text-gray-900">Email Doctor</div>
-              <div className="text-xs text-gray-500 mt-1">Share via email</div>
-            </div>
-            <div className="bg-white border border-gray-300 rounded-md px-6 py-4 hover:border-gray-400 transition-colors">
-              <Clipboard className="w-5 h-5 text-gray-700 mx-auto mb-2" />
-              <div className="text-sm font-medium text-gray-900">Copy for ChatGPT</div>
-              <div className="text-xs text-gray-500 mt-1">AI analysis ready</div>
-            </div>
-            <div className="bg-white border border-gray-300 rounded-md px-6 py-4 hover:border-gray-400 transition-colors">
-              <Printer className="w-5 h-5 text-gray-700 mx-auto mb-2" />
-              <div className="text-sm font-medium text-gray-900">Print to PDF</div>
-              <div className="text-xs text-gray-500 mt-1">Save as document</div>
-            </div>
-          </div>
         </div>
 
         {/* Minimal features */}
@@ -254,31 +262,37 @@ export default function Home() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Time in Bed</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">9h 36m</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">8h 45m – 10h 15m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap"></td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Sleep Duration</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">6h 45m</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7h 30m – 9h 0m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                        <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                      </td>
                     </tr>
                     <tr>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Deep Sleep</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">10.5% (52m)</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">12.0–18.0% (1h 0m – 1h 30m)</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                        <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                      </td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Light Sleep</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">62.5% (5h 17m)</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">55.0–70.0% (4h 30m – 6h 0m)</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap"></td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
                     </tr>
                     <tr>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">REM Sleep</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">27.0% (2h 17m)</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">18.0–25.0% (1h 30m – 2h 15m)</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                        <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Above Range</span>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -298,7 +312,9 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Sleep Duration</div>
-                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                    </div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">6h 45m</span></div>
@@ -308,7 +324,9 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Deep Sleep</div>
-                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                    </div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">10.5% (52m)</span></div>
@@ -328,7 +346,9 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">REM Sleep</div>
-                    <div className="text-sm ml-2 text-red-600 font-medium">Above Range</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Above Range</span>
+                    </div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">27.0% (2h 17m)</span></div>
@@ -363,37 +383,45 @@ export default function Home() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Resting Heart Rate</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">95 bpm</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">55–65 bpm</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                        <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Above Range</span>
+                      </td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Lowest Night-time Heart Rate</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">45 bpm</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">42–50 bpm</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap"></td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
                     </tr>
                     <tr>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Night-time HRV</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">28 ms</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">35–50 ms</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                        <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                      </td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Oxygen Saturation (SpO2)</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">94.5%</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">96.0–99.0%</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                        <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                      </td>
                     </tr>
                     <tr>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Breathing Disturbance Index</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">8.2</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">5.0–8.0</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                        <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Above Range</span>
+                      </td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Temperature Deviation</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">-0.04°C</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">-0.2–0.2°C</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap"></td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
                     </tr>
                   </tbody>
                 </table>
@@ -403,7 +431,9 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Resting Heart Rate</div>
-                    <div className="text-sm ml-2 text-red-600 font-medium">Above Range</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Above Range</span>
+                    </div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">95 bpm</span></div>
@@ -423,7 +453,9 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Night-time HRV</div>
-                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                    </div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">28 ms</span></div>
@@ -433,7 +465,9 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Oxygen Saturation (SpO2)</div>
-                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                    </div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">94.5%</span></div>
@@ -443,7 +477,9 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Breathing Disturbance Index</div>
-                    <div className="text-sm ml-2 text-red-600 font-medium">Above Range</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Above Range</span>
+                    </div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">8.2</span></div>
@@ -488,13 +524,17 @@ export default function Home() {
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Steps</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">5,200 steps</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7,000–10,000 steps</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Below Range</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                        <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                      </td>
                     </tr>
                     <tr className="bg-gray-50">
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Sedentary Time</td>
                       <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">11h 30m</td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7h 30m – 10h 0m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-red-600 font-medium">Above Range</td>
+                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                        <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Above Range</span>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -504,7 +544,9 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Steps</div>
-                    <div className="text-sm ml-2 text-red-600 font-medium">Below Range</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Below Range</span>
+                    </div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">5,200 steps</span></div>
@@ -514,7 +556,9 @@ export default function Home() {
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Sedentary Time</div>
-                    <div className="text-sm ml-2 text-red-600 font-medium">Above Range</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">Above Range</span>
+                    </div>
                   </div>
                   <div className="space-y-1 text-sm">
                     <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">11h 30m</span></div>
@@ -528,9 +572,9 @@ export default function Home() {
             <div className="mt-8 p-4 bg-gray-50 border border-gray-300">
               <h3 className="text-sm font-bold text-gray-900 mb-2">Legend</h3>
               <div className="text-xs text-gray-700 space-y-1">
-                <p><span className="font-semibold text-red-600">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
-                <p><span className="font-semibold text-red-600">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
-                <p><span className="font-semibold">Blank</span> — The value is within your normal reference range.</p>
+                <p><span className="font-semibold text-amber-700">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
+                <p><span className="font-semibold text-amber-700">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
+                <p><span className="font-semibold">—</span> — The value is within your normal reference range.</p>
                 <p className="text-gray-600 mt-2">Reference ranges are calculated from your personal historical data (30-day period) using the interquartile range method.</p>
               </div>
             </div>
