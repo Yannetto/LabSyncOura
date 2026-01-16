@@ -104,13 +104,8 @@ export default function Home() {
           </div>
 
           {/* Microcopy */}
-          <p className="text-base text-gray-700 font-medium mb-2.5">
+          <p className="text-base text-gray-700 font-medium">
             Connect your wearable → get a lab-style report → share with your doctor or AI
-          </p>
-
-          {/* Trust line */}
-          <p className="text-xs text-gray-500">
-            100% free • Secure OAuth • No password
           </p>
         </div>
 
@@ -149,7 +144,7 @@ export default function Home() {
             </div>
 
             {/* Sleep Table */}
-            <div className="mb-6 sm:mb-8 px-4 sm:px-6">
+            <div className="mb-10 sm:mb-12 px-4 sm:px-6">
               <h2 className="text-base sm:text-lg font-bold mb-2.5 text-gray-900">Sleep Summary</h2>
               {/* Desktop Table */}
               <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
@@ -445,7 +440,7 @@ export default function Home() {
             </div>
 
             {/* Activity Table */}
-            <div className="mb-6 sm:mb-8 px-4 sm:px-6">
+            <div className="mb-10 sm:mb-12 px-4 sm:px-6">
               <h2 className="text-base sm:text-lg font-bold mb-2.5 text-gray-900">Activity</h2>
               {/* Desktop Table */}
               <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
