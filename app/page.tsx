@@ -169,19 +169,35 @@ export default function Home() {
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Flagged metrics first (sorted by flags) */}
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Deep Sleep</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">17.4% (1h 20m)</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">12.3–16.7%</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
+                        <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
+                      </td>
+                    </tr>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Light Sleep</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">60.6% (4h 47m)</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">61.6–73.3%</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
+                        <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
+                      </td>
+                    </tr>
+                    {/* Unflagged metrics (in backend order) */}
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Time in Bed</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">9h 36m</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">8h 45m – 10h 15m</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">9h 5m</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">8h 1m – 10h 9m</td>
                       <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Sleep Duration</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">6h 45m</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">7h 30m – 9h 0m</td>
-                      <td className="px-5 py-3.5 text-center text-sm">
-                        <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
-                      </td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">7h 53m</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">7h 10m – 9h 0m</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Sleep Latency</td>
@@ -196,25 +212,9 @@ export default function Home() {
                       <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
                     <tr className="border-b border-gray-100">
-                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Deep Sleep</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">10.5% (52m)</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">12.0–18.0% (1h 0m – 1h 30m)</td>
-                      <td className="px-5 py-3.5 text-center text-sm">
-                        <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">REM Sleep</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">27.0% (2h 17m)</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">18.0–25.0% (1h 30m – 2h 15m)</td>
-                      <td className="px-5 py-3.5 text-center text-sm">
-                        <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
-                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Light Sleep</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">62.5% (5h 17m)</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">55.0–70.0% (4h 30m – 6h 0m)</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">22.0% (1h 45m)</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">19.3–25.1%</td>
                       <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
                   </tbody>
@@ -222,26 +222,50 @@ export default function Home() {
               </div>
               {/* Mobile Cards */}
               <div className="md:hidden space-y-3">
+                {/* Flagged metrics first */}
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Deep Sleep</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">17.4% (1h 20m)</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">12.3–16.7%</span></div>
+                  </div>
+                </div>
+                <div className="border border-gray-300 p-4 bg-white">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-semibold text-sm text-gray-900 flex-1">Light Sleep</div>
+                    <div className="text-sm ml-2">
+                      <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">60.6% (4h 47m)</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">61.6–73.3%</span></div>
+                  </div>
+                </div>
+                {/* Unflagged metrics */}
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Time in Bed</div>
                     <div className="text-sm ml-2"></div>
                   </div>
                   <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">9h 36m</span></div>
-                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">8h 45m – 10h 15m</span></div>
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">9h 5m</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">8h 1m – 10h 9m</span></div>
                   </div>
                 </div>
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">Sleep Duration</div>
-                    <div className="text-sm ml-2">
-                      <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
-                    </div>
+                    <div className="text-sm ml-2"></div>
                   </div>
                   <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">6h 45m</span></div>
-                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">7h 30m – 9h 0m</span></div>
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">7h 53m</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">7h 10m – 9h 0m</span></div>
                   </div>
                 </div>
                 <div className="border border-gray-300 p-4 bg-white">
@@ -266,36 +290,12 @@ export default function Home() {
                 </div>
                 <div className="border border-gray-300 p-4 bg-white">
                   <div className="flex justify-between items-start mb-2">
-                    <div className="font-semibold text-sm text-gray-900 flex-1">Deep Sleep</div>
-                    <div className="text-sm ml-2">
-                      <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
-                    </div>
-                  </div>
-                  <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">10.5% (52m)</span></div>
-                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">12.0–18.0% (1h 0m – 1h 30m)</span></div>
-                  </div>
-                </div>
-                <div className="border border-gray-300 p-4 bg-white">
-                  <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">REM Sleep</div>
-                    <div className="text-sm ml-2">
-                      <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
-                    </div>
-                  </div>
-                  <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">27.0% (2h 17m)</span></div>
-                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">18.0–25.0% (1h 30m – 2h 15m)</span></div>
-                  </div>
-                </div>
-                <div className="border border-gray-300 p-4 bg-white">
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="font-semibold text-sm text-gray-900 flex-1">Light Sleep</div>
                     <div className="text-sm ml-2"></div>
                   </div>
                   <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">62.5% (5h 17m)</span></div>
-                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">55.0–70.0% (4h 30m – 6h 0m)</span></div>
+                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">22.0% (1h 45m)</span></div>
+                    <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">19.3–25.1%</span></div>
                   </div>
                 </div>
               </div>
@@ -322,49 +322,35 @@ export default function Home() {
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Flagged metrics first (sorted by flags) */}
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Resting Heart Rate</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">95 bpm</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">55–65 bpm</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">51 bpm</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">56–64 bpm</td>
                       <td className="px-5 py-3.5 text-center text-sm">
-                        <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
+                        <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
                       </td>
                     </tr>
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Lowest Night-time Heart Rate</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">45 bpm</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">42–50 bpm</td>
-                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
-                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Night-time HRV</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">28 ms</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">35–50 ms</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">51 bpm</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">56–64 bpm</td>
                       <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
                       </td>
+                    </tr>
+                    {/* Unflagged metrics (in backend order) */}
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Night-time HRV</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">67 ms</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">46–67 ms</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Respiratory Rate</td>
                       <td className="px-5 py-3.5 text-sm border-r border-gray-200">12 breaths/min</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">12–18 breaths/min</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">12–13 breaths/min</td>
                       <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
-                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Oxygen Saturation (SpO2)</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">94.5%</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">96.0–99.0%</td>
-                      <td className="px-5 py-3.5 text-center text-sm">
-                        <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
-                      </td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
-                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Breathing Disturbance Index</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">8.2</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">5.0–8.0</td>
-                      <td className="px-5 py-3.5 text-center text-sm">
-                        <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
-                      </td>
                     </tr>
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Temperature Trend Deviation</td>
@@ -479,11 +465,14 @@ export default function Home() {
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Flagged metrics first (sorted by flags) */}
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Steps</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">8,500 steps</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">7,000–10,000 steps</td>
-                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">8237 steps</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">2467–6008 steps</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
+                        <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
+                      </td>
                     </tr>
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Active Calories</td>
@@ -495,8 +484,8 @@ export default function Home() {
                     </tr>
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Total Calories</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">2,772 kcal</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">2,462–2,518 kcal</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">2772 kcal</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">2462–2518 kcal</td>
                       <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
                       </td>
@@ -510,19 +499,14 @@ export default function Home() {
                       </td>
                     </tr>
                     <tr className="border-b border-gray-100">
-                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">High Activity Time</td>
-                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">0 min</td>
-                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">0 min – 0 min</td>
-                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
-                    </tr>
-                    <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Medium Activity Time</td>
                       <td className="px-5 py-3.5 text-sm border-r border-gray-200">1h 3m</td>
                       <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">3 min – 18 min</td>
                       <td className="px-5 py-3.5 text-center text-sm">
-                        <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
+                        <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
                       </td>
                     </tr>
+                    {/* Unflagged metrics (in backend order) */}
                     <tr className="border-b border-gray-100">
                       <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Low Activity Time</td>
                       <td className="px-5 py-3.5 text-sm border-r border-gray-200">5h 2m</td>
