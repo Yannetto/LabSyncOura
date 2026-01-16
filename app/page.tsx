@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { ArrowRight, Shield, FileText, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, Shield, FileText, CheckCircle2, Printer, Mail, Clipboard } from 'lucide-react'
 
 export default function Home() {
   const [user, setUser] = useState<any>(null)
@@ -174,6 +174,25 @@ export default function Home() {
               </button>
             </Link>
           )}
+        </div>
+
+        {/* Sharing options */}
+        <div className="mb-12 text-center">
+          <p className="text-sm text-gray-600 mb-4">Share your report via:</p>
+          <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-600">
+            <div className="flex items-center gap-1.5">
+              <Printer className="w-3.5 h-3.5 text-gray-400" />
+              <span>Print to PDF</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Mail className="w-3.5 h-3.5 text-gray-400" />
+              <span>Email</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Clipboard className="w-3.5 h-3.5 text-gray-400" />
+              <span>Copy text</span>
+            </div>
+          </div>
         </div>
 
         {/* Minimal features */}

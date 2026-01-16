@@ -432,7 +432,7 @@ export default function AppPage() {
 
       <main className="max-w-5xl mx-auto px-8 py-12">
         <div className="mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Dashboard</h1>
           <p className="text-sm text-gray-600">Generate clinical lab-style reports from your Oura ring data</p>
         </div>
 
@@ -440,7 +440,7 @@ export default function AppPage() {
         <Card className="mb-8">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <h2 className="text-lg font-bold text-gray-900">Oura Connection</h2>
+              <h2 className="text-base font-semibold text-gray-900">Oura Connection</h2>
               <StatusBadge connected={isConnected || false} />
             </div>
             {isConnected && (
@@ -482,15 +482,7 @@ export default function AppPage() {
         {isConnected && (
           <Card className="mb-8">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-bold text-gray-900">Actions</h2>
-              <a
-                href="/debug"
-                target="_blank"
-                className="text-xs text-gray-600 hover:text-gray-900 flex items-center gap-1"
-              >
-                View Database Diagnostic
-                <ArrowRight className="w-3 h-3" />
-              </a>
+              <h2 className="text-base font-semibold text-gray-900">Actions</h2>
             </div>
             {/* Workflow guidance */}
             <div className="flex items-center gap-2 mb-4 text-xs text-gray-500">
@@ -514,16 +506,6 @@ export default function AppPage() {
               >
                 <RefreshCw className="h-4 w-4" />
                 {hasSyncedData ? 'Refresh Data' : 'Sync Data'}
-              </Button>
-              <Button
-                onClick={() => handleSync(true)}
-                disabled={syncing}
-                loading={syncing}
-                variant="secondary"
-                title="Force resync: Re-fetch all data from the last 90 days"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Force Resync
               </Button>
               <div className="relative flex-1 group">
                 <Button
@@ -550,7 +532,7 @@ export default function AppPage() {
         {/* Report History */}
         <Card className="mb-8">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-bold text-gray-900">Report History</h2>
+            <h2 className="text-base font-semibold text-gray-900">Report History</h2>
             {reportHistory.length > 0 && (
               <button
                 onClick={() => setShowReportHistory(!showReportHistory)}
@@ -594,7 +576,7 @@ export default function AppPage() {
 
         {/* Data Management */}
         <Card className="mb-8">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Data Management</h2>
+          <h2 className="text-base font-semibold text-gray-900 mb-4">Data Management</h2>
           <div className="space-y-3">
             <Button variant="ghost" onClick={handleExportData} className="justify-start">
               <Download className="h-4 w-4" />
@@ -609,7 +591,7 @@ export default function AppPage() {
 
         {/* Account Settings */}
         <Card className="mb-8">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Account</h2>
+          <h2 className="text-base font-semibold text-gray-900 mb-4">Account</h2>
           <Button variant="ghost" onClick={handleDeleteAccount} className="justify-start text-red-600 hover:text-red-700">
             <UserX className="h-4 w-4" />
             Delete Account

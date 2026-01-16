@@ -462,7 +462,7 @@ export default function ReportPage() {
           </Button>
           <Button variant="secondary" onClick={handleEmailShare}>
             <Mail className="h-4 w-4" />
-            Email Doctor
+            Share
           </Button>
           <Button variant="ghost" onClick={() => router.push('/app')}>
             <ArrowLeft className="h-4 w-4" />
@@ -475,8 +475,8 @@ export default function ReportPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-12 print:px-12 print:py-8">
         {/* Header */}
         <div className="mb-8 pb-6 border-b border-gray-300">
-          <h1 className="text-3xl font-bold text-gray-900 mb-5">Wearable Health Summary Report</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-700">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Wearable Health Summary Report</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
             <p><strong className="text-gray-900">Patient email:</strong> {patientEmail}</p>
             <p><strong className="text-gray-900">Report date:</strong> {reportDateDisplay}</p>
             {dataPeriodStr && (
