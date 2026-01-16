@@ -79,34 +79,48 @@ export default function Home() {
 
       <main className="max-w-6xl mx-auto px-4 sm:px-8 py-10 sm:py-12">
         {/* Hero */}
-        <div className="mb-12 text-center max-w-3xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 tracking-tight leading-tight">
-            Turn your wearable data into a doctor-ready report — in seconds.
+        <div className="mb-16 text-center max-w-4xl mx-auto">
+          {/* Headline */}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-10 tracking-tight leading-tight">
+            Doctor-ready wearable reports in seconds.
           </h1>
           
           {/* Primary CTA */}
           <div className="mb-6">
             {!user ? (
               <Link href="/login" className="inline-block">
-                <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
+                <button className="px-10 py-4 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-lg transition-all duration-200 inline-flex items-center gap-2 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                   Generate free report
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-5 h-5" />
                 </button>
               </Link>
             ) : (
               <Link href="/app" className="inline-block">
-                <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
+                <button className="px-10 py-4 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-lg transition-all duration-200 inline-flex items-center gap-2 text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                   Generate free report
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-5 h-5" />
                 </button>
               </Link>
             )}
           </div>
 
-          {/* Microcopy */}
-          <p className="text-base sm:text-lg text-gray-600 font-normal leading-relaxed">
-            Connect your wearable → get a lab-style report → share with your doctor or AI
-          </p>
+          {/* Supporting UI - 3-step process */}
+          <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 text-sm sm:text-[15px] text-gray-500 opacity-65">
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <span>💍</span>
+              <span>Connect your wearable</span>
+            </span>
+            <span className="hidden sm:inline text-gray-400">·</span>
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <span>📄</span>
+              <span>Get report</span>
+            </span>
+            <span className="hidden sm:inline text-gray-400">·</span>
+            <span className="flex items-center gap-1.5 whitespace-nowrap">
+              <span>🩺</span>
+              <span>Share with doctor or AI</span>
+            </span>
+          </div>
         </div>
 
         {/* Example Report - Always Visible */}
