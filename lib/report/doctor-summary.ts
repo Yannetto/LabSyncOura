@@ -1,6 +1,6 @@
 import type { ReportMetric } from './calculations'
 
-interface DoctorSummary {
+export interface DoctorSummary {
   sleepTable: Array<{
     metric: string
     value: string
@@ -22,6 +22,26 @@ interface DoctorSummary {
     clinicalRange?: string
     flag: string
   }>
+}
+
+export interface ReportMetadata {
+  patientEmail: string
+  reportDate: string
+  dataPeriod: {
+    start: string
+    end: string
+    days: number
+  }
+  referenceRange: {
+    start: string
+    end: string
+    days: number
+  }
+  dataQuality?: {
+    completeness: number
+    daysCollected: number
+    quality: 'Good' | 'Fair' | 'Poor'
+  }
 }
 
 /**
