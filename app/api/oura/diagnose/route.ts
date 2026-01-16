@@ -63,6 +63,7 @@ export async function GET(request: NextRequest) {
         'sleep_lowest_heart_rate',       // Lowest Night-time Heart Rate
         'sleep_average_hrv',             // Night-time HRV
         'hrv_rmssd',                      // HRV (alias)
+        'sleep_respiratory_rate',        // Respiratory Rate
         'spo2_percentage_average',       // Oxygen Saturation (SpO2)
         'breathing_disturbance_index',   // Breathing Disturbance Index
         'temperature_deviation',         // Temperature Deviation

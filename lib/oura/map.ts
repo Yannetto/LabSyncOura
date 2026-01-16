@@ -267,6 +267,15 @@ export function mapSleepRecord(record: any): MappedData | null {
     metrics.push({ metric_key: 'hrv_rmssd', value: String(avgHRV) })
   }
 
+  // Store average breathing rate (convert from breaths/second to breaths/minute)
+  if (record.average_breath != null) {
+    const breathsPerSec = parseFloat(String(record.average_breath))
+    if (!isNaN(breathsPerSec) && breathsPerSec > 0) {
+      const breathsPerMin = Math.round(breathsPerSec * 60)
+      metrics.push({ metric_key: 'sleep_respiratory_rate', value: String(breathsPerMin) })
+    }
+  }
+
   if (DEBUG) {
     console.log(`[OuraMap] [DEBUG] Mapped sleep record metrics for ${day}:`, metrics.map(m => `${m.metric_key}=${m.value}`))
   }

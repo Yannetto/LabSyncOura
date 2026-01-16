@@ -188,6 +188,8 @@ const KEEP_METRICS = {
     'readiness hrv balance', // This will be renamed to "Night-time HRV"
     'readiness hrv rmssd', // From readiness_hrv_rmssd
     'sleep average hrv', // From sleep_average_hrv
+    'respiratory rate',
+    'sleep respiratory rate', // From sleep_respiratory_rate
     'average nightly spo2',
     'average nightly sp', // Variant without "o2"
     'average nightly spo2', // From spo2_percentage_average
@@ -233,6 +235,8 @@ const METRICS_WITH_FLAGS = new Set([
   'night-time hrv',
   'readiness hrv balance',
   'sleep average hrv',
+  'respiratory rate',
+  'sleep respiratory rate',
   'oxygen saturation',
   'spo2',
   'average nightly spo2',
@@ -575,6 +579,10 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       { 
         keys: ['night-time hrv', 'sleep average hrv', 'readiness hrv balance'],
         name: 'Night-time HRV'
+      },
+      { 
+        keys: ['respiratory rate', 'sleep respiratory rate'],
+        name: 'Respiratory Rate'
       },
       { 
         keys: [

@@ -336,6 +336,7 @@ export function calculateReportMetrics(
     'hrv_rmssd': { name: 'HRV (RMSSD)', formatResult: (v) => `${v.toFixed(0)} ms`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} ms` },
     'readiness_hrv_rmssd': { name: 'HRV RMSSD (Readiness)', formatResult: (v) => `${v.toFixed(0)} ms`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} ms` },
     'sleep_average_hrv': { name: 'Night-time HRV', formatResult: (v) => `${v.toFixed(0)} ms`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} ms` },
+    'sleep_respiratory_rate': { name: 'Respiratory Rate', formatResult: (v) => `${v.toFixed(0)} breaths/min`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} breaths/min` },
     'temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => `${v.toFixed(2)}°C`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C` },
     'readiness_temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => `${v.toFixed(2)}°C`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C` },
     'readiness_temperature_trend_deviation': { name: 'Temperature Trend Deviation', formatResult: (v) => `${v.toFixed(2)}°C`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C` },
