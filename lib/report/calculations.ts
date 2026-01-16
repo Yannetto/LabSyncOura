@@ -338,9 +338,14 @@ export function calculateReportMetrics(
     'sleep_average_hrv': { name: 'Night-time HRV', formatResult: (v) => `${v.toFixed(0)} ms`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} ms` },
     'temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => `${v.toFixed(2)}°C`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C` },
     'readiness_temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => `${v.toFixed(2)}°C`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C` },
+    'readiness_temperature_trend_deviation': { name: 'Temperature Trend Deviation', formatResult: (v) => `${v.toFixed(2)}°C`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C` },
     // SpO2 metrics
     'spo2_percentage_average': { name: 'Average Nightly SpO2', formatResult: (v) => `${v.toFixed(1)}%`, formatReference: (q25, q75) => `${q25.toFixed(1)}–${q75.toFixed(1)}%` },
     'breathing_disturbance_index': { name: 'Breathing Disturbance Index', formatResult: (v) => `${v.toFixed(2)}`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}` },
+    
+    // Stress/Recovery metrics
+    'recovery_high': { name: 'Recovery High', formatResult: (v) => formatDuration(v), formatReference: (q25, q75) => formatReferenceDuration(q25, q75) },
+    'stress_stress_high': { name: 'Stress High', formatResult: (v) => formatDuration(v), formatReference: (q25, q75) => formatReferenceDuration(q25, q75) },
     
     // Activity metrics
     'activity_score': { name: 'Activity Score', formatResult: (v) => `${v.toFixed(0)} points`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} points` },

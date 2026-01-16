@@ -193,11 +193,24 @@ const KEEP_METRICS = {
     'breathing disturbance index',
     'temperature deviation',
     'readiness temperature deviation', // From readiness_temperature_deviation
+    'temperature trend deviation',
+    'readiness temperature trend deviation', // From readiness_temperature_trend_deviation
+    'recovery high', // Time in high recovery zone
   ],
   activity: [
     'steps',
     'sedentary time',
     'sedentary time seconds', // From sedentary_time_seconds
+    'active calories',
+    'total calories',
+    'high activity time',
+    'high activity time seconds',
+    'medium activity time',
+    'medium activity time seconds',
+    'low activity time',
+    'low activity time seconds',
+    'resting time',
+    'resting time seconds',
   ],
 }
 
@@ -207,6 +220,8 @@ const KEEP_METRICS = {
  */
 const METRICS_WITH_FLAGS = new Set([
   'sleep duration',
+  'sleep latency',
+  'sleep efficiency',
   'resting heart rate',
   'resting hr',
   'lowest night-time heart rate',
@@ -221,8 +236,17 @@ const METRICS_WITH_FLAGS = new Set([
   'breathing disturbance index',
   'temperature deviation',
   'readiness temperature deviation',
+  'temperature trend deviation',
+  'readiness temperature trend deviation',
+  'recovery high',
   'steps',
   'sedentary time',
+  'active calories',
+  'total calories',
+  'high activity time',
+  'medium activity time',
+  'low activity time',
+  'resting time',
   // Sleep percentages
   'deep sleep',
   'light sleep',
@@ -316,23 +340,36 @@ function deduplicateMetrics(metrics: ReportMetric[]): ReportMetric[] {
  * Format doctor-friendly summary
  */
 export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
-  // Debug: Log all incoming metrics (especially SpO2/Breathing)
-  const spo2Metrics = metrics.filter(m => {
+  // Debug: Log all incoming metrics (especially new ones we added)
+  const newMetrics = metrics.filter(m => {
     const n = normalizeMetricName(m.metric)
-    return n.includes('spo2') || n.includes('breathing') || n.includes('disturbance')
+    return n.includes('recovery high') || n.includes('temperature trend') || 
+           n.includes('active calories') || n.includes('total calories') ||
+           n.includes('activity time') || n.includes('sleep latency') ||
+           n.includes('sleep efficiency') || n.includes('spo2') || 
+           n.includes('breathing') || n.includes('disturbance')
   })
-  if (spo2Metrics.length > 0) {
-    console.log(`[DoctorSummary] SpO2/Breathing metrics found in input:`, spo2Metrics.map(m => `${m.metric} (normalized: ${normalizeMetricName(m.metric)})`))
+  if (newMetrics.length > 0) {
+    console.log(`[DoctorSummary] New metrics found in input:`, newMetrics.map(m => 
+      `${m.metric} (normalized: ${normalizeMetricName(m.metric)}, value: ${m.result_display})`
+    ))
   } else {
-    console.log(`[DoctorSummary] NO SpO2/Breathing metrics in input. Total metrics:`, metrics.length)
-    console.log(`[DoctorSummary] Sample metric names:`, metrics.slice(0, 10).map(m => m.metric))
+    console.log(`[DoctorSummary] NO new metrics in input. Total metrics:`, metrics.length)
+    console.log(`[DoctorSummary] Sample metric names:`, metrics.slice(0, 15).map(m => m.metric))
   }
   
   // Step 1: Filter to keep only specified metrics
   const filtered = metrics.filter(m => {
     const { keep } = shouldKeepMetric(m.metric)
     if (!keep) {
-      console.log(`[DoctorSummary] Filtered out metric: "${m.metric}" (normalized: "${normalizeMetricName(m.metric)}")`)
+      // Only log if it's a metric we're interested in (to reduce noise)
+      const normalized = normalizeMetricName(m.metric)
+      if (normalized.includes('recovery') || normalized.includes('temperature trend') || 
+          normalized.includes('active calories') || normalized.includes('total calories') ||
+          normalized.includes('activity time') || normalized.includes('sleep latency') ||
+          normalized.includes('sleep efficiency')) {
+        console.log(`[DoctorSummary] Filtered out metric: "${m.metric}" (normalized: "${normalized}")`)
+      }
     }
     return keep
   })
@@ -386,8 +423,8 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
     const result: Array<{ metric: string; value: string; referenceRange: string; flag: string }> = []
     const processed = new Set<string>()
     
-    // Process in order: Time in Bed, Sleep Duration
-    const orderedMetrics = ['time in bed', 'sleep duration']
+    // Process in order: Time in Bed, Sleep Duration, Sleep Latency, Sleep Efficiency
+    const orderedMetrics = ['time in bed', 'sleep duration', 'sleep latency', 'sleep efficiency']
     for (const orderName of orderedMetrics) {
       const metric = sleepMetrics.find(m => normalizeMetricName(m.metric) === orderName)
       if (metric) {
@@ -550,6 +587,14 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
         keys: ['temperature deviation', 'readiness temperature deviation'],
         name: 'Temperature Deviation'
       },
+      { 
+        keys: ['temperature trend deviation', 'readiness temperature trend deviation'],
+        name: 'Temperature Trend Deviation'
+      },
+      { 
+        keys: ['recovery high'],
+        name: 'Recovery High'
+      },
     ]
     
     console.log(`[DoctorSummary] formatCardiovascular - Input metrics:`, metrics.map(m => `${m.metric} (normalized: ${normalizeMetricName(m.metric)})`))
@@ -616,9 +661,67 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
     return result
   }
   
-  // Format activity
+  // Format activity - with specific ordering
   const formatActivity = (metrics: ReportMetric[]) => {
-    return metrics.map(m => formatRow(m))
+    const result: Array<{ metric: string; value: string; referenceRange: string; flag: string }> = []
+    
+    // Define metric order
+    const metricOrder = [
+      { 
+        keys: ['steps'],
+        name: 'Steps'
+      },
+      { 
+        keys: ['active calories'],
+        name: 'Active Calories'
+      },
+      { 
+        keys: ['total calories'],
+        name: 'Total Calories'
+      },
+      { 
+        keys: ['sedentary time', 'sedentary time seconds'],
+        name: 'Sedentary Time'
+      },
+      { 
+        keys: ['high activity time', 'high activity time seconds'],
+        name: 'High Activity Time'
+      },
+      { 
+        keys: ['medium activity time', 'medium activity time seconds'],
+        name: 'Medium Activity Time'
+      },
+      { 
+        keys: ['low activity time', 'low activity time seconds'],
+        name: 'Low Activity Time'
+      },
+      { 
+        keys: ['resting time', 'resting time seconds'],
+        name: 'Resting Time'
+      },
+    ]
+    
+    for (const metricDef of metricOrder) {
+      const found = metrics.find(m => {
+        const normalized = normalizeMetricName(m.metric)
+        return metricDef.keys.some(key => {
+          const normalizedKey = key.toLowerCase().trim()
+          return normalized === normalizedKey || normalized.includes(normalizedKey) || normalizedKey.includes(normalized)
+        })
+      })
+      
+      if (found) {
+        const flag = computeFlag(found.metric, found.result_display, found.reference_display)
+        result.push({
+          metric: metricDef.name,
+          value: found.result_display,
+          referenceRange: found.reference_display,
+          flag: flag
+        })
+      }
+    }
+    
+    return result
   }
   
   return {

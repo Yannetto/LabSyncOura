@@ -67,11 +67,25 @@ export async function GET(request: NextRequest) {
         'breathing_disturbance_index',   // Breathing Disturbance Index
         'temperature_deviation',         // Temperature Deviation
         'readiness_temperature_deviation', // Temperature Deviation (alias)
+        'readiness_temperature_trend_deviation', // Temperature Trend Deviation
+        'recovery_high',                 // Recovery High (time in high recovery zone)
       ],
       activity: [
         'steps',                         // Steps
         'sedentary_time_seconds',        // Sedentary Time
         'sedentary_time',                // Sedentary Time (alias)
+        'active_calories',                // Active Calories
+        'total_calories',                // Total Calories
+        'high_activity_time_seconds',     // High Activity Time
+        'medium_activity_time_seconds',  // Medium Activity Time
+        'low_activity_time_seconds',     // Low Activity Time
+        'resting_time_seconds',          // Resting Time
+      ],
+      sleep_additional: [
+        'sleep_latency_seconds',         // Sleep Latency
+        'sleep_latency',                 // Sleep Latency (alias)
+        'sleep_efficiency_pct',          // Sleep Efficiency
+        'sleep_efficiency',              // Sleep Efficiency (alias)
       ],
     }
 
@@ -97,6 +111,7 @@ export async function GET(request: NextRequest) {
       },
       report_keys: {
         sleep: checkKeys(reportKeys.sleep),
+        sleep_additional: checkKeys(reportKeys.sleep_additional || []),
         cardiovascular: checkKeys(reportKeys.cardiovascular),
         activity: checkKeys(reportKeys.activity),
       },

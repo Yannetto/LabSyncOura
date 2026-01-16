@@ -490,7 +490,16 @@ export default function AppPage() {
         {/* Actions */}
         {isConnected && (
           <div className="mb-8 pb-6 border-b-2 border-gray-400">
-            <h2 className="text-lg font-bold text-gray-900 mb-2">Actions</h2>
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-bold text-gray-900">Actions</h2>
+              <a
+                href="/debug"
+                target="_blank"
+                className="text-xs text-gray-600 hover:text-gray-900 underline"
+              >
+                View Database Diagnostic →
+              </a>
+            </div>
             {/* Workflow guidance */}
             <div className="flex items-center gap-2 mb-4 text-xs text-gray-500">
               <span className={`inline-flex items-center gap-1.5 ${hasSyncedData ? 'text-gray-500' : 'text-gray-900 font-medium'}`}>
@@ -524,6 +533,28 @@ export default function AppPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                     </svg>
                     <span>{hasSyncedData ? 'Refresh Data' : 'Sync Data'}</span>
+                  </>
+                )}
+              </button>
+              <button
+                onClick={() => handleSync(true)}
+                disabled={syncing}
+                className="px-4 py-3 bg-gray-700 text-white text-sm font-medium hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                title="Force resync: Re-fetch all data from the last 90 days"
+              >
+                {syncing ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </>
+                ) : (
+                  <>
+                    <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Force Resync</span>
                   </>
                 )}
               </button>
