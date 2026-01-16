@@ -176,21 +176,25 @@ export default function Home() {
           )}
         </div>
 
-        {/* Sharing options */}
-        <div className="mb-12 text-center">
-          <p className="text-sm text-gray-600 mb-4">Share your report via:</p>
-          <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-600">
-            <div className="flex items-center gap-1.5">
-              <Printer className="w-3.5 h-3.5 text-gray-400" />
-              <span>Print to PDF</span>
+        {/* Sharing options - Prominent */}
+        <div className="mb-16 text-center bg-gray-50 border border-gray-200 rounded-lg p-8">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Share Your Report</h3>
+          <p className="text-sm text-gray-600 mb-6">Export and share with your healthcare provider or analyze with AI</p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="bg-white border border-gray-300 rounded-md px-6 py-4 hover:border-gray-400 transition-colors">
+              <Mail className="w-5 h-5 text-gray-700 mx-auto mb-2" />
+              <div className="text-sm font-medium text-gray-900">Email Doctor</div>
+              <div className="text-xs text-gray-500 mt-1">Share via email</div>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Mail className="w-3.5 h-3.5 text-gray-400" />
-              <span>Email</span>
+            <div className="bg-white border border-gray-300 rounded-md px-6 py-4 hover:border-gray-400 transition-colors">
+              <Clipboard className="w-5 h-5 text-gray-700 mx-auto mb-2" />
+              <div className="text-sm font-medium text-gray-900">Copy for ChatGPT</div>
+              <div className="text-xs text-gray-500 mt-1">AI analysis ready</div>
             </div>
-            <div className="flex items-center gap-1.5">
-              <Clipboard className="w-3.5 h-3.5 text-gray-400" />
-              <span>Copy text</span>
+            <div className="bg-white border border-gray-300 rounded-md px-6 py-4 hover:border-gray-400 transition-colors">
+              <Printer className="w-5 h-5 text-gray-700 mx-auto mb-2" />
+              <div className="text-sm font-medium text-gray-900">Print to PDF</div>
+              <div className="text-xs text-gray-500 mt-1">Save as document</div>
             </div>
           </div>
         </div>

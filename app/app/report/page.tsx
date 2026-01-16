@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { Printer, Clipboard, Mail, CheckCircle2, AlertTriangle, ArrowLeft, Save } from 'lucide-react'
+import { Printer, Clipboard, Mail, ArrowLeft, Save } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Modal } from '@/components/ui/Modal'
@@ -474,9 +474,9 @@ export default function ReportPage() {
       {/* Report Content */}
       <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-12 print:px-12 print:py-8">
         {/* Header */}
-        <div className="mb-8 pb-6 border-b border-gray-300">
+        <div className="mb-8 pb-6 border-b border-gray-200">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Wearable Health Summary Report</h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-gray-700">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 text-xs text-gray-700">
             <p><strong className="text-gray-900">Patient email:</strong> {patientEmail}</p>
             <p><strong className="text-gray-900">Report date:</strong> {reportDateDisplay}</p>
             {dataPeriodStr && (
@@ -500,36 +500,27 @@ export default function ReportPage() {
           const activityFlagged = summary.activityTable.filter(r => r.flag).length
           
           return (
-            <Card className="mb-8 print:mb-6">
-              <h2 className="text-lg font-bold mb-4 text-gray-900">Executive Summary</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="mb-8 print:mb-6 border border-gray-200 rounded-sm bg-gray-50 p-6">
+              <h2 className="text-base font-semibold mb-4 text-gray-900">Executive Summary</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
                   <div className="text-2xl font-bold text-red-600">{flaggedCount}</div>
-                  <div className="text-sm text-gray-600">Flagged Metrics</div>
+                  <div className="text-xs text-gray-600 mt-1">Flagged Metrics</div>
                 </div>
                 <div>
-                  <div className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    {sleepFlagged > 0 ? <AlertTriangle className="h-5 w-5 text-yellow-600" /> : <CheckCircle2 className="h-5 w-5 text-green-600" />}
-                    Sleep
-                  </div>
-                  <div className="text-xs text-gray-600">{sleepFlagged} flagged</div>
+                  <div className="text-base font-semibold text-gray-900">Sleep</div>
+                  <div className="text-xs text-gray-600 mt-1">{sleepFlagged} flagged</div>
                 </div>
                 <div>
-                  <div className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    {cardioFlagged > 0 ? <AlertTriangle className="h-5 w-5 text-yellow-600" /> : <CheckCircle2 className="h-5 w-5 text-green-600" />}
-                    Cardiovascular
-                  </div>
-                  <div className="text-xs text-gray-600">{cardioFlagged} flagged</div>
+                  <div className="text-base font-semibold text-gray-900">Cardiovascular</div>
+                  <div className="text-xs text-gray-600 mt-1">{cardioFlagged} flagged</div>
                 </div>
                 <div>
-                  <div className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    {activityFlagged > 0 ? <AlertTriangle className="h-5 w-5 text-yellow-600" /> : <CheckCircle2 className="h-5 w-5 text-green-600" />}
-                    Activity
-                  </div>
-                  <div className="text-xs text-gray-600">{activityFlagged} flagged</div>
+                  <div className="text-base font-semibold text-gray-900">Activity</div>
+                  <div className="text-xs text-gray-600 mt-1">{activityFlagged} flagged</div>
                 </div>
               </div>
-            </Card>
+            </div>
           )
         })()}
 
@@ -538,37 +529,33 @@ export default function ReportPage() {
           <div className="mb-10">
             <h2 className="text-xl font-bold mb-4 text-gray-900">Sleep Summary</h2>
             {/* Desktop Table */}
-            <div className="hidden md:block border border-gray-300 overflow-hidden">
+            <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
               <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                 <colgroup>
+                  <col style={{ width: '30%' }} />
                   <col style={{ width: '25%' }} />
-                  <col style={{ width: '20%' }} />
-                  <col style={{ width: '20%' }} />
-                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '30%' }} />
                   <col style={{ width: '15%' }} />
                 </colgroup>
                 <thead className="bg-gray-900 text-white">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Clinical Reference Range</th>
-                    <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">Metric</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">7 Days values</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">30 Days Reference Range</th>
+                    <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide">Flag</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[...summary.sleepTable]
                     .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                     .map((row, idx) => (
-                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`} style={{ pageBreakInside: 'avoid' }}>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">{row.metric}</td>
-                      <td className={`px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
+                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : 'border-b border-gray-100'}`} style={{ pageBreakInside: 'avoid' }}>
+                      <td className="px-5 py-3 text-sm font-medium border-r border-gray-200">{row.metric}</td>
+                      <td className={`px-5 py-3 text-sm border-r border-gray-200 ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
                         {row.value}
-                        {!row.flag && <CheckCircle2 className="inline-block h-4 w-4 text-green-600 ml-2" />}
                       </td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">{row.referenceRange}</td>
-                      <td className="px-4 py-2 text-sm text-gray-500 border-r border-gray-200 whitespace-nowrap">{row.clinicalRange || 'N/A'}</td>
-                      <td className={`px-4 py-2 text-center text-sm whitespace-nowrap ${row.flag ? 'text-red-600 font-medium' : ''}`}>{row.flag}</td>
+                      <td className="px-5 py-3 text-sm text-gray-600 border-r border-gray-200">{row.referenceRange}</td>
+                      <td className={`px-5 py-3 text-center text-sm ${row.flag ? 'text-red-600 font-medium' : 'text-gray-400'}`}>{row.flag || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -606,37 +593,33 @@ export default function ReportPage() {
           <div className="mb-10">
             <h2 className="text-xl font-bold mb-4 text-gray-900">Cardiovascular & Oxygenation</h2>
             {/* Desktop Table */}
-            <div className="hidden md:block border border-gray-300 overflow-hidden">
+            <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
               <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                 <colgroup>
+                  <col style={{ width: '30%' }} />
                   <col style={{ width: '25%' }} />
-                  <col style={{ width: '20%' }} />
-                  <col style={{ width: '20%' }} />
-                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '30%' }} />
                   <col style={{ width: '15%' }} />
                 </colgroup>
                 <thead className="bg-gray-900 text-white">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Clinical Reference Range</th>
-                    <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">Metric</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">7 Days values</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">30 Days Reference Range</th>
+                    <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide">Flag</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[...summary.cardiovascularTable]
                     .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                     .map((row, idx) => (
-                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`} style={{ pageBreakInside: 'avoid' }}>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">{row.metric}</td>
-                      <td className={`px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
+                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : 'border-b border-gray-100'}`} style={{ pageBreakInside: 'avoid' }}>
+                      <td className="px-5 py-3 text-sm font-medium border-r border-gray-200">{row.metric}</td>
+                      <td className={`px-5 py-3 text-sm border-r border-gray-200 ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
                         {row.value}
-                        {!row.flag && <CheckCircle2 className="inline-block h-4 w-4 text-green-600 ml-2" />}
                       </td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">{row.referenceRange}</td>
-                      <td className="px-4 py-2 text-sm text-gray-500 border-r border-gray-200 whitespace-nowrap">{row.clinicalRange || 'N/A'}</td>
-                      <td className={`px-4 py-2 text-center text-sm whitespace-nowrap ${row.flag ? 'text-red-600 font-medium' : ''}`}>{row.flag}</td>
+                      <td className="px-5 py-3 text-sm text-gray-600 border-r border-gray-200">{row.referenceRange}</td>
+                      <td className={`px-5 py-3 text-center text-sm ${row.flag ? 'text-red-600 font-medium' : 'text-gray-400'}`}>{row.flag || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -647,21 +630,16 @@ export default function ReportPage() {
               {[...summary.cardiovascularTable]
                 .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                 .map((row, idx) => (
-                <div key={idx} className={`border p-4 ${row.flag ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}>
+                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-red-500 bg-red-50' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
                   <div className="flex justify-between items-start mb-2">
-                    <div className="font-semibold text-sm text-gray-900 flex-1">{row.metric}</div>
-                    {row.flag ? (
+                    <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
+                    {row.flag && (
                       <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>
-                    ) : (
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
                     )}
                   </div>
-                  <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : ''}`}>{row.value}</span></div>
+                  <div className="space-y-1.5 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : 'text-gray-900'}`}>{row.value}</span></div>
                     <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">{row.referenceRange}</span></div>
-                    {row.clinicalRange && (
-                      <div><span className="text-gray-600">Clinical Reference Range:</span> <span className="text-gray-500">{row.clinicalRange}</span></div>
-                    )}
                   </div>
                 </div>
               ))}
@@ -674,37 +652,33 @@ export default function ReportPage() {
           <div className="mb-10">
             <h2 className="text-xl font-bold mb-4 text-gray-900">Activity</h2>
             {/* Desktop Table */}
-            <div className="hidden md:block border border-gray-300 overflow-hidden">
+            <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
               <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                 <colgroup>
+                  <col style={{ width: '30%' }} />
                   <col style={{ width: '25%' }} />
-                  <col style={{ width: '20%' }} />
-                  <col style={{ width: '20%' }} />
-                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '30%' }} />
                   <col style={{ width: '15%' }} />
                 </colgroup>
                 <thead className="bg-gray-900 text-white">
                   <tr>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
-                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Clinical Reference Range</th>
-                    <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">Metric</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">7 Days values</th>
+                    <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">30 Days Reference Range</th>
+                    <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide">Flag</th>
                   </tr>
                 </thead>
                 <tbody>
                   {[...summary.activityTable]
                     .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                     .map((row, idx) => (
-                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`} style={{ pageBreakInside: 'avoid' }}>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">{row.metric}</td>
-                      <td className={`px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
+                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : 'border-b border-gray-100'}`} style={{ pageBreakInside: 'avoid' }}>
+                      <td className="px-5 py-3 text-sm font-medium border-r border-gray-200">{row.metric}</td>
+                      <td className={`px-5 py-3 text-sm border-r border-gray-200 ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
                         {row.value}
-                        {!row.flag && <CheckCircle2 className="inline-block h-4 w-4 text-green-600 ml-2" />}
                       </td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">{row.referenceRange}</td>
-                      <td className="px-4 py-2 text-sm text-gray-500 border-r border-gray-200 whitespace-nowrap">{row.clinicalRange || 'N/A'}</td>
-                      <td className={`px-4 py-2 text-center text-sm whitespace-nowrap ${row.flag ? 'text-red-600 font-medium' : ''}`}>{row.flag}</td>
+                      <td className="px-5 py-3 text-sm text-gray-600 border-r border-gray-200">{row.referenceRange}</td>
+                      <td className={`px-5 py-3 text-center text-sm ${row.flag ? 'text-red-600 font-medium' : 'text-gray-400'}`}>{row.flag || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -715,21 +689,16 @@ export default function ReportPage() {
               {[...summary.activityTable]
                 .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                 .map((row, idx) => (
-                <div key={idx} className={`border p-4 ${row.flag ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}>
+                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-red-500 bg-red-50' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
                   <div className="flex justify-between items-start mb-2">
-                    <div className="font-semibold text-sm text-gray-900 flex-1">{row.metric}</div>
-                    {row.flag ? (
+                    <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
+                    {row.flag && (
                       <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>
-                    ) : (
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
                     )}
                   </div>
-                  <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : ''}`}>{row.value}</span></div>
+                  <div className="space-y-1.5 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : 'text-gray-900'}`}>{row.value}</span></div>
                     <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">{row.referenceRange}</span></div>
-                    {row.clinicalRange && (
-                      <div><span className="text-gray-600">Clinical Reference Range:</span> <span className="text-gray-500">{row.clinicalRange}</span></div>
-                    )}
                   </div>
                 </div>
               ))}
@@ -738,13 +707,13 @@ export default function ReportPage() {
         )}
 
         {/* Legend */}
-        <div className="mt-12 mb-8 p-4 bg-gray-50 border border-gray-300">
-          <h3 className="text-sm font-bold text-gray-900 mb-2">Legend</h3>
-          <div className="text-xs text-gray-700 space-y-1">
-            <p><span className="font-semibold text-red-600">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
-            <p><span className="font-semibold text-red-600">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
-            <p><span className="font-semibold">Blank</span> — The value is within your normal reference range.</p>
-            <p className="text-gray-600 mt-2">Reference ranges are calculated from your personal historical data (30-day period) using the interquartile range method.</p>
+        <div className="mt-12 mb-8 p-5 bg-gray-50 border border-gray-200 rounded-sm">
+          <h3 className="text-sm font-semibold text-gray-900 mb-3">Legend</h3>
+          <div className="text-xs text-gray-700 space-y-1.5">
+            <p><span className="font-medium text-red-600">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
+            <p><span className="font-medium text-red-600">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
+            <p><span className="font-medium text-gray-900">—</span> — The value is within your normal reference range.</p>
+            <p className="text-gray-600 mt-3 pt-3 border-t border-gray-200">Reference ranges are calculated from your personal historical data (30-day period) using the interquartile range method.</p>
           </div>
         </div>
 
