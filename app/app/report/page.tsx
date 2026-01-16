@@ -566,7 +566,7 @@ export default function ReportPage() {
               {[...summary.sleepTable]
                 .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                 .map((row, idx) => (
-                <div key={idx} className={`border p-4 ${row.flag ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}>
+                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-red-500 bg-red-50' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
                     {row.flag && (
