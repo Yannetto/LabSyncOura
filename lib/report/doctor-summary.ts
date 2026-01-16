@@ -49,9 +49,11 @@ function parseReferenceRange(refRange: string): { lower: number; upper: number }
   // Try to parse duration strings like "7h 30m" to minutes
   const parseDuration = (str: string): number | null => {
     const hMatch = str.match(/(\d+)\s*h/)
-    const mMatch = str.match(/(\d+)\s*min/)
+    // Try "min" first, then "m" (but not "ms" to avoid matching milliseconds)
+    const minMatch = str.match(/(\d+)\s*min/)
+    const mMatch = str.match(/(\d+)\s*m(?!s)/) // Match "m" but not "ms"
     const hours = hMatch ? parseInt(hMatch[1]) : 0
-    const minutes = mMatch ? parseInt(mMatch[1]) : 0
+    const minutes = minMatch ? parseInt(minMatch[1]) : (mMatch ? parseInt(mMatch[1]) : 0)
     return hours * 60 + minutes
   }
   
@@ -77,10 +79,12 @@ function parseResultValue(result: string): number | null {
   
   // Try duration parsing (e.g., "7h 30m" -> minutes)
   const hMatch = result.match(/(\d+)\s*h/)
-  const mMatch = result.match(/(\d+)\s*min/)
-  if (hMatch || mMatch) {
+  // Try "min" first, then "m" (but not "ms" to avoid matching milliseconds)
+  const minMatch = result.match(/(\d+)\s*min/)
+  const mMatch = result.match(/(\d+)\s*m(?!s)/) // Match "m" but not "ms"
+  if (hMatch || minMatch || mMatch) {
     const hours = hMatch ? parseInt(hMatch[1]) : 0
-    const minutes = mMatch ? parseInt(mMatch[1]) : 0
+    const minutes = minMatch ? parseInt(minMatch[1]) : (mMatch ? parseInt(mMatch[1]) : 0)
     return hours * 60 + minutes
   }
   
@@ -654,6 +658,19 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
             console.log(`[DoctorSummary] Found potential SpO2 candidates:`, spo2Candidates.map(m => `${m.metric} (normalized: "${normalizeMetricName(m.metric)}")`))
           } else {
             console.log(`[DoctorSummary] No SpO2 candidates found in cardiovascular metrics`)
+          }
+        } else if (metricDef.name === 'Recovery High') {
+          console.log(`[DoctorSummary] ${metricDef.name} NOT FOUND. Looking for keys:`, metricDef.keys)
+          console.log(`[DoctorSummary] Available cardiovascular metrics:`, metrics.map(m => {
+            const n = normalizeMetricName(m.metric)
+            return `${m.metric} (normalized: "${n}")`
+          }))
+          const recoveryCandidates = metrics.filter(m => {
+            const n = normalizeMetricName(m.metric)
+            return n.includes('recovery')
+          })
+          if (recoveryCandidates.length > 0) {
+            console.log(`[DoctorSummary] Found potential Recovery High candidates:`, recoveryCandidates.map(m => `${m.metric} (normalized: "${normalizeMetricName(m.metric)}")`))
           }
         } else if (metricDef.keys.some(k => k.includes('breathing') || k.includes('disturbance'))) {
           console.log(`[DoctorSummary] ${metricDef.name} NOT FOUND. Looking for keys:`, metricDef.keys)
