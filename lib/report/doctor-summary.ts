@@ -360,8 +360,22 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
            n.includes('active calories') || n.includes('total calories') ||
            n.includes('activity time') || n.includes('sleep latency') ||
            n.includes('sleep efficiency') || n.includes('spo2') || 
-           n.includes('breathing') || n.includes('disturbance')
+           n.includes('breathing') || n.includes('disturbance') ||
+           n.includes('respiratory')
   })
+  
+  // Debug: Log all SpO2 metrics specifically
+  const spo2Metrics = metrics.filter(m => {
+    const n = normalizeMetricName(m.metric)
+    return n.includes('spo2') || n.includes('oxygen saturation')
+  })
+  if (spo2Metrics.length > 0) {
+    console.log(`[DoctorSummary] SpO2 metrics found in input:`, spo2Metrics.map(m => 
+      `${m.metric} (normalized: ${normalizeMetricName(m.metric)}, value: ${m.result_display})`
+    ))
+  } else {
+    console.log(`[DoctorSummary] NO SpO2 metrics found in input. Total metrics: ${metrics.length}`)
+  }
   if (newMetrics.length > 0) {
     console.log(`[DoctorSummary] New metrics found in input:`, newMetrics.map(m => 
       `${m.metric} (normalized: ${normalizeMetricName(m.metric)}, value: ${m.result_display})`

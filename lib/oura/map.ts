@@ -267,12 +267,30 @@ export function mapSleepRecord(record: any): MappedData | null {
     metrics.push({ metric_key: 'hrv_rmssd', value: String(avgHRV) })
   }
 
-  // Store average breathing rate (convert from breaths/second to breaths/minute)
+  // Store average breathing rate
+  // NOTE: Oura API docs say "breaths/second" but the actual values appear to be in breaths/minute
+  // (normal range is 12-20 breaths/min, not 12-20 breaths/sec)
+  // If value is > 60, it's likely incorrectly stored and we should divide by 60
+  // If value is <= 60, it's likely already in breaths/minute
   if (record.average_breath != null) {
-    const breathsPerSec = parseFloat(String(record.average_breath))
-    if (!isNaN(breathsPerSec) && breathsPerSec > 0) {
-      const breathsPerMin = Math.round(breathsPerSec * 60)
-      metrics.push({ metric_key: 'sleep_respiratory_rate', value: String(breathsPerMin) })
+    const breaths = parseFloat(String(record.average_breath))
+    if (!isNaN(breaths) && breaths > 0) {
+      let breathsPerMin: number
+      // If value is > 60, it's likely been incorrectly converted (e.g., 12.4 * 60 = 744)
+      // Divide by 60 to get back to breaths/minute
+      if (breaths > 60) {
+        breathsPerMin = Math.round(breaths / 60)
+        console.warn(`[OuraMap] Respiratory rate ${breaths} seems too high, dividing by 60 to get ${breathsPerMin} breaths/min`)
+      } else {
+        // Value is already in breaths/minute (normal range 8-30)
+        breathsPerMin = Math.round(breaths)
+      }
+      // Validate reasonable range (8-30 breaths/min)
+      if (breathsPerMin >= 8 && breathsPerMin <= 30) {
+        metrics.push({ metric_key: 'sleep_respiratory_rate', value: String(breathsPerMin) })
+      } else {
+        console.warn(`[OuraMap] Implausible respiratory rate ${breathsPerMin} breaths/min, skipping`)
+      }
     }
   }
 
