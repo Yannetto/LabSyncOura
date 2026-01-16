@@ -568,19 +568,14 @@ export default function ReportPage() {
                 .map((row, idx) => (
                 <div key={idx} className={`border p-4 ${row.flag ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}>
                   <div className="flex justify-between items-start mb-2">
-                    <div className="font-semibold text-sm text-gray-900 flex-1">{row.metric}</div>
-                    {row.flag ? (
+                    <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
+                    {row.flag && (
                       <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>
-                    ) : (
-                      <CheckCircle2 className="h-4 w-4 text-green-600" />
                     )}
                   </div>
-                  <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : ''}`}>{row.value}</span></div>
+                  <div className="space-y-1.5 text-sm">
+                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : 'text-gray-900'}`}>{row.value}</span></div>
                     <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">{row.referenceRange}</span></div>
-                    {row.clinicalRange && (
-                      <div><span className="text-gray-600">Clinical Reference Range:</span> <span className="text-gray-500">{row.clinicalRange}</span></div>
-                    )}
                   </div>
                 </div>
               ))}
