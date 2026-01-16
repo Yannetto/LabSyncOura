@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
       },
       report_keys: {
         sleep: checkKeys(reportKeys.sleep),
-        sleep_additional: checkKeys(reportKeys.sleep_additional || []),
+        sleep_additional: checkKeys(reportKeys.sleep_additional),
         cardiovascular: checkKeys(reportKeys.cardiovascular),
         activity: checkKeys(reportKeys.activity),
       },
