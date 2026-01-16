@@ -407,6 +407,25 @@ export default function ReportPage() {
     ? `${formatDateShort(metadata.referenceRange.start)} – ${formatDateShort(metadata.referenceRange.end)} (${metadata.referenceRange.days} days)`
     : ''
 
+  // Helper to get flag colors: Below Range = orange, Above Range = yellow
+  const getFlagColors = (flag: string) => {
+    if (flag === 'Below Range') {
+      return {
+        badge: 'bg-orange-100 text-orange-700',
+        border: 'border-l-orange-400'
+      }
+    } else if (flag === 'Above Range') {
+      return {
+        badge: 'bg-yellow-100 text-yellow-700',
+        border: 'border-l-yellow-400'
+      }
+    }
+    return {
+      badge: 'bg-amber-100 text-amber-700',
+      border: 'border-l-amber-400'
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white print:bg-white">
       {/* Success/Error Messages */}
@@ -557,7 +576,7 @@ export default function ReportPage() {
                       <td className="px-5 py-3 text-sm text-gray-600 border-r border-gray-200">{row.referenceRange}</td>
                       <td className="px-5 py-3 text-center text-sm">
                         {row.flag ? (
-                          <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">{row.flag}</span>
+                          <span className={`inline-block px-2 py-1 ${getFlagColors(row.flag).badge} text-xs font-medium rounded`}>{row.flag}</span>
                         ) : (
                           <span className="text-gray-400">—</span>
                         )}
@@ -572,11 +591,11 @@ export default function ReportPage() {
               {[...summary.sleepTable]
                 .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                 .map((row, idx) => (
-                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-amber-400' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
+                <div key={idx} className={`border-l-4 ${row.flag ? getFlagColors(row.flag).border : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
                     {row.flag && (
-                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded ml-2">{row.flag}</span>
+                      <span className={`inline-block px-2 py-1 ${getFlagColors(row.flag).badge} text-xs font-medium rounded ml-2`}>{row.flag}</span>
                     )}
                   </div>
                   <div className="space-y-1.5 text-sm">
@@ -622,7 +641,7 @@ export default function ReportPage() {
                       <td className="px-5 py-3 text-sm text-gray-600 border-r border-gray-200">{row.referenceRange}</td>
                       <td className="px-5 py-3 text-center text-sm">
                         {row.flag ? (
-                          <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">{row.flag}</span>
+                          <span className={`inline-block px-2 py-1 ${getFlagColors(row.flag).badge} text-xs font-medium rounded`}>{row.flag}</span>
                         ) : (
                           <span className="text-gray-400">—</span>
                         )}
@@ -637,11 +656,11 @@ export default function ReportPage() {
               {[...summary.cardiovascularTable]
                 .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                 .map((row, idx) => (
-                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-amber-400' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
+                <div key={idx} className={`border-l-4 ${row.flag ? getFlagColors(row.flag).border : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
                     {row.flag && (
-                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded ml-2">{row.flag}</span>
+                      <span className={`inline-block px-2 py-1 ${getFlagColors(row.flag).badge} text-xs font-medium rounded ml-2`}>{row.flag}</span>
                     )}
                   </div>
                   <div className="space-y-1.5 text-sm">
@@ -687,7 +706,7 @@ export default function ReportPage() {
                       <td className="px-5 py-3 text-sm text-gray-600 border-r border-gray-200">{row.referenceRange}</td>
                       <td className="px-5 py-3 text-center text-sm">
                         {row.flag ? (
-                          <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded">{row.flag}</span>
+                          <span className={`inline-block px-2 py-1 ${getFlagColors(row.flag).badge} text-xs font-medium rounded`}>{row.flag}</span>
                         ) : (
                           <span className="text-gray-400">—</span>
                         )}
@@ -702,11 +721,11 @@ export default function ReportPage() {
               {[...summary.activityTable]
                 .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
                 .map((row, idx) => (
-                <div key={idx} className={`border-l-4 ${row.flag ? 'border-l-amber-400' : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
+                <div key={idx} className={`border-l-4 ${row.flag ? getFlagColors(row.flag).border : 'border-l-gray-200'} border-r border-t border-b border-gray-200 bg-white p-4`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-medium text-sm text-gray-900 flex-1">{row.metric}</div>
                     {row.flag && (
-                      <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded ml-2">{row.flag}</span>
+                      <span className={`inline-block px-2 py-1 ${getFlagColors(row.flag).badge} text-xs font-medium rounded ml-2`}>{row.flag}</span>
                     )}
                   </div>
                   <div className="space-y-1.5 text-sm">
@@ -723,8 +742,8 @@ export default function ReportPage() {
         <div className="mt-12 mb-8 p-5 bg-gray-50 border border-gray-200 rounded-sm">
           <h3 className="text-sm font-semibold text-gray-900 mb-3">Legend</h3>
           <div className="text-xs text-gray-700 space-y-1.5">
-            <p><span className="font-medium text-amber-700">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
-            <p><span className="font-medium text-amber-700">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
+            <p><span className="font-medium text-yellow-700">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
+            <p><span className="font-medium text-orange-700">Below Range</span> — The 7-day average is lower than the 25th percentile of your 30-day reference range.</p>
             <p><span className="font-medium text-gray-900">—</span> — The value is within your normal reference range.</p>
             <p className="text-gray-600 mt-3 pt-3 border-t border-gray-200">Reference ranges are calculated from your personal historical data (30-day period) using the interquartile range method.</p>
           </div>
@@ -835,8 +854,32 @@ export default function ReportPage() {
             -webkit-print-color-adjust: exact;
           }
           
+          .bg-orange-100 {
+            background-color: #ffedd5 !important;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          
+          .bg-yellow-100 {
+            background-color: #fef9c3 !important;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          
           .text-amber-700 {
             color: #b45309 !important;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          
+          .text-orange-700 {
+            color: #c2410c !important;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          
+          .text-yellow-700 {
+            color: #a16207 !important;
             print-color-adjust: exact;
             -webkit-print-color-adjust: exact;
           }

@@ -539,7 +539,7 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       }
     }
     
-    // Combine Deep/Light/REM sleep
+    // Combine Deep/REM/Light sleep in logical order: Deep Sleep, REM Sleep, Light Sleep
     const deepPct = sleepMetrics.find(m => {
       const n = normalizeMetricName(m.metric)
       return n.includes('deep') && (n.includes('%') || n.includes('percentage'))
@@ -574,41 +574,7 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       if (deepDur) processed.add(normalizeMetricName(deepDur.metric))
     }
     
-    // Same for Light and REM
-    const lightPct = sleepMetrics.find(m => {
-      const n = normalizeMetricName(m.metric)
-      return n.includes('light') && (n.includes('%') || n.includes('percentage'))
-    })
-    const lightDur = sleepMetrics.find(m => {
-      const n = normalizeMetricName(m.metric)
-      return n.includes('light') && n.includes('duration')
-    })
-    
-    if (lightPct || lightDur) {
-      const pct = lightPct?.result_display || '—'
-      const dur = lightDur?.result_display || '—'
-      const value = dur !== '—' ? `${pct} (${dur})` : pct
-      const refRange = lightPct?.reference_display || lightDur?.reference_display || '—'
-      // Compute flag for Light Sleep based on percentage value
-      let flag = ''
-      if (lightPct && refRange !== '—') {
-        const pctNum = parseResultValue(lightPct.result_display)
-        const ref = parseReferenceRange(refRange)
-        if (pctNum !== null && ref !== null) {
-          if (pctNum > ref.upper) flag = 'Above Range'
-          else if (pctNum < ref.lower) flag = 'Below Range'
-        }
-      }
-      result.push({
-        metric: 'Light Sleep',
-        value,
-        referenceRange: refRange,
-        flag: flag,
-      })
-      if (lightPct) processed.add(normalizeMetricName(lightPct.metric))
-      if (lightDur) processed.add(normalizeMetricName(lightDur.metric))
-    }
-    
+    // REM Sleep (second)
     const remPct = sleepMetrics.find(m => {
       const n = normalizeMetricName(m.metric)
       return n.includes('rem') && (n.includes('%') || n.includes('percentage'))
@@ -641,6 +607,41 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       })
       if (remPct) processed.add(normalizeMetricName(remPct.metric))
       if (remDur) processed.add(normalizeMetricName(remDur.metric))
+    }
+    
+    // Light Sleep (last)
+    const lightPct = sleepMetrics.find(m => {
+      const n = normalizeMetricName(m.metric)
+      return n.includes('light') && (n.includes('%') || n.includes('percentage'))
+    })
+    const lightDur = sleepMetrics.find(m => {
+      const n = normalizeMetricName(m.metric)
+      return n.includes('light') && n.includes('duration')
+    })
+    
+    if (lightPct || lightDur) {
+      const pct = lightPct?.result_display || '—'
+      const dur = lightDur?.result_display || '—'
+      const value = dur !== '—' ? `${pct} (${dur})` : pct
+      const refRange = lightPct?.reference_display || lightDur?.reference_display || '—'
+      // Compute flag for Light Sleep based on percentage value
+      let flag = ''
+      if (lightPct && refRange !== '—') {
+        const pctNum = parseResultValue(lightPct.result_display)
+        const ref = parseReferenceRange(refRange)
+        if (pctNum !== null && ref !== null) {
+          if (pctNum > ref.upper) flag = 'Above Range'
+          else if (pctNum < ref.lower) flag = 'Below Range'
+        }
+      }
+      result.push({
+        metric: 'Light Sleep',
+        value,
+        referenceRange: refRange,
+        flag: flag,
+      })
+      if (lightPct) processed.add(normalizeMetricName(lightPct.metric))
+      if (lightDur) processed.add(normalizeMetricName(lightDur.metric))
     }
     
     return result
