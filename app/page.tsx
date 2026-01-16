@@ -119,11 +119,12 @@ export default function Home() {
           
           <div className="bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
             {/* Report Header */}
-            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-4">
-              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-2.5">Wearable Health Summary Report</h2>
-              <div className="text-xs text-gray-600 space-y-1.5">
+            <div className="bg-gray-50 border-b border-gray-200 px-4 sm:px-6 py-5">
+              <h2 className="text-base sm:text-lg font-bold text-gray-900 mb-3">Wearable Health Summary Report</h2>
+              <div className="text-xs text-gray-600 space-y-2">
                 <p><span className="font-medium text-gray-700">Patient email:</span> example@email.com • <span className="font-medium text-gray-700">Report date:</span> {new Date().toLocaleDateString()}</p>
-                <p><span className="font-medium text-gray-700">7 Days values:</span> Jan 1, 2026 – Jan 7, 2026 (7 days) • <span className="font-medium text-gray-700">30 Days Reference Range:</span> Dec 2, 2025 – Jan 1, 2026 (30 days)</p>
+                <p><span className="font-medium text-gray-700">7 Days values:</span> Jan 1, 2026 – Jan 7, 2026 (7 days)</p>
+                <p><span className="font-medium text-gray-700">30 Days Reference Range:</span> Dec 2, 2025 – Jan 1, 2026 (30 days)</p>
               </div>
             </div>
 
