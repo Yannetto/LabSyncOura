@@ -190,8 +190,6 @@ const KEEP_METRICS = {
     'sleep average hrv', // From sleep_average_hrv
     'respiratory rate',
     'sleep respiratory rate', // From sleep_respiratory_rate
-    'average nightly spo2',
-    'average nightly sp', // Variant without "o2"
     'average nightly spo2', // From spo2_percentage_average
     'spo2 percentage average',
     'oxygen saturation',
@@ -587,11 +585,9 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
       { 
         keys: [
           'average nightly spo2',
-          'average nightly sp', 
           'spo2 percentage average', 
           'oxygen saturation', 
-          'spo2',
-          'sp'
+          'spo2'
         ],
         name: 'Oxygen Saturation (SpO2)'
       },
@@ -626,8 +622,8 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
           if (normalized === normalizedKey) return true
           // Try substring match in both directions
           if (normalized.includes(normalizedKey) || normalizedKey.includes(normalized)) return true
-          // Special handling for SpO2 variations (case-insensitive)
-          if (normalizedKey.includes('spo2') || normalizedKey.includes('sp')) {
+          // Special handling for SpO2 variations (must contain "spo2" or "oxygen saturation", not just "sp")
+          if (normalizedKey.includes('spo2') || normalizedKey.includes('oxygen saturation')) {
             const normalizedWithoutSpaces = normalized.replace(/\s+/g, ' ')
             const keyWithoutSpaces = normalizedKey.replace(/\s+/g, ' ')
             if (normalizedWithoutSpaces.includes(keyWithoutSpaces) || keyWithoutSpaces.includes(normalizedWithoutSpaces)) {
@@ -657,10 +653,10 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
             const n = normalizeMetricName(m.metric)
             return `${m.metric} (normalized: "${n}")`
           }))
-          // Check if any metric contains "spo2" or "oxygen"
+          // Check if any metric contains "spo2" or "oxygen saturation"
           const spo2Candidates = metrics.filter(m => {
             const n = normalizeMetricName(m.metric)
-            return n.includes('spo2') || n.includes('oxygen') || n.includes('sp')
+            return n.includes('spo2') || n.includes('oxygen saturation')
           })
           if (spo2Candidates.length > 0) {
             console.log(`[DoctorSummary] Found potential SpO2 candidates:`, spo2Candidates.map(m => `${m.metric} (normalized: "${normalizeMetricName(m.metric)}")`))
