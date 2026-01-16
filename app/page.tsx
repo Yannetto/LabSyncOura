@@ -79,13 +79,13 @@ export default function Home() {
 
       <main className="max-w-6xl mx-auto px-4 sm:px-8 py-10 sm:py-12">
         {/* Hero */}
-        <div className="mb-10 text-center max-w-3xl mx-auto">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6 tracking-tight">
+        <div className="mb-12 text-center max-w-3xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 tracking-tight leading-tight">
             Turn your wearable data into a doctor-ready report — in seconds.
           </h1>
           
           {/* Primary CTA */}
-          <div className="mb-4">
+          <div className="mb-6">
             {!user ? (
               <Link href="/login" className="inline-block">
                 <button className="px-8 py-3.5 bg-gray-900 text-white font-medium hover:bg-gray-800 rounded-md transition-colors inline-flex items-center gap-2 text-base shadow-md">
@@ -104,7 +104,7 @@ export default function Home() {
           </div>
 
           {/* Microcopy */}
-          <p className="text-base text-gray-700 font-medium">
+          <p className="text-base sm:text-lg text-gray-600 font-normal leading-relaxed">
             Connect your wearable → get a lab-style report → share with your doctor or AI
           </p>
         </div>
