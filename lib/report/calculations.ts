@@ -104,6 +104,18 @@ function formatTemperatureRange(q25: number, q75: number): string {
   return `${q25.toFixed(2)}–${q75.toFixed(2)}°C (${q25F.toFixed(2)}–${q75F.toFixed(2)}°F)`
 }
 
+// Temperature deviations (anomalies) do NOT add 32 - only multiply by 9/5
+function formatTemperatureDeviation(celsius: number): string {
+  const fahrenheit = celsius * 9/5
+  return `${celsius.toFixed(2)}°C (${fahrenheit.toFixed(2)}°F)`
+}
+
+function formatTemperatureDeviationRange(q25: number, q75: number): string {
+  const q25F = q25 * 9/5
+  const q75F = q75 * 9/5
+  return `${q25.toFixed(2)}–${q75.toFixed(2)}°C (${q25F.toFixed(2)}–${q75F.toFixed(2)}°F)`
+}
+
 // Helper function to calculate a metric with flexible reference data
 // Returns metric with "—" if data is missing (never returns null)
 function calculateMetric(
@@ -397,9 +409,9 @@ export function calculateReportMetrics(
     'readiness_hrv_rmssd': { name: 'HRV RMSSD (Readiness)', formatResult: (v) => `${v.toFixed(0)} ms`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} ms` },
     'sleep_average_hrv': { name: 'Night-time HRV', formatResult: (v) => `${v.toFixed(0)} ms`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} ms` },
     'sleep_respiratory_rate': { name: 'Respiratory Rate', formatResult: (v) => `${v.toFixed(0)} breaths/min`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} breaths/min` },
-    'temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => formatTemperature(v), formatReference: (q25, q75) => formatTemperatureRange(q25, q75) },
-    'readiness_temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => formatTemperature(v), formatReference: (q25, q75) => formatTemperatureRange(q25, q75) },
-    'readiness_temperature_trend_deviation': { name: 'Temperature Trend Deviation', formatResult: (v) => formatTemperature(v), formatReference: (q25, q75) => formatTemperatureRange(q25, q75) },
+    'temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => formatTemperatureDeviation(v), formatReference: (q25, q75) => formatTemperatureDeviationRange(q25, q75) },
+    'readiness_temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => formatTemperatureDeviation(v), formatReference: (q25, q75) => formatTemperatureDeviationRange(q25, q75) },
+    'readiness_temperature_trend_deviation': { name: 'Temperature Trend Deviation', formatResult: (v) => formatTemperatureDeviation(v), formatReference: (q25, q75) => formatTemperatureDeviationRange(q25, q75) },
     // SpO2 metrics
     'spo2_percentage_average': { name: 'Average Nightly SpO2', formatResult: (v) => `${v.toFixed(1)}%`, formatReference: (q25, q75) => `${q25.toFixed(1)}–${q75.toFixed(1)}%` },
     'breathing_disturbance_index': { name: 'Breathing Disturbance Index', formatResult: (v) => `${v.toFixed(2)}`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}` },
@@ -558,8 +570,16 @@ export function calculateReportMetrics(
         formatResult = (v) => `${v.toFixed(0)} ms`
         formatReference = (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} ms`
       } else if (metricLower.includes('temperature') || metricLower.includes('deviation')) {
-        formatResult = (v) => `${v.toFixed(2)}°C`
-        formatReference = (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C`
+        // Temperature deviations: only multiply by 9/5, do NOT add 32
+        formatResult = (v) => {
+          const fahrenheit = v * 9/5
+          return `${v.toFixed(2)}°C (${fahrenheit.toFixed(2)}°F)`
+        }
+        formatReference = (q25, q75) => {
+          const q25F = q25 * 9/5
+          const q75F = q75 * 9/5
+          return `${q25.toFixed(2)}–${q75.toFixed(2)}°C (${q25F.toFixed(2)}–${q75F.toFixed(2)}°F)`
+        }
       } else if (metricLower.includes('score') || metricLower.includes('restfulness') || metricLower.includes('timing')) {
         formatResult = (v) => `${v.toFixed(metricLower.includes('score') ? 0 : 1)} points`
         formatReference = (q25, q75) => `${q25.toFixed(metricLower.includes('score') ? 0 : 1)}–${q75.toFixed(metricLower.includes('score') ? 0 : 1)} points`
