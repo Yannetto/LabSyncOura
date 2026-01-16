@@ -510,8 +510,6 @@ export default function ReportPage() {
         {summary && (() => {
           const allRows = [...summary.sleepTable, ...summary.cardiovascularTable, ...summary.activityTable]
           const flaggedRows = allRows.filter(r => r.flag)
-          const aboveRangeCount = flaggedRows.filter(r => r.flag === 'Above Range').length
-          const belowRangeCount = flaggedRows.filter(r => r.flag === 'Below Range').length
           const sleepFlagged = summary.sleepTable.filter(r => r.flag).length
           const cardioFlagged = summary.cardiovascularTable.filter(r => r.flag).length
           const activityFlagged = summary.activityTable.filter(r => r.flag).length
@@ -522,33 +520,30 @@ export default function ReportPage() {
           
           return (
             <div className="mb-8 print:mb-6 border-b border-gray-200 pb-6">
-              <div className="flex flex-wrap items-center gap-4 mb-4">
+              <div className="flex flex-wrap items-center gap-4 mb-3">
                 <div className="flex items-center gap-2">
                   <span className="text-3xl font-bold text-gray-900">{flaggedRows.length}</span>
                   <span className="text-sm font-medium text-gray-700">Flagged Metrics</span>
                 </div>
-                {aboveRangeCount > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="inline-block w-3 h-3 rounded-full bg-yellow-400"></span>
-                    <span className="text-sm text-gray-600">{aboveRangeCount} Above Range</span>
-                  </div>
-                )}
-                {belowRangeCount > 0 && (
-                  <div className="flex items-center gap-1.5">
-                    <span className="inline-block w-3 h-3 rounded-full bg-orange-400"></span>
-                    <span className="text-sm text-gray-600">{belowRangeCount} Below Range</span>
-                  </div>
-                )}
               </div>
-              <div className="flex flex-wrap items-center gap-4 text-xs text-gray-500">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                 {sleepFlagged > 0 && (
-                  <span>{sleepFlagged} Sleep</span>
+                  <span className="flex items-center gap-1.5">
+                    <span>😴</span>
+                    <span>{sleepFlagged} Sleep</span>
+                  </span>
                 )}
                 {cardioFlagged > 0 && (
-                  <span>{cardioFlagged} Cardiovascular</span>
+                  <span className="flex items-center gap-1.5">
+                    <span>❤️</span>
+                    <span>{cardioFlagged} Cardiovascular</span>
+                  </span>
                 )}
                 {activityFlagged > 0 && (
-                  <span>{activityFlagged} Activity</span>
+                  <span className="flex items-center gap-1.5">
+                    <span>🏃</span>
+                    <span>{activityFlagged} Activity</span>
+                  </span>
                 )}
               </div>
             </div>
