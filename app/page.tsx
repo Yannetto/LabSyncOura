@@ -151,10 +151,10 @@ export default function Home() {
             </div>
 
             {/* Sleep Table */}
-            <div className="mb-6 sm:mb-8">
+            <div className="mb-6 sm:mb-8 px-4 sm:px-6">
               <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900 px-4 sm:px-0">Sleep Summary</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block border border-gray-300 overflow-hidden">
+              <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
                 <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
                     <col style={{ width: '30%' }} />
@@ -164,60 +164,60 @@ export default function Home() {
                   </colgroup>
                   <thead className="bg-gray-900 text-white">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
-                      <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
-                      <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
-                      <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">Metric</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">7 Days values</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">30 Days Reference Range</th>
+                      <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide">Flag</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Time in Bed</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">9h 36m</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">8h 45m – 10h 15m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Time in Bed</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">9h 36m</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">8h 45m – 10h 15m</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Sleep Duration</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">6h 45m</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7h 30m – 9h 0m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Sleep Duration</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">6h 45m</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">7h 30m – 9h 0m</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
                       </td>
                     </tr>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Sleep Latency</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">18 min</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">9 min – 22 min</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Sleep Latency</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">18 min</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">9 min – 22 min</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Sleep Efficiency</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">86.8%</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">86.0–89.8%</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Sleep Efficiency</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">86.8%</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">86.0–89.8%</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Deep Sleep</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">10.5% (52m)</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">12.0–18.0% (1h 0m – 1h 30m)</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Deep Sleep</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">10.5% (52m)</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">12.0–18.0% (1h 0m – 1h 30m)</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
                       </td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">REM Sleep</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">27.0% (2h 17m)</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">18.0–25.0% (1h 30m – 2h 15m)</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">REM Sleep</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">27.0% (2h 17m)</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">18.0–25.0% (1h 30m – 2h 15m)</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
                       </td>
                     </tr>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Light Sleep</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">62.5% (5h 17m)</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">55.0–70.0% (4h 30m – 6h 0m)</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Light Sleep</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">62.5% (5h 17m)</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">55.0–70.0% (4h 30m – 6h 0m)</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
                   </tbody>
                 </table>
@@ -304,10 +304,10 @@ export default function Home() {
             </div>
 
             {/* Cardiovascular & Oxygenation Table */}
-            <div className="mb-6 sm:mb-8">
-              <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900 px-4 sm:px-0">Cardiovascular & Oxygenation</h2>
+            <div className="mb-6 sm:mb-8 px-4 sm:px-6">
+              <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900">Cardiovascular & Oxygenation</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block border border-gray-300 overflow-hidden">
+              <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
                 <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
                     <col style={{ width: '30%' }} />
@@ -317,62 +317,62 @@ export default function Home() {
                   </colgroup>
                   <thead className="bg-gray-900 text-white">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
-                      <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
-                      <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
-                      <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">Metric</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">7 Days values</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">30 Days Reference Range</th>
+                      <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide">Flag</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Resting Heart Rate</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">95 bpm</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">55–65 bpm</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Resting Heart Rate</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">95 bpm</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">55–65 bpm</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
                       </td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Lowest Night-time Heart Rate</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">45 bpm</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">42–50 bpm</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Lowest Night-time Heart Rate</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">45 bpm</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">42–50 bpm</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Night-time HRV</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">28 ms</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">35–50 ms</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Night-time HRV</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">28 ms</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">35–50 ms</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
                       </td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Respiratory Rate</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">12 breaths/min</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">12–18 breaths/min</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Respiratory Rate</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">12 breaths/min</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">12–18 breaths/min</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Oxygen Saturation (SpO2)</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">94.5%</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">96.0–99.0%</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Oxygen Saturation (SpO2)</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">94.5%</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">96.0–99.0%</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
                       </td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Breathing Disturbance Index</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">8.2</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">5.0–8.0</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Breathing Disturbance Index</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">8.2</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">5.0–8.0</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
                       </td>
                     </tr>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Temperature Trend Deviation</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">0.01°C (0.02°F)</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">0.00–0.12°C (0.00–0.22°F)</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Temperature Trend Deviation</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">0.01°C (0.02°F)</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">0.00–0.12°C (0.00–0.22°F)</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
                   </tbody>
                 </table>
@@ -461,10 +461,10 @@ export default function Home() {
             </div>
 
             {/* Activity Table */}
-            <div className="mb-6 sm:mb-8">
-              <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900 px-4 sm:px-0">Activity</h2>
+            <div className="mb-6 sm:mb-8 px-4 sm:px-6">
+              <h2 className="text-base sm:text-lg font-bold mb-2 sm:mb-3 text-gray-900">Activity</h2>
               {/* Desktop Table */}
-              <div className="hidden md:block border border-gray-300 overflow-hidden">
+              <div className="hidden md:block border border-gray-200 overflow-hidden rounded-sm">
                 <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                   <colgroup>
                     <col style={{ width: '30%' }} />
@@ -474,68 +474,68 @@ export default function Home() {
                   </colgroup>
                   <thead className="bg-gray-900 text-white">
                     <tr>
-                      <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
-                      <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
-                      <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
-                      <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">Metric</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">7 Days values</th>
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide border-r border-gray-700">30 Days Reference Range</th>
+                      <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wide">Flag</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Steps</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">8,500 steps</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">7,000–10,000 steps</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Steps</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">8,500 steps</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">7,000–10,000 steps</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Active Calories</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">537 kcal</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">227–332 kcal</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Active Calories</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">537 kcal</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">227–332 kcal</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
                       </td>
                     </tr>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Total Calories</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">2,772 kcal</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">2,462–2,518 kcal</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Total Calories</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">2,772 kcal</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">2,462–2,518 kcal</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
                       </td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Sedentary Time</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">7h 30m</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">8h 27m – 9h 40m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Sedentary Time</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">7h 30m</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">8h 27m – 9h 40m</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-orange-100 text-orange-700 text-xs font-medium rounded">Below Range</span>
                       </td>
                     </tr>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">High Activity Time</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">0 min</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">0 min – 0 min</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">High Activity Time</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">0 min</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">0 min – 0 min</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Medium Activity Time</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">1h 3m</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">3 min – 18 min</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap">
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Medium Activity Time</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">1h 3m</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">3 min – 18 min</td>
+                      <td className="px-5 py-3.5 text-center text-sm">
                         <span className="inline-block px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-medium rounded">Above Range</span>
                       </td>
                     </tr>
-                    <tr>
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Low Activity Time</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">5h 2m</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">3h 57m – 5h 28m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Low Activity Time</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">5h 2m</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">3h 57m – 5h 28m</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
-                    <tr className="bg-gray-50">
-                      <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">Resting Time</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">9h 4m</td>
-                      <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">9h 17m – 10h 59m</td>
-                      <td className="px-4 py-2 text-center text-sm whitespace-nowrap text-gray-400">—</td>
+                    <tr className="border-b border-gray-100">
+                      <td className="px-5 py-3.5 text-sm font-medium border-r border-gray-200">Resting Time</td>
+                      <td className="px-5 py-3.5 text-sm border-r border-gray-200">9h 4m</td>
+                      <td className="px-5 py-3.5 text-sm text-gray-600 border-r border-gray-200">9h 17m – 10h 59m</td>
+                      <td className="px-5 py-3.5 text-center text-sm text-gray-400">—</td>
                     </tr>
                   </tbody>
                 </table>
@@ -634,7 +634,7 @@ export default function Home() {
             </div>
 
             {/* Legend */}
-            <div className="mt-8 p-4 bg-gray-50 border border-gray-300">
+            <div className="mt-8 mx-4 sm:mx-6 mb-4 sm:mb-6 p-4 bg-gray-50 border border-gray-300">
               <h3 className="text-sm font-bold text-gray-900 mb-2">Legend</h3>
               <div className="text-xs text-gray-700 space-y-1">
                 <p><span className="font-semibold text-yellow-700">Above Range</span> — The 7-day average is higher than the 75th percentile of your 30-day reference range.</p>
