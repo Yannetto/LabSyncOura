@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { ArrowRight, Shield, FileText, CheckCircle2 } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
 
 export default function Home() {
   const [user, setUser] = useState<any>(null)
@@ -58,16 +60,18 @@ export default function Home() {
           {user ? (
             <Link
               href="/app"
-              className="text-sm text-gray-700 hover:text-gray-900 font-medium"
+              className="text-sm text-gray-700 hover:text-gray-900 font-medium flex items-center gap-1"
             >
-              Dashboard →
+              Dashboard
+              <ArrowRight className="w-3 h-3" />
             </Link>
           ) : (
             <Link
               href="/login"
-              className="text-sm text-gray-700 hover:text-gray-900 font-medium"
+              className="text-sm text-gray-700 hover:text-gray-900 font-medium flex items-center gap-1"
             >
-              Sign In →
+              Sign In
+              <ArrowRight className="w-3 h-3" />
             </Link>
           )}
         </div>
@@ -75,14 +79,30 @@ export default function Home() {
 
       <main className="max-w-5xl mx-auto px-4 sm:px-8 py-12 sm:py-16">
         {/* Value Proposition */}
-        <div className="mb-8 sm:mb-12 text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
+        <div className="mb-12 sm:mb-16 text-center">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 sm:mb-5">
             Wearable Health Summary Report
           </h1>
-          <p className="text-sm sm:text-base text-gray-700 max-w-2xl mx-auto leading-relaxed px-4">
+          <p className="text-base sm:text-lg text-gray-700 max-w-2xl mx-auto leading-relaxed px-4 mb-6">
             Transform your Oura ring data into clinical lab-style reports. 
             View your health metrics in a format familiar to healthcare professionals.
           </p>
+          
+          {/* Feature Highlights - Minimal */}
+          <div className="flex flex-wrap justify-center gap-6 sm:gap-8 mb-8 text-xs sm:text-sm text-gray-600">
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              <span>Secure OAuth connection</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              <span>Clinical lab-style format</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              <span>No password required</span>
+            </div>
+          </div>
         </div>
 
         {/* How it works - Simplified */}
@@ -136,9 +156,10 @@ export default function Home() {
           <div className="mt-4 text-center">
             <button
               onClick={() => setShowFullExample(!showFullExample)}
-              className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1"
+              className="text-sm text-gray-700 hover:text-gray-900 flex items-center gap-1 mx-auto"
             >
-              {showFullExample ? 'Hide' : 'See'} full example report →
+              {showFullExample ? 'Hide' : 'See'} full example report
+              <ArrowRight className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -468,11 +489,11 @@ export default function Home() {
         {/* CTA Section */}
         <div className="text-center mb-12">
           {!user && (
-            <Link
-              href="/login"
-              className="inline-block text-sm text-gray-700 hover:text-gray-900 font-medium border-b border-gray-400 pb-1"
-            >
-              Connect Oura to generate your report →
+            <Link href="/login">
+              <Button variant="primary" className="inline-flex items-center gap-2">
+                Connect Oura to generate your report
+                <ArrowRight className="w-4 h-4" />
+              </Button>
             </Link>
           )}
         </div>

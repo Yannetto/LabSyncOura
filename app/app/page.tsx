@@ -4,6 +4,24 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
+import { 
+  RefreshCw, 
+  FileText, 
+  Download, 
+  Trash2, 
+  UserX, 
+  ArrowRight,
+  CheckCircle2,
+  XCircle,
+  Clock
+} from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { StatusBadge } from '@/components/ui/StatusBadge'
+import { Modal } from '@/components/ui/Modal'
+import { EmptyState } from '@/components/ui/EmptyState'
+import { CardSkeleton } from '@/components/ui/LoadingSkeleton'
 
 export const dynamic = 'force-dynamic'
 
@@ -71,7 +89,7 @@ export default function AppPage() {
     const error = params.get('error')
 
     if (connected === '1') {
-      setMessage({ type: 'success', text: 'Connected ✓ Oura account connected successfully!' })
+      toast.success('Oura account connected successfully')
       setIsConnected(true)
       // Clean URL
       router.replace('/app')
@@ -93,10 +111,7 @@ export default function AppPage() {
         errorText = errorMessage
       }
       
-      setMessage({ 
-        type: 'error', 
-        text: errorText
-      })
+      toast.error(errorText)
     }
   }, [])
 
@@ -156,21 +171,21 @@ export default function AppPage() {
               day: 'numeric', 
               year: 'numeric' 
             })
-        setMessage({ type: 'success', text: `Synced ${data.days_synced} days of data` })
+        toast.success(`Synced ${data.days_synced} days of data`)
         setLastSynced(syncDate)
         setHasSyncedData(true) // Data now exists
       } else {
         // Handle specific error cases
         if (response.status === 404) {
-          setMessage({ type: 'error', text: 'No sleep summaries available for the selected period. Please check your Oura account has data.' })
+          toast.error('No sleep summaries available for the selected period. Please check your Oura account has data.')
         } else if (response.status === 403) {
-          setMessage({ type: 'error', text: 'Permission denied. Please reconnect your Oura account.' })
+          toast.error('Permission denied. Please reconnect your Oura account.')
         } else {
-          setMessage({ type: 'error', text: data.error || 'Sync failed' })
+          toast.error(data.error || 'Sync failed')
         }
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Sync failed' })
+      toast.error(error.message || 'Sync failed')
     } finally {
       setSyncing(false)
     }
@@ -183,14 +198,15 @@ export default function AppPage() {
       const response = await fetch('/api/report/generate', { method: 'POST' })
       const data = await response.json()
       if (response.ok) {
+        toast.success('Report generated successfully')
         // Redirect to report view page
         router.push('/app/report')
       } else {
-        setMessage({ type: 'error', text: data.error || 'Report generation failed' })
+        toast.error(data.error || 'Report generation failed')
         setGenerating(false)
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Report generation failed' })
+      toast.error(error.message || 'Report generation failed')
       setGenerating(false)
     }
   }
@@ -241,7 +257,7 @@ export default function AppPage() {
         setShowTosModal(false)
         setTosAcceptedLocally(true)
         setTosStatus({ needs_acceptance: false, tos_accepted: true })
-        setMessage({ type: 'success', text: 'Terms of Service accepted successfully' })
+        toast.success('Terms of Service accepted successfully')
         // Prevent checkTosStatus from running again
         return
       } else {
@@ -256,23 +272,17 @@ export default function AppPage() {
             setShowTosModal(false)
             setTosAcceptedLocally(true)
             setTosStatus({ needs_acceptance: false, tos_accepted: false })
-            setMessage({ 
-              type: 'error', 
-              text: 'Please update database schema: Run supabase-schema-updates.sql in Supabase SQL Editor' 
-            })
+            toast.error('Please update database schema: Run supabase-schema-updates.sql in Supabase SQL Editor')
             return
           }
         }
         
-        setMessage({ 
-          type: 'error', 
-          text: errorMsg
-        })
+        toast.error(errorMsg)
         // Keep modal open on error so user can see the error message
       }
     } catch (error: any) {
       console.error('[TOS] Accept TOS error:', error)
-      setMessage({ type: 'error', text: error.message || 'Failed to accept Terms of Service. Please check browser console for details.' })
+      toast.error(error.message || 'Failed to accept Terms of Service. Please check browser console for details.')
       // Keep modal open on error
     }
   }
@@ -280,7 +290,7 @@ export default function AppPage() {
   const handleDeclineTos = () => {
     // Close modal but show warning
     setShowTosModal(false)
-    setMessage({ type: 'error', text: 'You must accept the Terms of Service to use this application. Please refresh the page to accept.' })
+    toast.error('You must accept the Terms of Service to use this application. Please refresh the page to accept.')
     // Optionally redirect to login or home
     // router.push('/')
   }
@@ -307,12 +317,12 @@ export default function AppPage() {
       const data = await response.json()
       if (response.ok) {
         setIsConnected(false)
-        setMessage({ type: 'success', text: 'Oura account disconnected successfully' })
+        toast.success('Oura account disconnected successfully')
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to disconnect' })
+        toast.error(data.error || 'Failed to disconnect')
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to disconnect' })
+      toast.error(error.message || 'Failed to disconnect')
     }
   }
 
@@ -333,12 +343,12 @@ export default function AppPage() {
         setLastSynced(null)
         setHasSyncedData(false) // Reset data status
         setReportHistory([])
-        setMessage({ type: 'success', text: 'All data deleted successfully' })
+        toast.success('All data deleted successfully')
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to delete data' })
+        toast.error(data.error || 'Failed to delete data')
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to delete data' })
+      toast.error(error.message || 'Failed to delete data')
     }
   }
 
@@ -355,13 +365,13 @@ export default function AppPage() {
         a.click()
         window.URL.revokeObjectURL(url)
         document.body.removeChild(a)
-        setMessage({ type: 'success', text: 'Data export downloaded successfully' })
+        toast.success('Data export downloaded successfully')
       } else {
         const data = await response.json()
-        setMessage({ type: 'error', text: data.error || 'Failed to export data' })
+        toast.error(data.error || 'Failed to export data')
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to export data' })
+      toast.error(error.message || 'Failed to export data')
     }
   }
 
@@ -381,10 +391,10 @@ export default function AppPage() {
         await supabase.auth.signOut()
         router.push('/')
       } else {
-        setMessage({ type: 'error', text: data.error || 'Failed to delete account' })
+        toast.error(data.error || 'Failed to delete account')
       }
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.message || 'Failed to delete account' })
+      toast.error(error.message || 'Failed to delete account')
     }
   }
 
@@ -395,17 +405,17 @@ export default function AppPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-gray-600">Loading...</div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <CardSkeleton />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="border-b-2 border-gray-400">
+      <header className="border-b border-gray-300">
         <div className="max-w-5xl mx-auto px-8 py-6 flex justify-between items-center">
-          <Link href="/" className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wide">
+          <Link href="/" className="text-xs text-gray-600 hover:text-gray-900 uppercase tracking-wide flex items-center gap-1">
             ← Home
           </Link>
           <div className="flex items-center gap-6">
@@ -426,78 +436,60 @@ export default function AppPage() {
           <p className="text-sm text-gray-600">Generate clinical lab-style reports from your Oura ring data</p>
         </div>
 
-        {message && (
-          <div className={`mb-6 p-3 text-sm border ${
-            message.type === 'success' ? 'bg-gray-50 text-gray-800 border-gray-300' : 'bg-gray-50 text-gray-800 border-gray-300'
-          }`}>
-            {message.text}
-          </div>
-        )}
-
-        {/* Connection Status */}
-        <div className="mb-8 pb-6 border-b-2 border-gray-400">
+        {/* Connection Status Card */}
+        <Card className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-lg font-bold text-gray-900 mb-1">Oura Connection</h2>
-              <p className="text-xs text-gray-600">
-                {isConnected ? (
-                  <span className="text-gray-700">Connected • Last synced: {lastSynced || 'Never'}</span>
-                ) : (
-                  <span className="text-gray-500">Not connected</span>
-                )}
-              </p>
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-bold text-gray-900">Oura Connection</h2>
+              <StatusBadge connected={isConnected || false} />
             </div>
-            {isConnected ? (
+            {isConnected && (
               <button
                 onClick={handleDisconnect}
-                className="text-xs text-gray-600 hover:text-gray-900 underline"
+                className="text-xs text-gray-600 hover:text-gray-900"
               >
                 Disconnect
               </button>
-            ) : (
-              <button
-                onClick={handleConnect}
-                className="text-sm text-gray-700 hover:text-gray-900 font-medium"
-                disabled={isConnected === null}
-              >
-                Connect →
-              </button>
             )}
           </div>
-          {!isConnected && (
-            <button
-              onClick={handleConnect}
-              className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1"
-              disabled={isConnected === null}
-            >
-              Connect Oura account
-            </button>
-          )}
-          {isConnected && (
-            <div className="mt-2">
+          {isConnected ? (
+            <div className="space-y-2">
+              {lastSynced && (
+                <div className="flex items-center gap-2 text-xs text-gray-600">
+                  <Clock className="w-3 h-3" />
+                  <span>Last synced: {lastSynced}</span>
+                </div>
+              )}
               <a 
                 href="https://cloud.ouraring.com/account" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-xs text-gray-600 hover:text-gray-900 underline"
+                className="text-xs text-gray-600 hover:text-gray-900 flex items-center gap-1"
               >
-                Manage your Oura account settings →
+                Manage your Oura account settings
+                <ArrowRight className="w-3 h-3" />
               </a>
             </div>
+          ) : (
+            <Button onClick={handleConnect} disabled={isConnected === null}>
+              Connect Oura account
+              <ArrowRight className="w-4 h-4" />
+            </Button>
           )}
-        </div>
+        </Card>
 
         {/* Actions */}
         {isConnected && (
-          <div className="mb-8 pb-6 border-b-2 border-gray-400">
-            <div className="flex justify-between items-center mb-2">
+          <Card className="mb-8">
+            <div className="flex justify-between items-center mb-4">
               <h2 className="text-lg font-bold text-gray-900">Actions</h2>
               <a
                 href="/debug"
                 target="_blank"
-                className="text-xs text-gray-600 hover:text-gray-900 underline"
+                className="text-xs text-gray-600 hover:text-gray-900 flex items-center gap-1"
               >
-                View Database Diagnostic →
+                View Database Diagnostic
+                <ArrowRight className="w-3 h-3" />
               </a>
             </div>
             {/* Workflow guidance */}
@@ -514,77 +506,35 @@ export default function AppPage() {
               </span>
             </div>
             <div className="flex flex-col sm:flex-row gap-3">
-              <button
+              <Button
                 onClick={() => handleSync(false)}
                 disabled={syncing}
-                className="flex-1 px-6 py-3 bg-gray-900 text-white font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                loading={syncing}
+                className="flex-1"
               >
-                {syncing ? (
-                  <>
-                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Syncing...</span>
-                  </>
-                ) : (
-                  <>
-                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    <span>{hasSyncedData ? 'Refresh Data' : 'Sync Data'}</span>
-                  </>
-                )}
-              </button>
-              <button
+                <RefreshCw className="h-4 w-4" />
+                {hasSyncedData ? 'Refresh Data' : 'Sync Data'}
+              </Button>
+              <Button
                 onClick={() => handleSync(true)}
                 disabled={syncing}
-                className="px-4 py-3 bg-gray-700 text-white text-sm font-medium hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                loading={syncing}
+                variant="secondary"
                 title="Force resync: Re-fetch all data from the last 90 days"
               >
-                {syncing ? (
-                  <>
-                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  </>
-                ) : (
-                  <>
-                    <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    <span>Force Resync</span>
-                  </>
-                )}
-              </button>
+                <RefreshCw className="h-4 w-4" />
+                Force Resync
+              </Button>
               <div className="relative flex-1 group">
-                <button
+                <Button
                   onClick={handleGenerate}
                   disabled={generating || !hasSyncedData}
-                  className={`w-full px-6 py-3 font-medium transition-colors flex items-center justify-center gap-2 ${
-                    hasSyncedData 
-                      ? 'bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50' 
-                      : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                  }`}
+                  loading={generating}
+                  className="w-full"
                 >
-                  {generating ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <span>Generating...</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                      </svg>
-                      <span>Generate Report</span>
-                    </>
-                  )}
-                </button>
+                  <FileText className="h-4 w-4" />
+                  Generate Report
+                </Button>
                 {/* Tooltip when disabled */}
                 {!hasSyncedData && (
                   <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-gray-900 text-white text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -594,11 +544,11 @@ export default function AppPage() {
                 )}
               </div>
             </div>
-          </div>
+          </Card>
         )}
 
         {/* Report History */}
-        <div className="mb-8 pb-6 border-b-2 border-gray-400">
+        <Card className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-bold text-gray-900">Report History</h2>
             {reportHistory.length > 0 && (
@@ -611,10 +561,11 @@ export default function AppPage() {
             )}
           </div>
           {reportHistory.length === 0 ? (
-            <div className="text-center py-8 border border-gray-300">
-              <p className="text-sm text-gray-600">No saved reports yet.</p>
-              <p className="text-xs text-gray-500 mt-1">Generate a report to save it here.</p>
-            </div>
+            <EmptyState
+              icon={FileText}
+              title="No saved reports yet"
+              description="Generate a report to save it here"
+            />
           ) : showReportHistory ? (
             <div className="space-y-2">
               {reportHistory.map((report) => (
@@ -630,138 +581,106 @@ export default function AppPage() {
                       // Navigate directly to report page with ID - let the report page handle loading
                       router.push(`/app/report?id=${report.id}`)
                     }}
-                    className="text-xs text-gray-600 hover:text-gray-900 underline cursor-pointer"
+                    className="text-xs text-gray-600 hover:text-gray-900 flex items-center gap-1"
                   >
                     View
+                    <ArrowRight className="w-3 h-3" />
                   </button>
                 </div>
               ))}
             </div>
           ) : null}
-        </div>
+        </Card>
 
         {/* Data Management */}
-        <div className="mb-8 pb-6 border-b-2 border-gray-400">
+        <Card className="mb-8">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Data Management</h2>
           <div className="space-y-3">
-            <button
-              onClick={handleExportData}
-              className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1"
-            >
+            <Button variant="ghost" onClick={handleExportData} className="justify-start">
+              <Download className="h-4 w-4" />
               Export All Data (GDPR)
-            </button>
-            <div className="pt-2">
-              <button
-                onClick={handleDeleteAllData}
-                className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1"
-              >
-                Delete All Data
-              </button>
-            </div>
+            </Button>
+            <Button variant="ghost" onClick={handleDeleteAllData} className="justify-start text-red-600 hover:text-red-700">
+              <Trash2 className="h-4 w-4" />
+              Delete All Data
+            </Button>
           </div>
-        </div>
+        </Card>
 
         {/* Account Settings */}
-        <div className="mb-8">
+        <Card className="mb-8">
           <h2 className="text-lg font-bold text-gray-900 mb-4">Account</h2>
-          <button
-            onClick={handleDeleteAccount}
-            className="text-sm text-gray-700 hover:text-gray-900 border-b border-gray-400 pb-1"
-          >
+          <Button variant="ghost" onClick={handleDeleteAccount} className="justify-start text-red-600 hover:text-red-700">
+            <UserX className="h-4 w-4" />
             Delete Account
-          </button>
-        </div>
+          </Button>
+        </Card>
 
         {/* Terms of Service Modal */}
-        {showTosModal && (
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-            onClick={(e) => {
-              // Close modal if clicking on backdrop
-              if (e.target === e.currentTarget) {
-                // Don't allow closing by clicking outside - user must accept or decline
-              }
-            }}
-          >
-            <div 
-              className="bg-white border-2 border-gray-400 max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Terms of Service
-              </h3>
-              <div className="space-y-3 text-sm text-gray-700 mb-6">
-                <p>
-                  <strong>By using this service, you agree to the following:</strong>
-                </p>
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>This service provides formatted reports of Oura data for informational purposes only.</li>
-                  <li>Reports are not intended to diagnose, treat, or prevent any medical condition.</li>
-                  <li>This service is not a substitute for professional medical advice.</li>
-                  <li>Your data is stored securely and used solely to generate reports.</li>
-                  <li>You can delete your data or account at any time.</li>
-                  <li>We do not sell, share, or use your data for any purpose other than report generation.</li>
-                </ul>
-                <p className="mt-4">
-                  <strong>Version 1.0</strong> - Last updated: {new Date().toLocaleDateString()}
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={handleDeclineTos}
-                  className="flex-1 px-4 py-2 border-2 border-gray-400 text-gray-700 hover:bg-gray-50 text-sm"
-                >
-                  Decline
-                </button>
-                <button
-                  onClick={acceptTos}
-                  className="flex-1 px-4 py-2 bg-black text-white hover:bg-gray-900 text-sm"
-                >
-                  Accept & Continue
-                </button>
-              </div>
-            </div>
+        <Modal
+          isOpen={showTosModal}
+          onClose={() => {}} // Don't allow closing
+          title="Terms of Service"
+          footer={
+            <>
+              <Button variant="secondary" onClick={handleDeclineTos} className="flex-1">
+                Decline
+              </Button>
+              <Button onClick={acceptTos} className="flex-1">
+                Accept & Continue
+              </Button>
+            </>
+          }
+        >
+          <div className="space-y-3 text-sm text-gray-700">
+            <p>
+              <strong>By using this service, you agree to the following:</strong>
+            </p>
+            <ul className="list-disc list-inside space-y-2 ml-4">
+              <li>This service provides formatted reports of Oura data for informational purposes only.</li>
+              <li>Reports are not intended to diagnose, treat, or prevent any medical condition.</li>
+              <li>This service is not a substitute for professional medical advice.</li>
+              <li>Your data is stored securely and used solely to generate reports.</li>
+              <li>You can delete your data or account at any time.</li>
+              <li>We do not sell, share, or use your data for any purpose other than report generation.</li>
+            </ul>
+            <p className="mt-4">
+              <strong>Version 1.0</strong> - Last updated: {new Date().toLocaleDateString()}
+            </p>
           </div>
-        )}
+        </Modal>
 
         {/* Oura Connection Explanation Modal */}
-        {showConnectExplanation && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white border-2 border-gray-400 max-w-md w-full p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Connect Your Oura Account
-              </h3>
-              <div className="space-y-3 text-sm text-gray-700 mb-6">
-                <p>
-                  <strong>You'll be redirected to Oura's website</strong> to approve this connection.
-                </p>
-                <p>
-                  Approval happens on Oura's website, not inside this app. You'll log in directly with Oura.
-                </p>
-                <p>
-                  <strong>No Oura password is shared with this app.</strong> We use secure OAuth to connect.
-                </p>
-                <p className="text-gray-600 text-xs mt-4">
-                  You can revoke access at any time from your Oura app settings.
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowConnectExplanation(false)}
-                  className="flex-1 px-4 py-2 border-2 border-gray-400 text-gray-700 hover:bg-gray-50 text-sm"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleProceedToOura}
-                  className="flex-1 px-4 py-2 bg-black text-white hover:bg-gray-900 text-sm"
-                >
-                  Continue to Oura
-                </button>
-              </div>
-            </div>
+        <Modal
+          isOpen={showConnectExplanation}
+          onClose={() => setShowConnectExplanation(false)}
+          title="Connect Your Oura Account"
+          footer={
+            <>
+              <Button variant="secondary" onClick={() => setShowConnectExplanation(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={handleProceedToOura} className="flex-1">
+                Continue to Oura
+              </Button>
+            </>
+          }
+        >
+          <div className="space-y-3 text-sm text-gray-700">
+            <p>
+              <strong>You'll be redirected to Oura's website</strong> to approve this connection.
+            </p>
+            <p>
+              Approval happens on Oura's website, not inside this app. You'll log in directly with Oura.
+            </p>
+            <p>
+              <strong>No Oura password is shared with this app.</strong> We use secure OAuth to connect.
+            </p>
+            <p className="text-gray-600 text-xs mt-4">
+              You can revoke access at any time from your Oura app settings.
+            </p>
           </div>
-        )}
+        </Modal>
       </main>
     </div>
   )

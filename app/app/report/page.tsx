@@ -3,6 +3,12 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { Printer, Clipboard, Mail, CheckCircle2, AlertTriangle, ArrowLeft, Save } from 'lucide-react'
+import { Button } from '@/components/ui/Button'
+import { Card } from '@/components/ui/Card'
+import { Modal } from '@/components/ui/Modal'
+import { generateTextReport } from '@/lib/report/text-export'
+import toast from 'react-hot-toast'
 
 export const dynamic = 'force-dynamic'
 
@@ -11,18 +17,21 @@ interface DoctorSummary {
     metric: string
     value: string
     referenceRange: string
+    clinicalRange?: string
     flag: string
   }>
   cardiovascularTable: Array<{
     metric: string
     value: string
     referenceRange: string
+    clinicalRange?: string
     flag: string
   }>
   activityTable: Array<{
     metric: string
     value: string
     referenceRange: string
+    clinicalRange?: string
     flag: string
   }>
 }
@@ -39,6 +48,11 @@ interface ReportMetadata {
     start: string
     end: string
     days: number
+  }
+  dataQuality?: {
+    completeness: number
+    daysCollected: number
+    quality: 'Good' | 'Fair' | 'Poor'
   }
 }
 
@@ -213,6 +227,32 @@ export default function ReportPage() {
 
   const handlePrint = () => {
     window.print()
+  }
+
+  const handleCopyToClipboard = async () => {
+    if (!summary || !metadata) {
+      toast.error('Cannot copy: Report data is missing')
+      return
+    }
+    
+    try {
+      const textReport = generateTextReport(summary, metadata)
+      await navigator.clipboard.writeText(textReport)
+      toast.success('Report copied to clipboard')
+    } catch (err: any) {
+      toast.error('Failed to copy report')
+    }
+  }
+
+  const handleEmailShare = () => {
+    if (!summary || !metadata) {
+      toast.error('Cannot share: Report data is missing')
+      return
+    }
+    
+    const subject = encodeURIComponent(`Health Report - ${metadata.reportDate}`)
+    const body = encodeURIComponent(`Please find my health report attached.\n\nReport Date: ${metadata.reportDate}\nPatient: ${metadata.patientEmail}`)
+    window.location.href = `mailto:?subject=${subject}&body=${body}`
   }
 
   const handleSaveReport = () => {
@@ -399,50 +439,37 @@ export default function ReportPage() {
         </div>
       )}
       
-      {/* Print/Back Buttons - Hidden when printing */}
-            <div className={`sticky ${successMessage || (error && !loading) ? 'top-16' : 'top-0'} z-40 bg-white border-b-2 border-gray-400 print:hidden p-4`}>
-              <div className="max-w-5xl mx-auto flex gap-3 justify-end flex-wrap">
-                {!reportId && (
-                  <button
-                    onClick={handleSaveReport}
-                    disabled={saving || !summary || !metadata}
-                    className="px-6 py-2.5 bg-gray-900 text-white font-medium hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-                  >
-                    {saving ? (
-                      <>
-                        <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Saving...
-                      </>
-                    ) : (
-                      <>
-                        <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                        </svg>
-                        Save Report
-                      </>
-                    )}
-                  </button>
-                )}
-                <button
-                  onClick={handlePrint}
-                  className="px-6 py-2.5 bg-gray-900 text-white font-medium hover:bg-gray-800 transition-colors flex items-center gap-2"
-                >
-                  <svg className="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                  </svg>
-                  Print / Save as PDF
-                </button>
-                <button
-                  onClick={() => router.push('/app')}
-                  className="px-4 py-2.5 text-sm text-gray-700 hover:text-gray-900 border border-gray-300 hover:border-gray-400 transition-colors"
-                >
-                  Back
-                </button>
-              </div>
-            </div>
+      {/* Action Buttons - Hidden when printing */}
+      <div className={`sticky ${successMessage || (error && !loading) ? 'top-16' : 'top-0'} z-40 bg-white border-b border-gray-300 print:hidden p-4`}>
+        <div className="max-w-5xl mx-auto flex gap-3 justify-end flex-wrap">
+          {!reportId && (
+            <Button
+              onClick={handleSaveReport}
+              disabled={saving || !summary || !metadata}
+              loading={saving}
+            >
+              <Save className="h-4 w-4" />
+              Save Report
+            </Button>
+          )}
+          <Button onClick={handlePrint}>
+            <Printer className="h-4 w-4" />
+            Print / PDF
+          </Button>
+          <Button variant="secondary" onClick={handleCopyToClipboard}>
+            <Clipboard className="h-4 w-4" />
+            Copy for ChatGPT
+          </Button>
+          <Button variant="secondary" onClick={handleEmailShare}>
+            <Mail className="h-4 w-4" />
+            Email Doctor
+          </Button>
+          <Button variant="ghost" onClick={() => router.push('/app')}>
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+        </div>
+      </div>
 
       {/* Report Content */}
       <div className="max-w-5xl mx-auto px-4 sm:px-8 py-8 sm:py-12 print:px-12 print:py-8">
@@ -458,8 +485,53 @@ export default function ReportPage() {
             {referenceRangeStr && (
               <p><strong className="text-gray-900">30 Days Reference Range:</strong> {referenceRangeStr}</p>
             )}
+            {metadata?.dataQuality && (
+              <p><strong className="text-gray-900">Data Quality:</strong> {metadata.dataQuality.quality} ({metadata.dataQuality.completeness}% complete, {metadata.dataQuality.daysCollected} days)</p>
+            )}
           </div>
         </div>
+
+        {/* Executive Summary */}
+        {summary && (() => {
+          const allRows = [...summary.sleepTable, ...summary.cardiovascularTable, ...summary.activityTable]
+          const flaggedCount = allRows.filter(r => r.flag).length
+          const sleepFlagged = summary.sleepTable.filter(r => r.flag).length
+          const cardioFlagged = summary.cardiovascularTable.filter(r => r.flag).length
+          const activityFlagged = summary.activityTable.filter(r => r.flag).length
+          
+          return (
+            <Card className="mb-8 print:mb-6">
+              <h2 className="text-lg font-bold mb-4 text-gray-900">Executive Summary</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                  <div className="text-2xl font-bold text-red-600">{flaggedCount}</div>
+                  <div className="text-sm text-gray-600">Flagged Metrics</div>
+                </div>
+                <div>
+                  <div className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    {sleepFlagged > 0 ? <AlertTriangle className="h-5 w-5 text-yellow-600" /> : <CheckCircle2 className="h-5 w-5 text-green-600" />}
+                    Sleep
+                  </div>
+                  <div className="text-xs text-gray-600">{sleepFlagged} flagged</div>
+                </div>
+                <div>
+                  <div className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    {cardioFlagged > 0 ? <AlertTriangle className="h-5 w-5 text-yellow-600" /> : <CheckCircle2 className="h-5 w-5 text-green-600" />}
+                    Cardiovascular
+                  </div>
+                  <div className="text-xs text-gray-600">{cardioFlagged} flagged</div>
+                </div>
+                <div>
+                  <div className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    {activityFlagged > 0 ? <AlertTriangle className="h-5 w-5 text-yellow-600" /> : <CheckCircle2 className="h-5 w-5 text-green-600" />}
+                    Activity
+                  </div>
+                  <div className="text-xs text-gray-600">{activityFlagged} flagged</div>
+                </div>
+              </div>
+            </Card>
+          )
+        })()}
 
         {/* Sleep Table */}
         {summary.sleepTable.length > 0 && (
@@ -469,9 +541,10 @@ export default function ReportPage() {
             <div className="hidden md:block border border-gray-300 overflow-hidden">
               <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                 <colgroup>
-                  <col style={{ width: '30%' }} />
                   <col style={{ width: '25%' }} />
-                  <col style={{ width: '30%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
                   <col style={{ width: '15%' }} />
                 </colgroup>
                 <thead className="bg-gray-900 text-white">
@@ -479,15 +552,22 @@ export default function ReportPage() {
                     <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
                     <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
                     <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
+                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Clinical Reference Range</th>
                     <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {summary.sleepTable.map((row, idx) => (
-                    <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} style={{ pageBreakInside: 'avoid' }}>
+                  {[...summary.sleepTable]
+                    .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
+                    .map((row, idx) => (
+                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`} style={{ pageBreakInside: 'avoid' }}>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">{row.metric}</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">{row.value}</td>
+                      <td className={`px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
+                        {row.value}
+                        {!row.flag && <CheckCircle2 className="inline-block h-4 w-4 text-green-600 ml-2" />}
+                      </td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">{row.referenceRange}</td>
+                      <td className="px-4 py-2 text-sm text-gray-500 border-r border-gray-200 whitespace-nowrap">{row.clinicalRange || 'N/A'}</td>
                       <td className={`px-4 py-2 text-center text-sm whitespace-nowrap ${row.flag ? 'text-red-600 font-medium' : ''}`}>{row.flag}</td>
                     </tr>
                   ))}
@@ -496,15 +576,24 @@ export default function ReportPage() {
             </div>
             {/* Mobile Cards */}
             <div className="md:hidden space-y-3">
-              {summary.sleepTable.map((row, idx) => (
-                <div key={idx} className="border border-gray-300 p-4 bg-white">
+              {[...summary.sleepTable]
+                .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
+                .map((row, idx) => (
+                <div key={idx} className={`border p-4 ${row.flag ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">{row.metric}</div>
-                    {row.flag && <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>}
+                    {row.flag ? (
+                      <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>
+                    ) : (
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    )}
                   </div>
                   <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">{row.value}</span></div>
+                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : ''}`}>{row.value}</span></div>
                     <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">{row.referenceRange}</span></div>
+                    {row.clinicalRange && (
+                      <div><span className="text-gray-600">Clinical Reference Range:</span> <span className="text-gray-500">{row.clinicalRange}</span></div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -520,9 +609,10 @@ export default function ReportPage() {
             <div className="hidden md:block border border-gray-300 overflow-hidden">
               <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                 <colgroup>
-                  <col style={{ width: '30%' }} />
                   <col style={{ width: '25%' }} />
-                  <col style={{ width: '30%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
                   <col style={{ width: '15%' }} />
                 </colgroup>
                 <thead className="bg-gray-900 text-white">
@@ -530,15 +620,22 @@ export default function ReportPage() {
                     <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
                     <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
                     <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
+                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Clinical Reference Range</th>
                     <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {summary.cardiovascularTable.map((row, idx) => (
-                    <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} style={{ pageBreakInside: 'avoid' }}>
+                  {[...summary.cardiovascularTable]
+                    .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
+                    .map((row, idx) => (
+                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`} style={{ pageBreakInside: 'avoid' }}>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">{row.metric}</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">{row.value}</td>
+                      <td className={`px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
+                        {row.value}
+                        {!row.flag && <CheckCircle2 className="inline-block h-4 w-4 text-green-600 ml-2" />}
+                      </td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">{row.referenceRange}</td>
+                      <td className="px-4 py-2 text-sm text-gray-500 border-r border-gray-200 whitespace-nowrap">{row.clinicalRange || 'N/A'}</td>
                       <td className={`px-4 py-2 text-center text-sm whitespace-nowrap ${row.flag ? 'text-red-600 font-medium' : ''}`}>{row.flag}</td>
                     </tr>
                   ))}
@@ -547,15 +644,24 @@ export default function ReportPage() {
             </div>
             {/* Mobile Cards */}
             <div className="md:hidden space-y-3">
-              {summary.cardiovascularTable.map((row, idx) => (
-                <div key={idx} className="border border-gray-300 p-4 bg-white">
+              {[...summary.cardiovascularTable]
+                .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
+                .map((row, idx) => (
+                <div key={idx} className={`border p-4 ${row.flag ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">{row.metric}</div>
-                    {row.flag && <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>}
+                    {row.flag ? (
+                      <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>
+                    ) : (
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    )}
                   </div>
                   <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">{row.value}</span></div>
+                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : ''}`}>{row.value}</span></div>
                     <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">{row.referenceRange}</span></div>
+                    {row.clinicalRange && (
+                      <div><span className="text-gray-600">Clinical Reference Range:</span> <span className="text-gray-500">{row.clinicalRange}</span></div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -571,9 +677,10 @@ export default function ReportPage() {
             <div className="hidden md:block border border-gray-300 overflow-hidden">
               <table className="w-full text-sm" style={{ tableLayout: 'fixed' }}>
                 <colgroup>
-                  <col style={{ width: '30%' }} />
                   <col style={{ width: '25%' }} />
-                  <col style={{ width: '30%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
                   <col style={{ width: '15%' }} />
                 </colgroup>
                 <thead className="bg-gray-900 text-white">
@@ -581,15 +688,22 @@ export default function ReportPage() {
                     <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Metric</th>
                     <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">7 Days values</th>
                     <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">30 Days Reference Range</th>
+                    <th className="px-4 py-2 text-left text-xs font-bold uppercase tracking-wide border-r border-gray-700 whitespace-nowrap">Clinical Reference Range</th>
                     <th className="px-4 py-2 text-center text-xs font-bold uppercase tracking-wide whitespace-nowrap">Flag</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {summary.activityTable.map((row, idx) => (
-                    <tr key={idx} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} style={{ pageBreakInside: 'avoid' }}>
+                  {[...summary.activityTable]
+                    .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
+                    .map((row, idx) => (
+                    <tr key={idx} className={`${row.flag ? 'bg-red-50' : idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`} style={{ pageBreakInside: 'avoid' }}>
                       <td className="px-4 py-2 text-sm font-semibold border-r border-gray-200 whitespace-nowrap">{row.metric}</td>
-                      <td className="px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap">{row.value}</td>
+                      <td className={`px-4 py-2 text-sm border-r border-gray-200 whitespace-nowrap ${row.flag ? 'text-red-600 font-semibold' : ''}`}>
+                        {row.value}
+                        {!row.flag && <CheckCircle2 className="inline-block h-4 w-4 text-green-600 ml-2" />}
+                      </td>
                       <td className="px-4 py-2 text-sm text-gray-600 border-r border-gray-200 whitespace-nowrap">{row.referenceRange}</td>
+                      <td className="px-4 py-2 text-sm text-gray-500 border-r border-gray-200 whitespace-nowrap">{row.clinicalRange || 'N/A'}</td>
                       <td className={`px-4 py-2 text-center text-sm whitespace-nowrap ${row.flag ? 'text-red-600 font-medium' : ''}`}>{row.flag}</td>
                     </tr>
                   ))}
@@ -598,15 +712,24 @@ export default function ReportPage() {
             </div>
             {/* Mobile Cards */}
             <div className="md:hidden space-y-3">
-              {summary.activityTable.map((row, idx) => (
-                <div key={idx} className="border border-gray-300 p-4 bg-white">
+              {[...summary.activityTable]
+                .sort((a, b) => (b.flag ? 1 : 0) - (a.flag ? 1 : 0))
+                .map((row, idx) => (
+                <div key={idx} className={`border p-4 ${row.flag ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'}`}>
                   <div className="flex justify-between items-start mb-2">
                     <div className="font-semibold text-sm text-gray-900 flex-1">{row.metric}</div>
-                    {row.flag && <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>}
+                    {row.flag ? (
+                      <div className="text-sm ml-2 text-red-600 font-medium">{row.flag}</div>
+                    ) : (
+                      <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    )}
                   </div>
                   <div className="space-y-1 text-sm">
-                    <div><span className="text-gray-600">7 Days values:</span> <span className="font-medium">{row.value}</span></div>
+                    <div><span className="text-gray-600">7 Days values:</span> <span className={`font-medium ${row.flag ? 'text-red-600' : ''}`}>{row.value}</span></div>
                     <div><span className="text-gray-600">30 Days Reference Range:</span> <span className="text-gray-700">{row.referenceRange}</span></div>
+                    {row.clinicalRange && (
+                      <div><span className="text-gray-600">Clinical Reference Range:</span> <span className="text-gray-500">{row.clinicalRange}</span></div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -636,49 +759,42 @@ export default function ReportPage() {
             </div>
 
             {/* Save Report Modal */}
-            {showSaveModal && (
-              <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                <div className="bg-white border-2 border-gray-400 max-w-md w-full p-6">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                    Save Report
-                  </h3>
-                  <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Report Title (optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={reportTitle}
-                      onChange={(e) => setReportTitle(e.target.value)}
-                      placeholder={`Report ${metadata ? new Date(metadata.reportDate).toLocaleDateString() : ''}`}
-                      className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-900"
-                      autoFocus
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleConfirmSave()
-                        } else if (e.key === 'Escape') {
-                          setShowSaveModal(false)
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowSaveModal(false)}
-                    className="flex-1 px-4 py-2 border-2 border-gray-400 text-gray-700 hover:bg-gray-50 text-sm"
-                  >
+            <Modal
+              isOpen={showSaveModal}
+              onClose={() => setShowSaveModal(false)}
+              title="Save Report"
+              footer={
+                <>
+                  <Button variant="secondary" onClick={() => setShowSaveModal(false)} className="flex-1">
                     Cancel
-                  </button>
-                  <button
-                    onClick={handleConfirmSave}
-                    className="flex-1 px-4 py-2 bg-black text-white hover:bg-gray-900 text-sm"
-                  >
+                  </Button>
+                  <Button onClick={handleConfirmSave} className="flex-1">
                     Save
-                  </button>
-                  </div>
-                </div>
+                  </Button>
+                </>
+              }
+            >
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Report Title (optional)
+                </label>
+                <input
+                  type="text"
+                  value={reportTitle}
+                  onChange={(e) => setReportTitle(e.target.value)}
+                  placeholder={`Report ${metadata ? new Date(metadata.reportDate).toLocaleDateString() : ''}`}
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-1 focus:ring-gray-900"
+                  autoFocus
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleConfirmSave()
+                    } else if (e.key === 'Escape') {
+                      setShowSaveModal(false)
+                    }
+                  }}
+                />
               </div>
-            )}
+            </Modal>
 
             {/* Print Styles */}
       <style jsx global>{`
@@ -690,6 +806,8 @@ export default function ReportPage() {
           
           body {
             background: white;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
           }
           
           .print\\:hidden {
@@ -708,6 +826,66 @@ export default function ReportPage() {
           .print\\:py-8 {
             padding-top: 2rem;
             padding-bottom: 2rem;
+          }
+          
+          /* Reduce font sizes for print */
+          h1 {
+            font-size: 14pt !important;
+          }
+          
+          h2 {
+            font-size: 12pt !important;
+          }
+          
+          table {
+            font-size: 9pt !important;
+          }
+          
+          th, td {
+            font-size: 9pt !important;
+            padding: 0.25rem 0.5rem !important;
+          }
+          
+          /* Ensure colors print */
+          .bg-red-50 {
+            background-color: #fef2f2 !important;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          
+          .text-red-600 {
+            color: #dc2626 !important;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          
+          .text-green-600 {
+            color: #16a34a !important;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+          }
+          
+          /* Page breaks */
+          table {
+            page-break-inside: auto;
+          }
+          
+          tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+          }
+          
+          thead {
+            display: table-header-group;
+          }
+          
+          tfoot {
+            display: table-footer-group;
+          }
+          
+          /* Hide icons in print */
+          svg {
+            display: none !important;
           }
         }
       `}</style>

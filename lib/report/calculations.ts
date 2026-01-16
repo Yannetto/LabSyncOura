@@ -1,3 +1,5 @@
+import { getClinicalRange, formatClinicalRange } from './clinical-ranges'
+
 interface DailyMetric {
   day: string
   metric_key: string
@@ -9,6 +11,13 @@ export interface ReportMetric {
   result_display: string
   flag: 'Normal' | 'Borderline' | 'Low' | 'High'
   reference_display: string
+  clinical_range?: string
+}
+
+export interface DataQuality {
+  completeness: number // Percentage
+  daysCollected: number
+  quality: 'Good' | 'Fair' | 'Poor'
 }
 
 function parseValue(value: string | null): number | null {
@@ -84,6 +93,17 @@ function formatReferenceDuration(q25: number, q75: number): string {
   return `${q25Formatted} – ${q75Formatted}`
 }
 
+function formatTemperature(celsius: number): string {
+  const fahrenheit = (celsius * 9/5) + 32
+  return `${celsius.toFixed(2)}°C (${fahrenheit.toFixed(2)}°F)`
+}
+
+function formatTemperatureRange(q25: number, q75: number): string {
+  const q25F = (q25 * 9/5) + 32
+  const q75F = (q75 * 9/5) + 32
+  return `${q25.toFixed(2)}–${q75.toFixed(2)}°C (${q25F.toFixed(2)}–${q75F.toFixed(2)}°F)`
+}
+
 // Helper function to calculate a metric with flexible reference data
 // Returns metric with "—" if data is missing (never returns null)
 function calculateMetric(
@@ -91,8 +111,14 @@ function calculateMetric(
   metricRef: number[],
   metricName: string,
   formatResult: (value: number) => string,
-  formatReference: (q25: number, q75: number) => string
+  formatReference: (q25: number, q75: number) => string,
+  age?: number | null,
+  gender?: string | null
 ): ReportMetric {
+  // Get clinical range
+  const clinicalRange = getClinicalRange(metricName, age, gender)
+  const clinicalRangeDisplay = formatClinicalRange(clinicalRange)
+  
   // If no 7-day data, show "—" for result
   if (metric7d.length === 0) {
     console.log(`[Report] No 7-day data for ${metricName}`)
@@ -106,6 +132,7 @@ function calculateMetric(
             Math.max(...metricRef)
           )
         : '—',
+      clinical_range: clinicalRangeDisplay,
     }
   }
   
@@ -121,6 +148,7 @@ function calculateMetric(
       result_display: formatResult(avg7d),
       flag: getFlag(avg7d, iqr.q25, iqr.q75),
       reference_display: formatReference(iqr.q25, iqr.q75),
+      clinical_range: clinicalRangeDisplay,
     }
   } else if (metricRef.length > 0) {
     // Some reference data, use min-max
@@ -131,6 +159,7 @@ function calculateMetric(
       result_display: formatResult(avg7d),
       flag: 'Normal', // Can't determine flag without enough data
       reference_display: formatReference(min, max),
+      clinical_range: clinicalRangeDisplay,
     }
   } else {
     // No reference data, but show the 7-day result
@@ -139,12 +168,43 @@ function calculateMetric(
       result_display: formatResult(avg7d),
       flag: 'Normal',
       reference_display: '—',
+      clinical_range: clinicalRangeDisplay,
     }
   }
 }
 
+/**
+ * Calculate data quality metrics
+ */
+export function calculateDataQuality(
+  dailyData: DailyMetric[],
+  reportPeriodDays: number = 7,
+  referencePeriodDays: number = 30
+): DataQuality {
+  const uniqueDays = new Set(dailyData.map(d => d.day)).size
+  const expectedDays = reportPeriodDays + referencePeriodDays
+  const completeness = (uniqueDays / expectedDays) * 100
+  
+  let quality: 'Good' | 'Fair' | 'Poor'
+  if (completeness >= 80) {
+    quality = 'Good'
+  } else if (completeness >= 50) {
+    quality = 'Fair'
+  } else {
+    quality = 'Poor'
+  }
+  
+  return {
+    completeness: Math.round(completeness),
+    daysCollected: uniqueDays,
+    quality
+  }
+}
+
 export function calculateReportMetrics(
-  dailyData: DailyMetric[]
+  dailyData: DailyMetric[],
+  age?: number | null,
+  gender?: string | null
 ): ReportMetric[] {
   // Debug: Log incoming data
   console.log('[Report] Total dailyData records:', dailyData.length)
@@ -337,9 +397,9 @@ export function calculateReportMetrics(
     'readiness_hrv_rmssd': { name: 'HRV RMSSD (Readiness)', formatResult: (v) => `${v.toFixed(0)} ms`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} ms` },
     'sleep_average_hrv': { name: 'Night-time HRV', formatResult: (v) => `${v.toFixed(0)} ms`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} ms` },
     'sleep_respiratory_rate': { name: 'Respiratory Rate', formatResult: (v) => `${v.toFixed(0)} breaths/min`, formatReference: (q25, q75) => `${q25.toFixed(0)}–${q75.toFixed(0)} breaths/min` },
-    'temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => `${v.toFixed(2)}°C`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C` },
-    'readiness_temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => `${v.toFixed(2)}°C`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C` },
-    'readiness_temperature_trend_deviation': { name: 'Temperature Trend Deviation', formatResult: (v) => `${v.toFixed(2)}°C`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}°C` },
+    'temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => formatTemperature(v), formatReference: (q25, q75) => formatTemperatureRange(q25, q75) },
+    'readiness_temperature_deviation': { name: 'Temperature Deviation', formatResult: (v) => formatTemperature(v), formatReference: (q25, q75) => formatTemperatureRange(q25, q75) },
+    'readiness_temperature_trend_deviation': { name: 'Temperature Trend Deviation', formatResult: (v) => formatTemperature(v), formatReference: (q25, q75) => formatTemperatureRange(q25, q75) },
     // SpO2 metrics
     'spo2_percentage_average': { name: 'Average Nightly SpO2', formatResult: (v) => `${v.toFixed(1)}%`, formatReference: (q25, q75) => `${q25.toFixed(1)}–${q75.toFixed(1)}%` },
     'breathing_disturbance_index': { name: 'Breathing Disturbance Index', formatResult: (v) => `${v.toFixed(2)}`, formatReference: (q25, q75) => `${q25.toFixed(2)}–${q75.toFixed(2)}` },
@@ -421,6 +481,9 @@ export function calculateReportMetrics(
         weeklyCounts.push(weekCount)
       }
       
+      const clinicalRange = getClinicalRange(displayName, age, gender)
+      const clinicalRangeDisplay = formatClinicalRange(clinicalRange)
+      
       if (count7dData.length === 0) {
         metrics.push({
           metric: displayName,
@@ -431,6 +494,7 @@ export function calculateReportMetrics(
             : weeklyCounts.length > 0
             ? `${Math.min(...weeklyCounts)}–${Math.max(...weeklyCounts)} / week`
             : '—',
+          clinical_range: clinicalRangeDisplay,
         })
       } else if (weeklyCounts.length >= 3) {
         const iqr = calculateIQR(weeklyCounts)
@@ -439,6 +503,7 @@ export function calculateReportMetrics(
           result_display: formatCount(count7d, '7 days'),
           flag: getFlag(count7d, iqr.q25, iqr.q75),
           reference_display: `${iqr.q25.toFixed(0)}–${iqr.q75.toFixed(0)} / week`,
+          clinical_range: clinicalRangeDisplay,
         })
       } else if (weeklyCounts.length > 0) {
         const min = Math.min(...weeklyCounts)
@@ -448,6 +513,7 @@ export function calculateReportMetrics(
           result_display: formatCount(count7d, '7 days'),
           flag: 'Normal',
           reference_display: `${min}–${max} / week`,
+          clinical_range: clinicalRangeDisplay,
         })
       } else {
         metrics.push({
@@ -455,6 +521,7 @@ export function calculateReportMetrics(
           result_display: formatCount(count7d, '7 days'),
           flag: 'Normal',
           reference_display: '—',
+          clinical_range: clinicalRangeDisplay,
         })
       }
     } else if (config) {
@@ -464,7 +531,9 @@ export function calculateReportMetrics(
         metricRef,
         displayName,
         config.formatResult,
-        config.formatReference
+        config.formatReference,
+        age,
+        gender
       ))
     } else {
       // Default formatting for unknown metrics
@@ -517,7 +586,9 @@ export function calculateReportMetrics(
         metricRef,
         displayName,
         formatResult,
-        formatReference
+        formatReference,
+        age,
+        gender
       ))
     }
   }

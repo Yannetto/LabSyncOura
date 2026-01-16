@@ -5,18 +5,21 @@ interface DoctorSummary {
     metric: string
     value: string
     referenceRange: string
+    clinicalRange?: string
     flag: string
   }>
   cardiovascularTable: Array<{
     metric: string
     value: string
     referenceRange: string
+    clinicalRange?: string
     flag: string
   }>
   activityTable: Array<{
     metric: string
     value: string
     referenceRange: string
+    clinicalRange?: string
     flag: string
   }>
 }
@@ -446,6 +449,7 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
     metric: metric.metric,
     value: metric.result_display,
     referenceRange: metric.reference_display,
+    clinicalRange: metric.clinical_range,
     flag: computeFlag(metric.metric, metric.result_display, metric.reference_display),
   })
   

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
-import { calculateReportMetrics } from '@/lib/report/calculations'
+import { calculateReportMetrics, calculateDataQuality } from '@/lib/report/calculations'
 import { formatDoctorSummary } from '@/lib/report/doctor-summary'
 
 export async function POST(request: NextRequest) {
@@ -14,6 +14,16 @@ export async function POST(request: NextRequest) {
 
   try {
     const serviceSupabase = createServiceClient()
+    
+    // Fetch user profile for age and gender
+    const { data: profile } = await serviceSupabase
+      .from('profiles')
+      .select('age, gender')
+      .eq('id', user.id)
+      .single()
+    
+    const age = profile?.age || null
+    const gender = profile?.gender || null
     
     // Calculate date range - fetch last 90 days to ensure we have enough data
     // (7 days for report + 30 days for reference, plus buffer for gaps)
@@ -102,8 +112,11 @@ export async function POST(request: NextRequest) {
       })
     }
     
-    // Calculate all metrics
-    const metrics = calculateReportMetrics(dailyData || [])
+    // Calculate all metrics with age/gender for clinical ranges
+    const metrics = calculateReportMetrics(dailyData || [], age, gender)
+    
+    // Calculate data quality
+    const dataQuality = calculateDataQuality(dailyData || [], 7, 30)
     
     console.log(`[DoctorSummary] Calculated ${metrics.length} total metrics from ${dailyData.length} data records`)
     if (metrics.length > 0) {
@@ -213,6 +226,11 @@ export async function POST(request: NextRequest) {
           start: refStart,
           end: refEnd,
           days: actualRefDays,
+        },
+        dataQuality: {
+          completeness: dataQuality.completeness,
+          daysCollected: dataQuality.daysCollected,
+          quality: dataQuality.quality,
         }
       }
     })
