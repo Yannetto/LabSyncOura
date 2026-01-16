@@ -523,20 +523,20 @@ export default function ReportPage() {
               <h2 className="text-base font-semibold mb-4 text-gray-900">Executive Summary</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div>
-                  <div className="text-2xl font-bold text-amber-600">{flaggedCount}</div>
+                  <div className="text-2xl font-bold text-gray-900">{flaggedCount}</div>
                   <div className="text-xs text-gray-600 mt-1">Flagged Metrics</div>
                 </div>
                 <div>
-                  <div className="text-base font-semibold text-gray-900">Sleep</div>
-                  <div className="text-xs text-gray-600 mt-1">{sleepFlagged} flagged</div>
+                  <div className="text-2xl font-bold text-gray-900">{sleepFlagged}</div>
+                  <div className="text-xs text-gray-600 mt-1">Sleep</div>
                 </div>
                 <div>
-                  <div className="text-base font-semibold text-gray-900">Cardiovascular</div>
-                  <div className="text-xs text-gray-600 mt-1">{cardioFlagged} flagged</div>
+                  <div className="text-2xl font-bold text-gray-900">{cardioFlagged}</div>
+                  <div className="text-xs text-gray-600 mt-1">Cardiovascular</div>
                 </div>
                 <div>
-                  <div className="text-base font-semibold text-gray-900">Activity</div>
-                  <div className="text-xs text-gray-600 mt-1">{activityFlagged} flagged</div>
+                  <div className="text-2xl font-bold text-gray-900">{activityFlagged}</div>
+                  <div className="text-xs text-gray-600 mt-1">Activity</div>
                 </div>
               </div>
             </div>
