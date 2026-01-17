@@ -239,6 +239,7 @@ const KEEP_METRICS = {
     'rem sleep', // Generic match
     'sleep latency',
     'sleep efficiency',
+    'sleep debt', // Sleep debt calculation
   ],
   cardiovascular: [
     'resting heart rate',
@@ -290,6 +291,7 @@ const METRICS_WITH_FLAGS = new Set([
   'sleep duration',
   'sleep latency',
   'sleep efficiency',
+  'sleep debt', // Sleep debt can be flagged
   'resting heart rate',
   'resting hr',
   'lowest night-time heart rate',
@@ -519,8 +521,8 @@ export function formatDoctorSummary(metrics: ReportMetric[]): DoctorSummary {
     const result: Array<{ metric: string; value: string; referenceRange: string; flag: string }> = []
     const processed = new Set<string>()
     
-    // Process in order: Time in Bed, Sleep Duration, Sleep Latency, Sleep Efficiency
-    const orderedMetrics = ['time in bed', 'sleep duration', 'sleep latency', 'sleep efficiency']
+    // Process in order: Time in Bed, Sleep Duration, Sleep Latency, Sleep Efficiency, Sleep Debt
+    const orderedMetrics = ['time in bed', 'sleep duration', 'sleep latency', 'sleep efficiency', 'sleep debt']
     for (const orderName of orderedMetrics) {
       const metric = sleepMetrics.find(m => normalizeMetricName(m.metric) === orderName)
       if (metric) {

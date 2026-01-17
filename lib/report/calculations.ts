@@ -642,6 +642,55 @@ export function calculateReportMetrics(
     }
   }
 
+  // Calculate Sleep Debt
+  // Sleep debt = cumulative deficit below target (8 hours = 28800 seconds) over the 7-day period
+  const TARGET_SLEEP_SECONDS = 8 * 3600 // 8 hours in seconds
+  const MAX_ACCEPTABLE_DEBT_HOURS = 0.99 // Flag if debt >= 1 hour
+  
+  // Get sleep duration data for the 7-day period
+  const sleepDurationKey = 'sleep_total_sleep_duration_seconds'
+  const sleepDuration7d = getMetricValuesByDay(last7Days, sleepDurationKey)
+  
+  if (sleepDuration7d.length > 0) {
+    // Calculate total sleep debt (only count days where actual < target)
+    let totalDebtSeconds = 0
+    for (const sleepSeconds of sleepDuration7d) {
+      const deficit = TARGET_SLEEP_SECONDS - sleepSeconds
+      if (deficit > 0) {
+        totalDebtSeconds += deficit
+      }
+    }
+    
+    const totalDebtHours = totalDebtSeconds / 3600
+    const maxAcceptableDebtSeconds = MAX_ACCEPTABLE_DEBT_HOURS * 3600
+    
+    // Format sleep debt
+    const formatSleepDebt = (hours: number): string => {
+      if (hours < 1) {
+        const minutes = Math.round(hours * 60)
+        return `${minutes} min`
+      }
+      const wholeHours = Math.floor(hours)
+      const minutes = Math.round((hours - wholeHours) * 60)
+      return minutes > 0 ? `${wholeHours}h ${minutes}m` : `${wholeHours}h`
+    }
+    
+    // Determine flag: flagged if debt >= 1 hour (0.99 threshold)
+    let flag: 'Normal' | 'Borderline' | 'Low' | 'High' = 'Normal'
+    if (totalDebtSeconds >= maxAcceptableDebtSeconds) {
+      flag = 'High' // Sleep debt is flagged
+    }
+    
+    // Add sleep debt metric
+    metrics.push({
+      metric: 'Sleep Debt',
+      result_display: formatSleepDebt(totalDebtHours),
+      flag: flag,
+      reference_display: '0h 0m – 0h 59m', // Ideal is 0, flag at 1h
+      clinical_range: undefined, // No clinical range for sleep debt
+    })
+  }
+
   // Clean and deduplicate metrics before returning
   return cleanReportMetrics(metrics)
 }
